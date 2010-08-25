@@ -61,17 +61,17 @@
             xmlDoc = xml;
             
             //http://sizzlejs.com/ if needed later.
-            var layer;
-            $(xmlDoc).find('map layer data').each(function()
+            var layer = new Array();
+            $(xmlDoc).find('map layer data tile').each(function()
             {
-                layer = this;
-            });            
-            
-            for(var i=0; i<layer.children.length; i++) {
+                layer.push(this);
+            });
+ 
+            for(var i=0; i<layer.length; i++) {
                 var tile = document.createElement('div');
                 tile.className = 'tile';
-                
-                var coords = tileset.getCoordsfromIdx(layer.children[i].getAttribute('gid'));
+				
+                var coords = tileset.getCoordsfromIdx(layer[i].getAttribute('gid'));
                 
                 tile.style.backgroundPosition = coords[0] + 'px ' + coords[1] + 'px';
                 
@@ -95,4 +95,4 @@
         
     </script> 
 </body> 
-</html> 
+</html>
