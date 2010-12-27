@@ -5,6 +5,7 @@
     .map {
         width: 480px;
         height: 480px;
+        display: none;
     }
     
     .tile {
@@ -16,12 +17,18 @@
         border: 0px;
         line-height: 16px;
     }
+    
     </style> 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script>
+    
+    <script src="./js/power_canvas.jquery.js" type="text/javascript"></script>
+    <script src="./js/sprites.strd6.js" type="text/javascript"></script>
 </head> 
 <body> 
     <div class="map" id="testmap"></div> 
-    
+    <canvas id="gameCanvas" width="320" height="240"></canvas>
+    <img id="tileset" src="tileset.gif" />
+
     <script> 
         var map = document.getElementById('testmap');
                 
@@ -56,43 +63,69 @@
         //document.implementation.createDocument('','',null);
         //xmlDoc.load('bengame.tmx');
         //xmlDoc.onload=renderMap;
+        
+        var g_tileset = $('#tileset').get(0);
+        var g_tiles = [];
     
         function renderMap(xml) {
             xmlDoc = xml;
             
-            //http://sizzlejs.com/ if needed later.
             var layer = new Array();
-            $(xmlDoc).find('map layer data tile').each(function()
-            {
+            $(xmlDoc).find('map layer data tile').each(function() {
                 layer.push(this);
             });
  
             for(var i=0; i<layer.length; i++) {
                 var tile = document.createElement('div');
                 tile.className = 'tile';
-				
                 var coords = tileset.getCoordsfromIdx(layer[i].getAttribute('gid'));
-                
                 tile.style.backgroundPosition = coords[0] + 'px ' + coords[1] + 'px';
-                
                 map.appendChild(tile);
+                
+                g_tiles[g_tiles.length] = new Sprite.load('tileset.gif');
+                g_tiles[g_tiles.length].draw(g_canvas, 0,0);
             }                        
         }
         
-        $(document).ready(function()
-        {
-          $.ajax({
-            type: "GET",
-            url: "bengame.tmx.xml",
-            dataType: "xml",
-            success: renderMap,
-            error: function(a,b,c) {
-                alert('error?!');
-                debugger;
-            }
-          });
-        });
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+        var g_canvas;
+    
+        $('#gameCanvas').powerCanvas({init: function(canvas) {
+            g_canvas = canvas;
+        }})
         
-    </script> 
+        g_canvas.fillColor("#F0F");
+        //g_canvas.fillText("LOADING...", 280, 240);
+        g_canvas.fillRect(0,0, 320,240);
+        g_canvas.fillColor("#0F0");
+        g_canvas.fillCircle(160,120, 60);
+        
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+        
+        setTimeout( function() {
+            g_canvas.fillColor("#F00");
+            g_canvas.fillRect(0,0, 320,240);
+            
+            $(document).ready(function()
+            {
+              $.ajax({
+                type: "GET",
+                url: "bengame.tmx.xml",
+                dataType: "xml",
+                success: renderMap,
+                error: function(a,b,c) {
+                    alert('error?!');
+                    debugger;
+                }
+              });
+            });
+       
+        }, 5000);
+        
+    </script>    
 </body> 
 </html>

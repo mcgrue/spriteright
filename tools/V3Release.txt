@@ -1,0 +1,72 @@
+================================================================================
+ Verge 3 Release Notes
+================================================================================
+
+  This file is simply a point form list of changes for each public release
+  of the engine.
+
+  Engine releases before v3.2 had a changelog that never got updated properly, 
+  so I've switched to using this format instead. If you want to see bit-by-bit 
+  lists of changes, check the SVN log, information at:
+        http://verge-rpg.com/about/
+
+--------------------------------------------------------------------------------
+Verge 3.2 (2009/08/01)
+--------------------------------------------------------------------------------
+
+ * various speed ups, tweaks, and bugfixes
+ * maps don't have to be in the game root directory any more
+       * they still need to be somewhere underneath the root, and the vsp, map, and lua/vc files all have to be in the same place
+ * no hard limit on number of sprites
+ * New config options
+       * logconsole / logconsole-normalstdout
+             * dumps log commands to stdout instead of v3.log
+       * window_x_res, window_y_res
+             * if your game is 320x240 but you want it windowed at 640x480 (effectively doubling the pixels)
+ * New globally available functions, vars
+       * printing stuff
+             * all Print* functions respect newlines as you would expect
+             * font subsets
+                   * use \f# inside of a string that gets passed to PrintString, PrintCenter, or PrintRight to switch subset # (0 is the first one, and the default)
+       * IntExists, StrExists
+             * checks if the parameter is a name of an int or string in the vc tables.
+       * GetInputKillSwitch, SetInputKillSwitch
+             * If the InputKillSwitch is 0, verge ignores all input, allowing you to programatically manipulate the input vars.
+       * Triggers
+             * trigger.after_playermove (executes after PlayerMove("..."); is done AND when EntityMove(playerent,"...") is done)
+             * trigger.onEntityCollide (executes the usergen vc function it contains the name of whenever any entity hits any obstruction)
+                   * event.tx and event.ty are the tile coodinates hit.
+                   * event.entity is the entity who did the hitting.
+                   * event.zone is the zone of the tile being struck, as long as it was a tile obstruction being hit.  Otherwise, -1.
+                   * event.entity_hit is entity index of the entity being hit, as long as it was an entity-on-entity collision. Otherwise, -1.
+             * trigger.beforeEntityScript, trigger.afterEntityScript
+                   * if trigger.beforeEntityScript is set to a vc function name, that function will be called before any entity's onActivate script is called.
+                   * if trigger.afterEntityScript is set to a vc function name, that function will be called after any entity's onActivate script is called. 
+                   * both of these functions will have the proper event.tx, event.ty, and event.entity values available to them, just like the entity's onActivate script does.
+             * trigger.onStep, trigger.afterStep
+                   * If they are set to the name of a vc script, said script will fire everytime the player enters any new tile.
+          * GetSystemSaveDir("my_app_name")
+                * Get a place to save user data to
+          * Unpress(9) now unpresses all four buttons and all directionals
+          * New Socket Stuff
+                * SocketByteCount() (peeks at the count of bytes currently in the buffer)
+                * SetConnectionPort(port)
+                * SocketGetRaw(sock, len)
+                * SocketSendRaw(sock, msg)
+          * ListFilePattern() now works the same across platforms
+          * GetPlayer() returns the entity that is currently assigned as the player
+ * Lua stuff
+       * all library functions are now in v3 table
+             * function names are case insensitive FOR THIS TABLE ONLY
+       * getter/setter, other fancy things for classes
+             * see Overkill's vx for examples
+       * all boolean variables and functions use ACTUAL booleans now
+       * garbage collection
+             * use v3.GCHandle(handle, 'destructorFunction')
+                   * destructorFunction(handle) gets called when handle goes out of scope
+ * VergeC stuff
+       * Dict functions DictContainsString and DictContains now match documentation
+       * GetUserSystemVcFunctionByIndex(i)
+       * GetUserSystemVcFunctionCount()
+
+--------------------------------------------------------------------------------

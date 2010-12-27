@@ -1,0 +1,92 @@
+================================================================================
+ Using LuaVerge
+================================================================================
+
+
+Lua is a quirky little language developed in the mid 90s to be a light-weight,
+easy-to-embed, and fast scripting language. It meets all of these goals 
+admirably well, and it has come to be used in lots of different places, 
+especially games and other things that need fast, portable scripting.
+
+Lua is now available as one of the scripting language choices for building your
+Verge3 game. It's still a little weird - tutorials are in development - but in
+the meantime hopefully this file will get people started on their way.
+
+
+--------------------------------------------------------------------------------
+ General Lua
+--------------------------------------------------------------------------------
+
+The official site for lua is available at:
+
+	http://www.lua.org/
+	
+There you can find a general tutorial in Lua and its syntax at:
+
+	http://www.lua.org/pil/
+
+In addition, ElderVerger Overkill has written a tutorial for use of Lua:
+
+	http://www.bananattack.com/vx/Learn_Lua
+
+Between these you should hopefully be able to get a pretty good handle on the
+usage of Lua generally as a scripting language.
+
+
+--------------------------------------------------------------------------------
+ Verge3 and Lua
+--------------------------------------------------------------------------------
+
+In a nutshell, using Lua with Verge is the same as using VergeC EXCEPT that you
+write Lua scripts instead. I know, that's sort of lame, but bear with me:
+
+(Almost) all of the VergeC functions have been bound to a Lua table called v3.
+To call a Verge function that you see in the VergeC documentation, say Exit(),
+you simply stick "v3." on the front of it. In other words, the VergeC 
+
+	int img = NewImage(50,50)
+	Exit("Exiting from VergeC!")
+
+will be equivalent to the Lua
+
+	local img = v3.NewImage(50,50)
+	v3.Exit("Exiting from LuaVerge!")
+	
+In some cases, things have been changed around a little. Rather than attempting
+(and failing) to give you an exhaustive list, I'll just give you a few pointers
+to bear in mind:
+
+	- If it makes sense for something to be a boolean, it will actually be a
+	  true or false value, rather than 1 or 0 as in VergeC.
+	- Global arrays, like entity.x[], has been changed to be entity[].x, which
+	  really makes more sense.
+	- Where builtin Lua stuff exists, VergeC stuff has been phased out, so 
+	  instead of using v3.abs(), you'll want to use math.abs().
+	- As a very special case, all functions stored in the v3 table are 
+	  considered case insensitive, so v3.Exit() and v3.exit() are equivalent. 
+	- Don't forget the v3!
+
+If you run into any problems, come to the forums at
+
+	http://www.verge-rpg.com/forums/
+	
+and we'll try to give you a hand. Once you get the hang of things and become
+more familiar with the Verge API, it's not so bad.
+	
+
+--------------------------------------------------------------------------------
+ vx, A Wrapper For LuaVerge
+--------------------------------------------------------------------------------
+	
+Overkill has also created a fancy library for LuaVerge which wraps the standard
+Verge3 stuff to give you a nicer, object-oriented sort of interface to
+everything. If you really want to use LuaVerge, I sincerely suggest you use it:
+
+	http://www.bananattack.com/vx/Main_Page
+
+
+--------------------------------------------------------------------------------
+- Shamus "Kildorf" Peveril (2009/08/01)
+	
+
+ 
