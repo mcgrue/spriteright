@@ -66,8 +66,8 @@ soundManager.onready(function() {
         }
 
         #log {
-            width: 400px;
-            height: 200px;
+            width: 320px;
+            height: 50px;
         }
 
     </style>
@@ -88,13 +88,18 @@ soundManager.onready(function() {
                 <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
             </canvas>
         </div>
+
+        <div>
+            <textarea id="log"></textarea>
+        </div>
     </div>
 
+<!--
     <input value="" id="x">
     <input value="" id="y">
     <button id="move">move</button>
-
-    <textarea id="log"></textarea>
+-->
+    
 
     <script>
         var canvas_node = document.getElementById('game_canvas');
