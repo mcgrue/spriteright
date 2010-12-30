@@ -1,50 +1,8 @@
-var $$ = null;
+function Screen() {
 
-function x_from_flat( flatval, yMax ) {
-	return flatval%yMax;
 }
 
-function y_from_flat( flatval, yMax ) {
-	flatval = flatval - x_from_flat( flatval,yMax );
-	return flatval/yMax;
-}
-
-function flat_from_xy( x, y, yMax ) {
-    return y*yMax + x;
-}
-
-function Engine( canvas_node, width, height, scale, tileset_node, map_location ) {
-    this.canvas = canvas_node;
-    this.context = this.canvas.getContext('2d');
-    this.width = width;
-    this.height = height;
-    this.scale = scale;
-
-    this.camera = {x:805, y:805};
-
-    //set the proportions
-    this.canvas.style.width = this.width * this.scale;
-    this.canvas.style.height = this.height * this.scale;
-    
-    this.canvas.width = this.width * this.scale;
-    this.canvas.height = this.height * this.scale;
- 
-    this.vsp = {};
-    this.vsp.image = tileset_node;
-    this.vsp.tile = {w:16, h:16};
-
-    $$ = this;
-
-    $.getJSON(
-        map_location,
-        function(data) {
-            $$.map = data;
-            $$.draw_screen();
-        }
-    );
-}
-
-Engine.prototype = {
+Screen.prototype = {
     tick: function() {
         debugger;
     },
