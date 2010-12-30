@@ -2,8 +2,11 @@
 <html>
 <head>
     <title>JS VERGE</title>
+
+    <script src="engine/McGrender.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="engine/jquery/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
 
     <style>
         div.game_container {
@@ -58,10 +61,14 @@
 
         $('#move').click(
             function() {
-                $$.camera.x = parseInt( $('#x').val() );
-                $$.camera.y = parseInt( $('#y').val() );
-                $$.clear_screen();                
-                $$.draw_screen();                
+                if( $('#x').val() === 'stop' ) {
+                    $$.kill_intervals();
+                } else {
+                    $$.camera.x = parseInt( $('#x').val() );
+                    $$.camera.y = parseInt( $('#y').val() );
+                    $$.clear_screen();                
+                    $$.draw_screen();
+                }
             }
         );
     </script>

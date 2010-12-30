@@ -33,6 +33,19 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
     this.vsp.image = tileset_node;
     this.vsp.tile = {w:16, h:16};
 
+    this.targetFPS = 60;
+    this.rendering = false;
+    this._prevStart = false;
+    this._timeStart = false;
+    this._timeEnd = false;
+
+    this._intervals = [];
+
+    this.renderstack = [];
+    this.renderstack.push(
+        new McGrender('main')
+    );
+
     $$ = this;
 
     $.getJSON(
@@ -105,11 +118,60 @@ Engine.prototype = {
         var after = d.getTime();
 
         $$.log( 'fps: ' + Math.floor(1000/(after-before)) );
+
+        this.setRenderInterval(30);
+        this.render();
     },
 
     log: function(msg) {
         old = $('#log').val();
+
+        if( old.length > 10000 ) {
+            old = '';
+        }
+
         $('#log').val( msg + "\n" + old );
+    },
+    
+    setRenderInterval : function(targetFps) {
+        this.targetFPS = targetFps;
+        this.intervalMS = parseInt(1000/this.targetFPS);
+        
+        var i = window.setInterval($$.render, this.intervalMS);
+        this._intervals.push(i);
+    },
+    
+    kill_intervals : function() {
+        for( var i = 0; i<this._intervals.length; i++ ) {
+            window.clearInterval(this._intervals[i]);
+        }
+
+        this._intervals = [];
+
+        alert('kill?');
+    },
+
+    render : function() {
+        if( this.rendering ) {
+            return;
+        }
+
+        $$.rendering = true;
+        var d = new Date();
+        $$._timeStart = d.getTime();
+        
+        for( var i = 0; i<$$.renderstack.length; i++ ) {
+            $$.renderstack[i].render();
+        }
+
+        var d = new Date();
+        $$._timeEnd = d.getTime();
+        $$.rendering = false;
+        $$._fps = Math.floor(1000/($$._timeStart-$$._prevStart));
+
+        $$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
+
+        $$._prevStart = $$._timeStart;
     }
 }
 
