@@ -39,7 +39,6 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
         map_location,
         function(data) {
             $$.map = data;
-debugger;
             $$.draw_screen();
         }
     );
@@ -74,25 +73,22 @@ Engine.prototype = {
         var y_orig = Math.floor($$.camera.y / $$.vsp.tile.h);
         var x_width = Math.ceil($$.width / $$.vsp.tile.w);
         var y_width = Math.ceil($$.height / $$.vsp.tile.h);
-
-$$.log( 'drawscreen: ('+x_orig+' through '+(x_orig+x_width)+', '+y_orig+' through '+(y_orig+y_width)+')' )
         
         var t = 0;
-        for( var y=y_orig; y<y_orig+y_width; y++ ) {
-            var base = false;
-
-            for( var x=x_orig; x<x_orig+x_width; x++ ) {
-                if( base === false ) {
-                    var base = flat_from_xy( x, y, $$.map.dimensions.y );
-                    var i = 0;
+        
+        for( var l = 0; l < $$.map.layer_data.length; l++ ) { // very bad, doesn't respect weird render orders.
+            for( var y=y_orig; y<y_orig+y_width; y++ ) {
+                var base = false;
+                for( var x=x_orig; x<x_orig+x_width; x++ ) {
+                    if( base === false ) {
+                        var base = flat_from_xy( x, y, $$.map.dimensions.y );
+                        var i = 0;
+                    }
+    
+                    t = base + i;
+                    this.draw_tile( x,y, $$.map.layer_data[l][t] );
+                    i++;
                 }
-
-                t = base + i;
-                
-//$$.log('('+x+','+y+'): ' + t);
-                this.draw_tile( x,y, $$.map.layer_data[0][t] );
-
-                i++;
             }
         }
     },
