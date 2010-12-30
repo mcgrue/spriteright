@@ -142,27 +142,49 @@ Engine.prototype = {
 updateControls : function() {
     var k = $$.keys;
 
+    var d = new Date();
+    var time = d.getTime();
+    delete d;
+
+    if( !$$._last_hero_move ) {
+        var d = new Date();
+        $$._last_hero_move = time;
+        delete d;
+    }
+
+    var moverate = parseInt((time - $$._last_hero_move) * .15);
+
     if( k.held[k.W] ) {
-        $$.hero.y -= 1;
+        $$.hero.y -= moverate;
     } else if( k.held[k.S] ) {
-        $$.hero.y += 1;
+        $$.hero.y += moverate;
     }
 
     if( k.held[k.A] ) {
-        $$.hero.x -= 1;
+        $$.hero.x -= moverate;
     } else if( k.held[k.D] ) {
-        $$.hero.x += 1;
+        $$.hero.x += moverate;
     }
+
+    var d = new Date();
+    $$._last_hero_move = d.getTime();
+    delete d;
 },
+
+doCameraFollow : function() {
+    $$.camera.x = parseInt((($$.camera.x - $$.screen.width/2) + ($$.hero.x + $$.hero.w/2))/2);
+    $$.camera.y = parseInt((($$.camera.y - $$.screen.height/2) + ($$.hero.y + $$.hero.h/2))/2);
+}, 
 
     render : function() {
         try {
             if( $$.rendering ) {
                 return;
             }
-
+             
 $$.updateControls();
-    
+$$.doCameraFollow();
+             
             $$.rendering = true;
             var d = new Date();
             $$._timeStart = d.getTime();
