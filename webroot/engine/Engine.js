@@ -38,7 +38,7 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location, 
     this.canvas.width = this.screen.width * this.scale;
     this.canvas.height = this.screen.height * this.scale;
  
-    this.targetFPS = 60;
+    this.targetFPS = 30;
     this.rendering = false;
     this._prevStart = false;
     this._timeStart = false;

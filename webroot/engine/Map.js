@@ -2,6 +2,9 @@
 function Map(map, vsp) {
     this.map = map;
     this.vsp = vsp;
+
+
+    this.clouds = document.getElementById('clouds');
 }
 
 Map.prototype = {
@@ -32,7 +35,7 @@ Map.prototype = {
         }
         
         var t = 0;
-        
+    
         for( var l = 0; l < this.map.layer_data.length; l++ ) { // very bad, doesn't respect weird render orders.
             for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 var base = false;
