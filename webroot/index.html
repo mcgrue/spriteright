@@ -2,46 +2,19 @@
 <html>
 <head>
     <title>JS VERGE</title>
-    <script>
-    </script>
+    <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
+    <!-- <script src="engine/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>  -->
 </head>
 <body>
     <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
     
     <div style="background-color: silver; padding: 30px;">
-        <canvas id="game_canvas" width="320" height="240"></canvas>
+        <canvas id="game_canvas" style="width: 30px; height: 40px; background-color: #F0F;"></canvas>
     </div>
 
     <script>
-        var canvas = document.getElementById('game_canvas');
-        if (!canvas.getContext) {
-            alert( 'Your browser does not seem to support html5 canvas. :(' );
-        }
-
-        var ctx = canvas.getContext('2d');
-        var vsp = document.getElementById('tileset');
-        
-        function draw_tile( tx, ty, t ) {
-            tile_x_size = 16;
-            tile_y_size = 16;
-        
-            viewport_offset_x = 0;
-            viewport_offset_y = 0;
-            
-            //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-            ctx.drawImage(vsp,  0, t*tile_y_size, tile_x_size, tile_y_size,
-                                viewport_offset_x+tx*tile_x_size,
-                                viewport_offset_y+ty*tile_y_size,
-                                tile_x_size, tile_y_size);
-        }
-
-        var i = 0;
-        for( var x=0; x<20; x++ ) {
-            for( var y=0; y<15; y++ ) {
-                draw_tile( x,y, i++ );
-            }
-        }
-
+        var canvas_node = document.getElementById('game_canvas');
+        var game = new Engine( canvas_node, 320, 240, 2 );
     </script>
 </body>
 </head>
