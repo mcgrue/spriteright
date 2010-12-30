@@ -3,6 +3,8 @@
 <head>
     <title>JS VERGE</title>
 
+    
+
     <script src="engine/Text.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/MapSprite.js" type="text/javascript" charset="utf-8"></script>    
     <script src="engine/Map.js" type="text/javascript" charset="utf-8"></script>
@@ -11,6 +13,37 @@
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
 
     <script src="engine/jquery/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="engine/soundmanager/soundmanager2-jsmin.js"></script>
+<script>
+soundManager.url = 'engine/soundmanager/swf/';
+soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
+soundManager.debugMode = false;
+// enable HTML5 audio support, if you're feeling adventurous. iPad/iPhone will always get this.
+// soundManager.useHTML5Audio = true;
+
+
+soundManager.onready(function() {
+  if (soundManager.supported()) {
+        soundManager.createSound({
+          id: 'mySound',
+          url: 'game/mp3/Hymn_to_Aurora_(NES_Cover)_www.dwedit.org.mp3',
+          autoLoad: true,
+          autoPlay: true,
+          onload: function() {
+            if($$){
+                $$.log('The sound '+this.sID+' loaded!');
+            }
+          },
+          volume: 20
+        });
+  } else {
+    debugger;
+  }
+});
+
+</script>
 
     <style>
         div.game_container {
