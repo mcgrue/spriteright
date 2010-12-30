@@ -10,11 +10,17 @@
             background-color: silver;
             padding: 30px;
             margin: auto;
+            height: 300px;
         }
 
         #game_canvas {
             image-rendering: optimizespeed;
             background-color: #F0F;
+            float: left;
+        }
+
+        #reference {
+            float: right;
         }
 
         #log {
@@ -33,6 +39,10 @@
 			<h3>This game requires HTML5 and Canvas.</h3>
             <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
 		</canvas>
+
+        <div id="reference">
+            <img src="./game/001_v3/reference-800-800.png"><br/>(reference of what the first map should look lke at camera coords 800,800)
+        </div>
     </div>
 
     <input value="" id="x">
