@@ -4,17 +4,36 @@
     <title>JS VERGE</title>
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
     <!-- <script src="engine/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>  -->
+
+    <style>
+        div.game_container {
+            background-color: silver;
+            padding: 30px;
+            margin: auto;
+        }
+
+        #game_canvas {
+            image-rendering: optimizespeed;
+        }
+
+    </style>
+
 </head>
 <body>
     <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
     
-    <div style="background-color: silver; padding: 30px;">
-        <canvas id="game_canvas" style="width: 30px; height: 40px; background-color: #F0F;"></canvas>
+    <div class="game_container">
+		<canvas id="game_canvas"> 
+			<h3>This game requires HTML5 and Canvas.</h3>
+            <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
+		</canvas>
     </div>
 
     <script>
         var canvas_node = document.getElementById('game_canvas');
-        var game = new Engine( canvas_node, 320, 240, 2 );
+        var tileset_node = document.getElementById('tileset');
+        new Engine( canvas_node, 320, 240, 2, tileset_node );
+        $$.draw_screen();
     </script>
 </body>
 </head>
