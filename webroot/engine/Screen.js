@@ -1,7 +1,0 @@
-function Screen() {
-
-}
-
-Screen.prototype = {
-}
-
