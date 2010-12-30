@@ -23,6 +23,9 @@
         #game_canvas {
             image-rendering: optimizespeed;
             background-color: #F0F;
+        }
+
+        #canvas_container {
             float: left;
         }
 
@@ -43,10 +46,14 @@
     <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
     
     <div class="game_container">
-		<canvas id="game_canvas"> 
-			<h3>This game requires HTML5 and Canvas.</h3>
-            <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
-		</canvas>
+        <div id="canvas_container">
+            <p>WASD for some primitive movement.</p>            
+            <canvas id="game_canvas"> 
+                <h3>This game requires HTML5 and Canvas.</h3>
+                <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
+            </canvas>
+            
+        </div>
 
         <div id="reference">
             <img src="./game/001_v3/reference-800-800.png"><br/>(reference of what the first map should look lke at camera coords 800,800)
