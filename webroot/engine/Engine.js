@@ -58,7 +58,7 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
             $$.renderstack[0].setActiveLayer(0);
             $$.renderstack[0].add($$.map);
 
-            fps = new Text(
+            txt = new Text(
                 10, 10,
                 "Hello.", {
                     beforeRender : function(obj) {
@@ -66,7 +66,17 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
                     }
                 }
             );
-            $$.renderstack[0].add(fps);
+            $$.renderstack[0].add(txt);
+
+            txt = new Text(
+                10, 26,
+                "Hello.", {
+                    beforeRender : function(obj) {
+                        obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+')';
+                    }
+                }
+            );
+            $$.renderstack[0].add(txt);
 
             $$.onComplete();
         }
