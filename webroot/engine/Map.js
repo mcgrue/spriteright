@@ -19,12 +19,11 @@ Map.prototype = {
     },
 
     render: function() {
-
         var i = 0;
         var x_orig = Math.floor($$.camera.x / this.vsp.tile.w);
         var y_orig = Math.floor($$.camera.y / this.vsp.tile.h);
-        var x_width = Math.ceil($$.width / this.vsp.tile.w);
-        var y_width = Math.ceil($$.height / this.vsp.tile.h);
+        var x_width = Math.ceil($$.screen.width / this.vsp.tile.w);
+        var y_width = Math.ceil($$.screen.height / this.vsp.tile.h);
         if( $$.camera.x % this.vsp.tile.w ) {
             x_width += 2;
         }

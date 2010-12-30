@@ -1,5 +1,9 @@
 var $$ = null;
 
+function overlap( x1, y1, w1, h1, x2, y2, w2, h2 ) {
+	return (x1 + w1 > x2 && y1 + h1 > y2 && x1 < x2 + w2 && y1 < y2 + w2);
+}
+
 function x_from_flat( flatval, yMax ) {
 	return flatval%yMax;
 }
@@ -16,18 +20,21 @@ function flat_from_xy( x, y, yMax ) {
 function Engine( canvas_node, width, height, scale, tileset_node, map_location ) {
     this.canvas = canvas_node;
     this.context = this.canvas.getContext('2d');
-    this.width = width;
-    this.height = height;
+
+    this.screen = {
+        width : width,
+        height : height
+    };
+
     this.scale = scale;
 
     this.camera = {x:805, y:805};
 
     //set the proportions
-    this.canvas.style.width = this.width * this.scale;
-    this.canvas.style.height = this.height * this.scale;
-    
-    this.canvas.width = this.width * this.scale;
-    this.canvas.height = this.height * this.scale;
+    this.canvas.style.width = this.screen.width * this.scale;
+    this.canvas.style.height = this.screen.height * this.scale;
+    this.canvas.width = this.screen.width * this.scale;
+    this.canvas.height = this.screen.height * this.scale;
  
     this.targetFPS = 60;
     this.rendering = false;
@@ -47,7 +54,6 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
     $.getJSON(
         map_location,
         function(mapdata) {
-
             vsp = {
                 image: tileset_node,
                 tile: {w:16, h:16}
@@ -78,6 +84,10 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
             );
             $$.renderstack[0].add(txt);
 
+            var node = document.getElementById('hero');
+            var sprite = new MapSprite(850, 850, 16, 32, node);
+            $$.renderstack[0].add(sprite);
+
             $$.onComplete();
         }
     );
@@ -85,20 +95,18 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
 
 Engine.prototype = {
     onComplete : function() {
-        this.setRenderInterval(30);
+        this.setRenderInterval(this.targetFPS);
+
         this.render();
+    },
+
+    isOnScreen: function( x, y, w, h ) {
+        return overlap( x, y, w, h, $$.camera.x, $$.camera.y, $$.screen.width, $$.screen.height );
     },
 
     tick: function() {
         debugger;
     },
-
-/*
-    clear_screen: function() {
-        $$.context.fillStyle = "#0FF";  
-        $$.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    },
-*/
 
     log: function(msg) {
         old = $('#log').val();
@@ -127,31 +135,32 @@ Engine.prototype = {
     },
 
     render : function() {
-try {
-        if( this.rendering ) {
-            return;
+        try {
+            if( this.rendering ) {
+                return;
+            }
+    
+            $$.rendering = true;
+            var d = new Date();
+            $$._timeStart = d.getTime();
+            
+            for( var i = 0; i<$$.renderstack.length; i++ ) {
+                $$.renderstack[i].render();
+            }
+            delete d;
+            var d = new Date();
+            $$._timeEnd = d.getTime();
+            $$.rendering = false;
+            $$._fps = Math.floor(1000/($$._timeStart-$$._prevStart));
+    
+            //$$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
+    
+            $$._prevStart = $$._timeStart;
+            delete d;
+        } catch(e) {
+            $$.killIntervals();
+            throw e;
         }
-
-        $$.rendering = true;
-        var d = new Date();
-        $$._timeStart = d.getTime();
-        
-        for( var i = 0; i<$$.renderstack.length; i++ ) {
-            $$.renderstack[i].render();
-        }
-
-        var d = new Date();
-        $$._timeEnd = d.getTime();
-        $$.rendering = false;
-        $$._fps = Math.floor(1000/($$._timeStart-$$._prevStart));
-
-        //$$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
-
-        $$._prevStart = $$._timeStart;
-} catch(e) {
-    $$.killIntervals();
-    throw e;
-}
     }
 }
 
