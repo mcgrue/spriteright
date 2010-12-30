@@ -49,6 +49,10 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
         new McGrender('main')
     );
 
+    this.keys = new Keys();
+
+this.hero = false;
+
     $$ = this;
 
     $.getJSON(
@@ -87,7 +91,7 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
             var node = document.getElementById('hero');
             var sprite = new MapSprite(850, 850, 16, 32, node);
             $$.renderstack[0].add(sprite);
-
+$$.hero = sprite;
             $$.onComplete();
         }
     );
@@ -134,11 +138,30 @@ Engine.prototype = {
         this._intervals = [];
     },
 
+/// temporary
+updateControls : function() {
+    var k = $$.keys;
+
+    if( k.held[k.W] ) {
+        $$.hero.y -= 1;
+    } else if( k.held[k.S] ) {
+        $$.hero.y += 1;
+    }
+
+    if( k.held[k.A] ) {
+        $$.hero.x -= 1;
+    } else if( k.held[k.D] ) {
+        $$.hero.x += 1;
+    }
+},
+
     render : function() {
         try {
-            if( this.rendering ) {
+            if( $$.rendering ) {
                 return;
             }
+
+$$.updateControls();
     
             $$.rendering = true;
             var d = new Date();
