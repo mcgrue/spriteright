@@ -17,9 +17,11 @@ function flat_from_xy( x, y, yMax ) {
     return y*yMax + x;
 }
 
-function Engine( canvas_node, width, height, scale, tileset_node, map_location ) {
+function Engine( canvas_node, width, height, scale, tileset_node, map_location, soundManager ) {
     this.canvas = canvas_node;
     this.context = this.canvas.getContext('2d');
+
+    this.soundManager = soundManager;
 
     this.screen = {
         width : width,
@@ -153,6 +155,10 @@ updateControls : function() {
     }
 
     var moverate = parseInt((time - $$._last_hero_move) * .15);
+
+    if( k.held[k.M] && $$.soundManager ) {
+        $$.soundManager.stopAll();
+    }
 
     if( k.held[k.W] ) {
         $$.hero.y -= moverate;

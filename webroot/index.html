@@ -80,7 +80,8 @@ soundManager.onready(function() {
     
     <div class="game_container">
         <div id="canvas_container">
-            <p>WASD for some primitive movement.</p>            
+            <p>WASD for some primitive movement.</p>
+            <p style="color: red; font-weight: bold;">press 'M' to MUTE.</p>            
             <canvas id="game_canvas"> 
                 <h3>This game requires HTML5 and Canvas.</h3>
                 <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
@@ -102,7 +103,7 @@ soundManager.onready(function() {
     <script>
         var canvas_node = document.getElementById('game_canvas');
         var tileset_node = document.getElementById('tileset');
-        new Engine( canvas_node, 320, 240, 1, tileset_node, 'game/001_v3/simpletype_overworld.json' );
+        new Engine( canvas_node, 320, 240, 1, tileset_node, 'game/001_v3/simpletype_overworld.json', soundManager );
 
         $('#move').click(
             function() {

@@ -40,9 +40,11 @@ Keys.prototype = {
 		this.release[key] = false;
 	},
 
-	//big list of random keys people might want quick reference to
+	/// http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/Javascript-Char-Codes-Key-Codes.aspx
 	W: 87,
 	S: 83,
     A: 65,	
     D: 68,
+
+    M: 77
 };
