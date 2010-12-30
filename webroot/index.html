@@ -14,6 +14,12 @@
 
         #game_canvas {
             image-rendering: optimizespeed;
+            background-color: #F0F;
+        }
+
+        #log {
+            width: 400px;
+            height: 200px;
         }
 
     </style>
@@ -29,10 +35,25 @@
 		</canvas>
     </div>
 
+    <input value="" id="x">
+    <input value="" id="y">
+    <button id="move">move</button>
+
+    <textarea id="log"></textarea>
+
     <script>
         var canvas_node = document.getElementById('game_canvas');
         var tileset_node = document.getElementById('tileset');
-        new Engine( canvas_node, 320, 240, 2, tileset_node, 'game/001_v3/simpletype_overworld.json' );
+        new Engine( canvas_node, 320, 240, 1, tileset_node, 'game/001_v3/simpletype_overworld.json' );
+
+        $('#move').click(
+            function() {
+                $$.camera.x = parseInt( $('#x').val() );
+                $$.camera.y = parseInt( $('#y').val() );
+                $$.clear_screen();                
+                $$.draw_screen();                
+            }
+        );
     </script>
 </body>
 </head>
