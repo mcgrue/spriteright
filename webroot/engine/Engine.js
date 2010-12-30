@@ -119,7 +119,7 @@ Engine.prototype = {
 
         $$.log( 'fps: ' + Math.floor(1000/(after-before)) );
 
-        this.setRenderInterval(30);
+        this.set_render_interval(30);
         this.render();
     },
 
@@ -133,7 +133,7 @@ Engine.prototype = {
         $('#log').val( msg + "\n" + old );
     },
     
-    setRenderInterval : function(targetFps) {
+    set_render_interval : function(targetFps) {
         this.targetFPS = targetFps;
         this.intervalMS = parseInt(1000/this.targetFPS);
         
@@ -147,8 +147,6 @@ Engine.prototype = {
         }
 
         this._intervals = [];
-
-        alert('kill?');
     },
 
     render : function() {
