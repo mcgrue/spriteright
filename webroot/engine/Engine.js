@@ -9,19 +9,6 @@ function y_from_flat( flatval, yMax ) {
 	return flatval/yMax;
 }
 
-/*
-ymax = 5
-1,1 is 6
-2,1 is 7
-
-y*ymax + x
-
-0  1 2 3 4
-5  6 7 8 9
-10
-*/
-
-
 function flat_from_xy( x, y, yMax ) {
     return y*yMax + x;
 }
@@ -33,7 +20,7 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
     this.height = height;
     this.scale = scale;
 
-    this.camera = {x:300, y:1800};
+    this.camera = {x:800, y:800};
 
     //set the proportions
     this.canvas.style.width = this.width * this.scale;
@@ -52,6 +39,7 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
         map_location,
         function(data) {
             $$.map = data;
+debugger;
             $$.draw_screen();
         }
     );
