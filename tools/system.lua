@@ -72,8 +72,8 @@ function start()
         
         idx = 1
         
-        for x=0, (v3.curmap.w-1), 1 do
-            for y=0, (v3.curmap.h-1), 1 do
+        for y=0, (v3.curmap.h-1), 1 do
+            for x=0, (v3.curmap.w-1), 1 do    
                 data['layer_data'][i][idx] = v3.getTile(x,y,layer)
                 idx = idx + 1
             end
