@@ -52,12 +52,16 @@ Engine.prototype = {
 
     draw_screen: function() {
         var i = 0;
-        for( var x=0; x<20; x++ ) {
-            for( var y=0; y<15; y++ ) {
+        var x_orig = 0;
+        var y_orig = 0;
+        var x_width = 20;
+        var y_width = 15;
+
+        for( var x=x_orig; x<x_orig+x_width; x++ ) {
+            for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 this.draw_tile( x,y, $$.map.layer_data[0][i++] );
             }
         }
-
     }
 }
 
