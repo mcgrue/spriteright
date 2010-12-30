@@ -1,6 +1,6 @@
 var $$ = null;
 
-function Engine( canvas_node, width, height, scale, tileset_node ) {
+function Engine( canvas_node, width, height, scale, tileset_node, map_location ) {
     this.canvas = canvas_node;
     this.context = this.canvas.getContext('2d');
     this.width = width;
@@ -19,6 +19,15 @@ function Engine( canvas_node, width, height, scale, tileset_node ) {
     this.tileset = tileset_node;
 
     $$ = this;
+
+    $.getJSON(
+        map_location,
+        function(data) {
+            $$.map = data;
+            $$.draw_screen();
+        }
+    );
+
 }
 
 Engine.prototype = {
@@ -45,9 +54,10 @@ Engine.prototype = {
         var i = 0;
         for( var x=0; x<20; x++ ) {
             for( var y=0; y<15; y++ ) {
-                this.draw_tile( x,y, i++ );
+                this.draw_tile( x,y, $$.map.layer_data[0][i++] );
             }
         }
+
     }
 }
 

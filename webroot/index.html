@@ -3,7 +3,7 @@
 <head>
     <title>JS VERGE</title>
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
-    <!-- <script src="engine/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>  -->
+    <script src="engine/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
 
     <style>
         div.game_container {
@@ -32,8 +32,7 @@
     <script>
         var canvas_node = document.getElementById('game_canvas');
         var tileset_node = document.getElementById('tileset');
-        new Engine( canvas_node, 320, 240, 2, tileset_node );
-        $$.draw_screen();
+        new Engine( canvas_node, 320, 240, 2, tileset_node, 'game/001_v3/simpletype_overworld.json' );
     </script>
 </body>
 </head>
