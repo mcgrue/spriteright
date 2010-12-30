@@ -3,6 +3,8 @@
 <head>
     <title>JS VERGE</title>
 
+    <script src="engine/Text.js" type="text/javascript" charset="utf-8"></script>
+    <script src="engine/Map.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/McGrender.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
 
@@ -62,12 +64,10 @@
         $('#move').click(
             function() {
                 if( $('#x').val() === 'stop' ) {
-                    $$.kill_intervals();
+                    $$.killIntervals();
                 } else {
                     $$.camera.x = parseInt( $('#x').val() );
                     $$.camera.y = parseInt( $('#y').val() );
-                    $$.clear_screen();                
-                    $$.draw_screen();
                 }
             }
         );

@@ -29,10 +29,6 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
     this.canvas.width = this.width * this.scale;
     this.canvas.height = this.height * this.scale;
  
-    this.vsp = {};
-    this.vsp.image = tileset_node;
-    this.vsp.tile = {w:16, h:16};
-
     this.targetFPS = 60;
     this.rendering = false;
     this._prevStart = false;
@@ -50,78 +46,49 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location )
 
     $.getJSON(
         map_location,
-        function(data) {
-            $$.map = data;
-            $$.draw_screen();
+        function(mapdata) {
+
+            vsp = {
+                image: tileset_node,
+                tile: {w:16, h:16}
+            };
+
+            $$.map = new Map(mapdata, vsp);
+            $$.renderstack[0].addLayer('map', true);
+            $$.renderstack[0].setActiveLayer(0);
+            $$.renderstack[0].add($$.map);
+
+            fps = new Text(
+                10, 10,
+                "Hello.", {
+                    beforeRender : function(obj) {
+                        obj.text = 'FPS: ' + $$._fps;
+                    }
+                }
+            );
+            $$.renderstack[0].add(fps);
+
+            $$.onComplete();
         }
     );
 }
 
 Engine.prototype = {
+    onComplete : function() {
+        this.setRenderInterval(30);
+        this.render();
+    },
+
     tick: function() {
         debugger;
     },
 
-    draw_tile: function( tx, ty, t ) {
-            
-        //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-        this.context.drawImage(
-            $$.vsp.image,  0, t*$$.vsp.tile.h, $$.vsp.tile.w, $$.vsp.tile.h,
-            
-            (tx*$$.vsp.tile.w - $$.camera.x)*$$.scale,
-            (ty*$$.vsp.tile.h - $$.camera.y)*$$.scale,
-
-            $$.vsp.tile.w*$$.scale, $$.vsp.tile.h*$$.scale
-        );
-    },
-    
+/*
     clear_screen: function() {
         $$.context.fillStyle = "#0FF";  
         $$.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     },
-
-    draw_screen: function() {
-        var i = 0;
-        var x_orig = Math.floor($$.camera.x / $$.vsp.tile.w);
-        var y_orig = Math.floor($$.camera.y / $$.vsp.tile.h);
-        var x_width = Math.ceil($$.width / $$.vsp.tile.w);
-        var y_width = Math.ceil($$.height / $$.vsp.tile.h);
-        if( $$.camera.x % $$.vsp.tile.w ) {
-            x_width += 2;
-        }
-        if( $$.camera.y % $$.vsp.tile.h ) {
-            y_width += 2;
-        }
-        
-        var t = 0;
-
-        var d = new Date();
-        var before = d.getTime();
-        
-        for( var l = 0; l < $$.map.layer_data.length; l++ ) { // very bad, doesn't respect weird render orders.
-            for( var y=y_orig; y<y_orig+y_width; y++ ) {
-                var base = false;
-                for( var x=x_orig; x<x_orig+x_width; x++ ) {
-                    if( base === false ) {
-                        var base = flat_from_xy( x, y, $$.map.dimensions.y );
-                        var i = 0;
-                    }
-    
-                    t = base + i;
-                    this.draw_tile( x,y, $$.map.layer_data[l][t] );
-                    i++;
-                }
-            }
-        }
-
-        var d = new Date();
-        var after = d.getTime();
-
-        $$.log( 'fps: ' + Math.floor(1000/(after-before)) );
-
-        this.set_render_interval(30);
-        this.render();
-    },
+*/
 
     log: function(msg) {
         old = $('#log').val();
@@ -133,7 +100,7 @@ Engine.prototype = {
         $('#log').val( msg + "\n" + old );
     },
     
-    set_render_interval : function(targetFps) {
+    setRenderInterval : function(targetFps) {
         this.targetFPS = targetFps;
         this.intervalMS = parseInt(1000/this.targetFPS);
         
@@ -141,7 +108,7 @@ Engine.prototype = {
         this._intervals.push(i);
     },
     
-    kill_intervals : function() {
+    killIntervals : function() {
         for( var i = 0; i<this._intervals.length; i++ ) {
             window.clearInterval(this._intervals[i]);
         }
@@ -150,6 +117,7 @@ Engine.prototype = {
     },
 
     render : function() {
+try {
         if( this.rendering ) {
             return;
         }
@@ -167,9 +135,13 @@ Engine.prototype = {
         $$.rendering = false;
         $$._fps = Math.floor(1000/($$._timeStart-$$._prevStart));
 
-        $$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
+        //$$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
 
         $$._prevStart = $$._timeStart;
+} catch(e) {
+    $$.killIntervals();
+    throw e;
+}
     }
 }
 
