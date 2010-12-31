@@ -57,6 +57,8 @@ this.hero = false;
 
     $$ = this;
 
+/// This is sorta game-specific code
+/// needs to be pulled out of the engine.
     $.getJSON(
         map_location,
         function(mapdata) {
@@ -91,8 +93,9 @@ this.hero = false;
             $$.renderstack[0].add(txt);
 
             var node = document.getElementById('hero');
-            var sprite = new MapSprite(850, 850, 16, 32, node);
+            var sprite = new MapImage(850, 850, 16, 32, node);
             $$.renderstack[0].add(sprite);
+
 $$.hero = sprite;
             $$.onComplete();
         }
@@ -141,6 +144,8 @@ Engine.prototype = {
     },
 
 /// temporary
+/// what should be done with this?
+/// this is kinda game-specific code, yeah?
 updateControls : function() {
     var k = $$.keys;
 
@@ -177,10 +182,16 @@ updateControls : function() {
     delete d;
 },
 
+/// abstract this from hero-following.
+/// it should be able to follow anything with a (x,y,w,h)
 doCameraFollow : function() {
     $$.camera.x = parseInt((($$.camera.x - $$.screen.width/2) + ($$.hero.x + $$.hero.w/2))/2);
     $$.camera.y = parseInt((($$.camera.y - $$.screen.height/2) + ($$.hero.y + $$.hero.h/2))/2);
-}, 
+},
+
+    getTickTime : function() {
+        return $$._timeStart;
+    },
 
     render : function() {
         try {
