@@ -1,0 +1,37 @@
+{
+    image: 'battle_darin.png',
+
+    dimensions: {
+        w: 32,
+        h: 32
+    },
+
+    sheet {
+        cols: 9,
+        rows: 11,
+        padding: 1,
+        top_padding: 1,
+        left_padding: 1
+    },
+
+    hotspot: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0,
+    },
+
+    default_wait : 10,
+
+    animations : {
+        idle_normal : [[0,15,'F'],[1,15,'F'],[0,0,'GOTO']],
+        idle_weak   : [[2,15,'F'],[3,15,'F'],[0,0,'GOTO']],
+        attack      : [[54,5,'F'],[55,5,'F'],[56,5,'F'],[57,15,'F']],
+        hit         : [[52,22,'F'],[53,23,'F']],
+        death       : [[4,100,'F'],[0,0,'GOTO']],
+        use_item    : [[92,8,'F'],[93,20,'F'],[94,10,'F'],[95,10,'F']],
+        dance       : [[97,22,'F'],[96,22,'F'],[0,0,'GOTO']],
+        charging    : [[40,15,'F'],[41,15,'F'],[0,0,'GOTO']],
+        casting     : [[90,20,'F'],[91,20,'F']]
+    }
+}
