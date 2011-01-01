@@ -68,6 +68,8 @@ Map.prototype = {
         }
 
         if( $$._debug_showthings ) {
+            $$.context.globalCompositeOperation = 'lighter';
+
             for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 
                 var base = false;
@@ -85,6 +87,8 @@ Map.prototype = {
                     i++;   
                 }
             }
+
+            $$.context.globalCompositeOperation = 'source-over';
         }
     },
 
