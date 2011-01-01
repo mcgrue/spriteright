@@ -56,6 +56,13 @@ function flat_from_xy( x, y, yMax ) {
     return y*yMax + x;
 }
 
+/// an entity has coordinates, dimensions, and a bounding box.
+/// return true if you can make that move.
+/// return false if you'd go bump in the night.
+function i_want_to_go_to_there( entity, dx, dy ) {
+    return true;
+}
+
 function Engine( canvas_node, width, height, scale, tileset_node, map_location, soundManager ) {
     
     this._debug_showthings = true;
@@ -245,37 +252,39 @@ updateControls : function() {
 
     var moved = false;
 
+    var dx = 0;
+    var dy = 0;
+
     if( k.held[k.W] ) {
-        $$.hero.y -= moverate;
-        $$.hero.facing = 'up';
-        moved = true;
+        dy -= moverate;
     } else if( k.held[k.S] ) {
-        $$.hero.y += moverate;
-        $$.hero.facing = 'down';
-        moved = true;
+        dy += moverate;
     }
 
     if( k.held[k.A] ) {
-        $$.hero.x -= moverate;
-        $$.hero.facing = 'left';
-        moved = true;
+        dx -= moverate;
     } else if( k.held[k.D] ) {
-        $$.hero.x += moverate;
-        $$.hero.facing = 'right';
+        dx += moverate;
+    }
+
+    if( i_want_to_go_to_there( $$.hero, dx, dy ) ) {
+        if(dx<0) {
+            $$.hero.facing = 'left';
+        } else if(dx>0) {
+            $$.hero.facing = 'right';
+        } else if(dy<0) {
+            $$.hero.facing = 'up';
+        } else if(dy>0) {
+            $$.hero.facing = 'down';
+        }
+
+        $$.hero.x += dx;
+        $$.hero.y += dy;
+
         moved = true;
     }
 
     ///cheapass bounds.
-    if( parseInt($$.hero.x/16) != $$.hero.last_tx || parseInt($$.hero.y/16) != $$.hero.last_ty ) {
-        if( $$.map.isObstructed(parseInt($$.hero.x/16), parseInt($$.hero.y/16)) ) {
-            $$.hero.x = $$.hero.last_tx * 16;
-            $$.hero.y = $$.hero.last_ty * 16;
-        } else {
-            $$.hero.last_tx = parseInt($$.hero.x/16);
-            $$.hero.last_ty = parseInt($$.hero.y/16);
-        }
-    }
-
     if( moved ) {
         $$.hero.setState( $$.hero.facing+'_walk' );
     } else {
