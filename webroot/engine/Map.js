@@ -8,6 +8,18 @@ function Map(map, vsp) {
 }
 
 Map.prototype = {
+    draw_rect: function( tx, ty, color ) {
+        $$.context.fillStyle = color;
+
+        var x = (tx*this.vsp.tile.w - $$.camera.x)*$$.scale;
+        var y = (ty*this.vsp.tile.h - $$.camera.y)*$$.scale;
+
+        $$.context.fillRect(
+            x, y,
+            (this.vsp.tile.w*$$.scale), (this.vsp.tile.h*$$.scale)
+        );
+    },
+
     draw_tile: function( tx, ty, t ) {
             
         //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
@@ -36,7 +48,8 @@ Map.prototype = {
         
         var t = 0;
     
-        for( var l = 0; l < this.map.layer_data.length; l++ ) { // very bad, doesn't respect weird render orders.
+        // very bad, doesn't respect weird render orders.
+        for( var l = 0; l < this.map.layer_data.length; l++ ) { 
             for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 var base = false;
                 for( var x=x_orig; x<x_orig+x_width; x++ ) {
@@ -48,6 +61,26 @@ Map.prototype = {
                     t = base + i;
                     this.draw_tile( x,y, this.map.layer_data[l][t] );
                     i++;
+                }
+            }
+        }
+
+        if( $$._debug_showthings ) {
+            for( var y=y_orig; y<y_orig+y_width; y++ ) {
+                
+                var base = false;
+                
+                for( var x=x_orig; x<x_orig+x_width; x++ ) {
+                    if( base === false ) {
+                        var base = flat_from_xy( x, y, this.map.dimensions.y );
+                        var i = 0;
+                    }
+    
+                    t = base + i;
+                    if( this.map.obs_data[t] ) {
+                        this.draw_rect( x,y, '#FF0000' );
+                    }
+                    i++;   
                 }
             }
         }

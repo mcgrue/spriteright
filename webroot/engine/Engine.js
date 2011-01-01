@@ -58,10 +58,7 @@ function flat_from_xy( x, y, yMax ) {
 
 function Engine( canvas_node, width, height, scale, tileset_node, map_location, soundManager ) {
     
-
-//    var d = new Date();
-//    this.tickTime = d.getTime();
-//    delete d;
+    this._debug_showthings = true;
 
     this.canvas = canvas_node;
     this.context = this.canvas.getContext('2d');
@@ -144,7 +141,12 @@ this.hero = false;
                 10, 42,
                 "Hello.", {
                     beforeRender : function(obj) {
-                        obj.text = 'Sys time: ('+$$.tickTime+')';
+                        if($$._debug_showthings) {
+                            obj.text = '[debug mode, obs showing]';
+                        } else {
+                            obj.text = '';
+                        }
+                        
                     }
                 }
             );
@@ -227,6 +229,11 @@ updateControls : function() {
 
     if( k.held[k.M] && $$.soundManager ) {
         $$.soundManager.stopAll();
+    }
+
+    if( k.held[k.O] ) {
+        k.held[k.O] = false;
+        $$._debug_showthings = !$$._debug_showthings;
     }
 
     if( !$$.hero ) {
