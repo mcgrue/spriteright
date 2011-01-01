@@ -112,11 +112,11 @@ MapAnimation.prototype = {
         if( !this.animation_state ) {
             throw "Animation tried to render without state.";
         }
-debugger;
+
         if( this.forceFrame ) {
             var f = this.forceFrame;
         } else {
-            if( $$.tickTime <= this.next_frame_time ) {
+            if( $$.tickTime >= this.next_frame_time ) {
                 this.processAnimation();
             }
             var f = this.cur_frame;
