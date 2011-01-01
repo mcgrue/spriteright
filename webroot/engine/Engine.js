@@ -103,6 +103,8 @@ this.hero = false;
 
     $$ = this;
 
+    $$.tickTime = get_time(); //starting time.
+
 /// This is sorta game-specific code
 /// needs to be pulled out of the engine.
     $.getJSON(
@@ -137,7 +139,17 @@ this.hero = false;
                 }
             );
             $$.renderstack[0].add(txt);
-             
+
+            txt = new Text(
+                10, 42,
+                "Hello.", {
+                    beforeRender : function(obj) {
+                        obj.text = 'Sys time: ('+$$.tickTime+')';
+                    }
+                }
+            );
+            $$.renderstack[0].add(txt);
+
             var data = get_sync_json('./game/001_v3/darin.json.chr');
             var node = document.getElementById('hero');
 //var sprite = new MapAnimation(850, 850, node, data);
