@@ -222,6 +222,9 @@ updateControls : function() {
         var d = new Date();
         $$._last_hero_move = time;
         $$.hero.facing = 'down';
+        $$.hero.last_tx = parseInt($$.hero.x / 16);
+        $$.hero.last_ty = parseInt($$.hero.y / 16);
+
         delete d;
     }
 
@@ -262,6 +265,17 @@ updateControls : function() {
         moved = true;
     }
 
+    ///cheapass bounds.
+    if( $$.hero.x/16 != parseInt($$.hero.last_tx) || parseInt($$.hero.y/16) != $$.hero.last_ty ) {
+        if( $$.map.isObstructed($$.hero.x/16, $$.hero.y/16) ) {
+            $$.hero.x = $$.hero.last_tx * 16;
+            $$.hero.y = $$.hero.last_ty * 16;
+        } else {
+            $$.hero.last_tx = parseInt($$.hero.x/16);
+            $$.hero.last_ty = parseInt($$.hero.y/16);
+        }
+    }
+
     if( moved ) {
         $$.hero.setState( $$.hero.facing+'_walk' );
     } else {
@@ -300,6 +314,11 @@ $$.doCameraFollow();
             for( var i = 0; i<$$.renderstack.length; i++ ) {
                 $$.renderstack[i].render();
             }
+
+if($$._debug_showthings) {
+    $$.map.draw_rect($$.hero.last_tx, $$.hero.last_ty, '#FFFF00');
+}
+
             delete d;
             var d = new Date();
             $$._timeEnd = d.getTime();

@@ -8,6 +8,8 @@ function Map(map, vsp) {
 }
 
 Map.prototype = {
+    
+
     draw_rect: function( tx, ty, color ) {
         $$.context.fillStyle = color;
 
@@ -85,5 +87,9 @@ Map.prototype = {
             }
         }
     },
+
+    isObstructed: function(x,y) {
+        return this.map.obs_data[flat_from_xy( x, y, this.map.dimensions.y )];
+    }
 }
 
