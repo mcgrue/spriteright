@@ -113,8 +113,6 @@ MapAnimation.prototype = {
             throw "Animation tried to render without state.";
         }
 
-debugger;
-
         if( this.forceFrame ) {
             var f = this.forceFrame;
         } else {
