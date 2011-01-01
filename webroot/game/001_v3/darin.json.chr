@@ -21,7 +21,7 @@
         h: 16,
     },
 
-    default_wait : 10,
+    default_wait : 100,
 
     animations : {
         down_idle   : [0],
