@@ -266,8 +266,8 @@ updateControls : function() {
     }
 
     ///cheapass bounds.
-    if( $$.hero.x/16 != parseInt($$.hero.last_tx) || parseInt($$.hero.y/16) != $$.hero.last_ty ) {
-        if( $$.map.isObstructed($$.hero.x/16, $$.hero.y/16) ) {
+    if( parseInt($$.hero.x/16) != $$.hero.last_tx || parseInt($$.hero.y/16) != $$.hero.last_ty ) {
+        if( $$.map.isObstructed(parseInt($$.hero.x/16), parseInt($$.hero.y/16)) ) {
             $$.hero.x = $$.hero.last_tx * 16;
             $$.hero.y = $$.hero.last_ty * 16;
         } else {
