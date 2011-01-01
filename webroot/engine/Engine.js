@@ -219,6 +219,7 @@ updateControls : function() {
     if( !$$._last_hero_move ) {
         var d = new Date();
         $$._last_hero_move = time;
+        $$.hero.facing = 'down';
         delete d;
     }
 
@@ -232,24 +233,32 @@ updateControls : function() {
         return;
     }
 
+    var moved = false;
+
     if( k.held[k.W] ) {
         $$.hero.y -= moverate;
-        $$.hero.facing = 'UP';
-        $$.hero.setState('up_walk');
+        $$.hero.facing = 'up';
+        moved = true;
     } else if( k.held[k.S] ) {
         $$.hero.y += moverate;
-        $$.hero.facing = 'DOWN';
-        $$.hero.setState('down_walk');
+        $$.hero.facing = 'down';
+        moved = true;
     }
 
     if( k.held[k.A] ) {
         $$.hero.x -= moverate;
-        $$.hero.facing = 'LEFT';
-        $$.hero.setState('left_walk');
+        $$.hero.facing = 'left';
+        moved = true;
     } else if( k.held[k.D] ) {
         $$.hero.x += moverate;
-        $$.hero.facing = 'RIGHT';
-        $$.hero.setState('right_walk');
+        $$.hero.facing = 'right';
+        moved = true;
+    }
+
+    if( moved ) {
+        $$.hero.setState( $$.hero.facing+'_walk' );
+    } else {
+        $$.hero.setState( $$.hero.facing+'_idle' );
     }
 
     var d = new Date();
