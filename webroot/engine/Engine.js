@@ -103,8 +103,6 @@ this.hero = false;
 
     $$ = this;
 
-    $$.tickTime = get_time();
-
 /// This is sorta game-specific code
 /// needs to be pulled out of the engine.
     $.getJSON(
@@ -142,11 +140,11 @@ this.hero = false;
              
             var data = get_sync_json('./game/001_v3/darin.json.chr');
             var node = document.getElementById('hero');
-            var sprite = new MapAnimation(850, 850, node, data);
-//var sprite = new MapImage(850, 850, 17, 33, node);
+//var sprite = new MapAnimation(850, 850, node, data);
+var sprite = new MapImage(850, 850, 17, 33, node);
             $$.renderstack[0].add(sprite);
             $$.hero = sprite;
-            $$.hero.setState('down_walk');
+//$$.hero.setState('down_walk');
          
             $$.onComplete();
         }
@@ -279,4 +277,3 @@ $$.doCameraFollow();
         }
     }
 }
-
