@@ -4,7 +4,8 @@
     <title>JS VERGE</title>
 
     <script src="engine/Text.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/MapImage.js" type="text/javascript" charset="utf-8"></script>    
+    <script src="engine/MapImage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="engine/MapAnimation.js" type="text/javascript" charset="utf-8"></script>    
     <script src="engine/Map.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/McGrender.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/Keys.js" type="text/javascript" charset="utf-8"></script>
@@ -14,6 +15,7 @@
 
 <script src="engine/soundmanager/soundmanager2-jsmin.js"></script>
 <script>
+
 soundManager.url = 'engine/soundmanager/swf/';
 soundManager.flashVersion = 9; // optional: shiny features (default = 8)
 soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
@@ -22,6 +24,9 @@ soundManager.debugMode = false;
 // soundManager.useHTML5Audio = true;
 
 soundManager.onready(function() {
+
+  //disable sound for now.
+  return;
   if (soundManager.supported()) {
         soundManager.createSound({
           id: 'mySound',
@@ -100,6 +105,7 @@ soundManager.onready(function() {
     <script>
         var canvas_node = document.getElementById('game_canvas');
         var tileset_node = document.getElementById('tileset');
+
         new Engine( canvas_node, 320, 240, 1, tileset_node, 'game/001_v3/simpletype_overworld.json', soundManager );
 
         $('#move').click(

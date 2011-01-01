@@ -6,6 +6,14 @@
         h: 32
     },
 
+    sheet: {
+        cols: 5,
+        rows: 6,
+        padding: 1,
+        top_padding: 1,
+        left_padding: 1
+    },
+
     hotspot: {
         x: 0,
         y: 16,

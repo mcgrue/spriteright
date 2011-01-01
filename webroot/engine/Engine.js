@@ -1,5 +1,37 @@
 var $$ = null;
 
+function get_sprite_coordinates( frame, dim, sheet ) {
+
+    if(!sheet.padding) {
+        sheet.padding = 0;
+    }
+
+    if( !sheet.top_padding ) {
+        sheet.top_padding = 0;    
+    }
+
+    if( !sheet.left_padding ) {
+        sheet.left_padding = 0;    
+    }
+
+    var x = x_from_flat( frame, sheet.cols ) * (dim.w + sheet.padding) + sheet.left_padding;;
+    var y = y_from_flat( frame, sheet.cols ) * (dim.h + sheet.padding) + sheet.top_padding;
+
+    return {x:x,y:y};
+}
+
+function get_sync_json(url) {
+    var hax = false;
+    $.ajax({
+      url: './game/001_v3/darin.json.chr',
+      async : false,
+      success: function(data) {
+        eval( 'hax = ' + data );
+      }
+    });
+    return hax;
+}
+
 function overlap( x1, y1, w1, h1, x2, y2, w2, h2 ) {
 	return (x1 + w1 > x2 && y1 + h1 > y2 && x1 < x2 + w2 && y1 < y2 + w2);
 }
@@ -18,6 +50,12 @@ function flat_from_xy( x, y, yMax ) {
 }
 
 function Engine( canvas_node, width, height, scale, tileset_node, map_location, soundManager ) {
+    
+
+//    var d = new Date();
+//    this.tickTime = d.getTime();
+//    delete d;
+
     this.canvas = canvas_node;
     this.context = this.canvas.getContext('2d');
 
@@ -40,8 +78,9 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location, 
  
     this.targetFPS = 30;
     this.rendering = false;
+    
+    this.tickTime = false;
     this._prevStart = false;
-    this._timeStart = false;
     this._timeEnd = false;
 
     this._intervals = [];
@@ -91,12 +130,14 @@ this.hero = false;
                 }
             );
             $$.renderstack[0].add(txt);
-
+             
+            var data = get_sync_json('./game/001_v3/darin.json.chr');
             var node = document.getElementById('hero');
-            var sprite = new MapImage(850, 850, 16, 32, node);
+            var sprite = new MapAnimation(850, 850, node, data);
             $$.renderstack[0].add(sprite);
-
-$$.hero = sprite;
+            $$.hero = sprite;
+            //$$.hero.setState('down_walk');
+         
             $$.onComplete();
         }
     );
@@ -147,6 +188,7 @@ Engine.prototype = {
 /// what should be done with this?
 /// this is kinda game-specific code, yeah?
 updateControls : function() {
+
     var k = $$.keys;
 
     var d = new Date();
@@ -163,6 +205,10 @@ updateControls : function() {
 
     if( k.held[k.M] && $$.soundManager ) {
         $$.soundManager.stopAll();
+    }
+
+    if( !$$.hero ) {
+        return;
     }
 
     if( k.held[k.W] ) {
@@ -185,13 +231,13 @@ updateControls : function() {
 /// abstract this from hero-following.
 /// it should be able to follow anything with a (x,y,w,h)
 doCameraFollow : function() {
+    if( !$$.hero ) {
+        return;
+    }
+
     $$.camera.x = parseInt((($$.camera.x - $$.screen.width/2) + ($$.hero.x + $$.hero.w/2))/2);
     $$.camera.y = parseInt((($$.camera.y - $$.screen.height/2) + ($$.hero.y + $$.hero.h/2))/2);
 },
-
-    getTickTime : function() {
-        return $$._timeStart;
-    },
 
     render : function() {
         try {
@@ -204,7 +250,7 @@ $$.doCameraFollow();
              
             $$.rendering = true;
             var d = new Date();
-            $$._timeStart = d.getTime();
+            $$.tickTime = d.getTime();
             
             for( var i = 0; i<$$.renderstack.length; i++ ) {
                 $$.renderstack[i].render();
@@ -213,11 +259,9 @@ $$.doCameraFollow();
             var d = new Date();
             $$._timeEnd = d.getTime();
             $$.rendering = false;
-            $$._fps = Math.floor(1000/($$._timeStart-$$._prevStart));
-    
-            //$$.log( 'render finished at ' + $$._timeEnd + '.  FPS: ' + $$._fps );
-    
-            $$._prevStart = $$._timeStart;
+            $$._fps = Math.floor(1000/($$.tickTime-$$._prevStart));
+        
+            $$._prevStart = $$.tickTime;
             delete d;
         } catch(e) {
             $$.killIntervals();
