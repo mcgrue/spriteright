@@ -307,14 +307,22 @@ this.hero = false;
                 10, 180,
                 300, 50, 
                 function() {
+                    if( !this.img ) {
+                        this.img = document.getElementById('speech');
+                    }
+
                     draw_menu_box(this);
                     $$.context.fillStyle    = 'white';
                     $$.context.font         = 'bold 16px Arial';
                     $$.context.textBaseline = 'top';
                     $$.context.fillText( 'Who are you and why have you come', this.x+8, this.y+5);
                     $$.context.fillText( 'to this land of wonder?', this.x+8, this.y+26);
-                    //$$.context.fillText( 'LOL', this.x+5, this.y+25);
-                    //$$.context.fillText( 'BUTTS', this.x+5, this.y+35);
+
+                    $$.context.drawImage(
+                        this.img,  0, 32, 32, 32,
+                        this.x, this.y - 34,
+                        32,32
+                    );
                 }
             );
 
