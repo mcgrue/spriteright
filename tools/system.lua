@@ -27,6 +27,12 @@ end
 
 function start()
 
+--[[    c = v3.EntitySpawn(0, 0, 'res/chrs/darin.chr')
+    v3.setPlayer(c)
+    return
+end
+function ignore()
+]]
     v3.cameratracking = 0
     v3.xwin = 800
     v3.ywin = 800
@@ -83,15 +89,28 @@ function start()
         end
     end
 
+
+    s = ''
+    for y=0, 14, 1 do
+        for x=0, 20, 1 do
+            s = s .. v3.getObs(x,y) .. ',' 
+        end
+        s = s .. '\n'
+    end
+
+    -- v3.exit(s)
+
+
+
     idx = 1
     for y=0, (v3.curmap.h-1), 1 do
         for x=0, (v3.curmap.w-1), 1 do    
             data['obs_data'][idx] = v3.getObs(x,y)
 
             z = v3.getZone(x,y)
-            if z > 0 then
-                data['zone_data'][idx] = z 
-            end
+--            if z ~= null and z > 0 then
+--                data['zone_data'][idx] = z 
+--            end
 
             idx = idx + 1
         end
@@ -110,14 +129,6 @@ function start()
             delay = v3.zone[i-1].delay
         }
     end
-
---[[
-    for y=0, (v3.curmap.h-1), 1 do
-        for x=0, (v3.curmap.w-1), 1 do
-
-        end
-    end
-]]
 
     --- output the json map.
     outfile = v3.curmap.name .. '.json'
