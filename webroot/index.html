@@ -26,8 +26,8 @@ soundManager.debugMode = false;
 
 soundManager.onready(function() {
 
-  //disable sound for now.
-  return;
+  if( window.location.href == 'http://localhost/js-verge/' ) return; //I don't want to hear it every time I debug...
+  
   if (soundManager.supported()) {
         soundManager.createSound({
           id: 'mySound',
@@ -55,7 +55,6 @@ soundManager.onready(function() {
 
         div.game_container {
             padding: 30px;
-            padding-top: 0px;
             height: 300px;
         }
 
@@ -77,8 +76,13 @@ soundManager.onready(function() {
 
 </head>
 <body>
+    <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
+    <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
+    <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />
+
     <h1>HTML5/Canvas game experiment (WIP)</h1>
     <p>by <a href="http://gruniverse.com">Grue</a> of <a href="http://verge-rpg.com">VERGE Games</a>.  <a href="https://github.com/mcgrue/js-verge">Available on github</a>  </p>
+    
     <div class="game_container">
         <div id="canvas_container">
             <p>WASD for some primitive movement.</p>
@@ -133,10 +137,6 @@ soundManager.onready(function() {
 
     
     </script>
-
-    <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
-    <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
-    <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />
 
 </body>
 </head>
