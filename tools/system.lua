@@ -22,10 +22,11 @@ function split(str, pat)
 end
 
 function autoexec()
-    v3.map("maps/simpletype_overworld.map")
+    v3.map("maps/paradise_isle2.map")
 end
 
 function start()
+
     v3.cameratracking = 0
     v3.xwin = 800
     v3.ywin = 800
@@ -61,6 +62,8 @@ function start()
     ---
     data['layers'] = {}
     data['layer_data'] = {}
+    data['obs_data'] = {}
+    data['zone_data'] = {}
 
     for i=1,v3.curmap.layers,1 do
         layer = i-1
@@ -79,7 +82,42 @@ function start()
             end
         end
     end
+
+    idx = 1
+    for y=0, (v3.curmap.h-1), 1 do
+        for x=0, (v3.curmap.w-1), 1 do    
+            data['obs_data'][idx] = v3.getObs(x,y)
+
+            z = v3.getZone(x,y)
+            if z > 0 then
+                data['zone_data'][idx] = z 
+            end
+
+            idx = idx + 1
+        end
+    end
     --- end layers/layerdata
+
+    zones = {}
+
+    for i=1,v3.curmap.zones,1 do
+        zones[i] = {
+            idx = i, 
+            name = v3.zone[i-1].name,
+            event = v3.zone[i-1].event,
+            method = v3.zone[i-1].method,
+            percent = v3.zone[i-1].percent,
+            delay = v3.zone[i-1].delay
+        }
+    end
+
+--[[
+    for y=0, (v3.curmap.h-1), 1 do
+        for x=0, (v3.curmap.w-1), 1 do
+
+        end
+    end
+]]
 
     --- output the json map.
     outfile = v3.curmap.name .. '.json'
