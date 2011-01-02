@@ -3,13 +3,11 @@ function Map(map, vsp) {
     this.map = map;
     this.vsp = vsp;
 
-
-    this.clouds = document.getElementById('clouds');
+//    this.clouds = document.getElementById('clouds');
 }
 
 Map.prototype = {
     
-
     draw_rect: function( tx, ty, color ) {
         $$.context.fillStyle = color;
 

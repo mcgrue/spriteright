@@ -17,4 +17,3 @@ MapImage.prototype = {
         $$.context.drawImage( this.img, this.x-$$.camera.x, this.y-$$.camera.y );
     },
 }
-

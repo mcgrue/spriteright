@@ -60,6 +60,32 @@ function flat_from_xy( x, y, yMax ) {
 /// return true if you can make that move.
 /// return false if you'd go bump in the night.
 function i_want_to_go_to_there( entity, dx, dy ) {
+    if( typeof entity.hotspot == 'undefined' ) {
+        throw "entities without a .hotspot member cannot collide.";
+    }
+
+    var x1 = entity.x + entity.hotspot.x + dx;
+    var y1 = entity.y + entity.hotspot.y + dy;
+
+    var x2 = x1 + entity.hotspot.w;
+    var y2 = y1 + entity.hotspot.h;
+
+
+/// currently only map-based obs and full-tile.  cheap and insufficient.  replace later.
+    var tx = parseInt(x1/16);
+    var ty = parseInt(y1/16);
+
+    if( $$.map.isObstructed(tx, ty) ) {
+        return false;
+    }
+
+    tx = parseInt(x2/16);
+    ty = parseInt(y2/16);
+
+    if( $$.map.isObstructed(tx, ty) ) {
+        return false;
+    }
+
     return true;
 }
 
@@ -229,9 +255,8 @@ updateControls : function() {
         var d = new Date();
         $$._last_hero_move = time;
         $$.hero.facing = 'down';
-        $$.hero.last_tx = parseInt($$.hero.x / 16);
-        $$.hero.last_ty = parseInt($$.hero.y / 16);
-
+        $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
+        $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
         delete d;
     }
 
@@ -267,26 +292,30 @@ updateControls : function() {
         dx += moverate;
     }
 
-    if( i_want_to_go_to_there( $$.hero, dx, dy ) ) {
-        if(dx<0) {
+    if( (dx ||dy) && i_want_to_go_to_there( $$.hero, dx, dy ) ) {
+        if( dx < 0 ) {
             $$.hero.facing = 'left';
-        } else if(dx>0) {
+        } else if( dx > 0 ) {
             $$.hero.facing = 'right';
-        } else if(dy<0) {
+        } else if( dy < 0 ) {
             $$.hero.facing = 'up';
-        } else if(dy>0) {
+        } else if( dy > 0 ) {
             $$.hero.facing = 'down';
         }
-
+         
         $$.hero.x += dx;
         $$.hero.y += dy;
-
+         
         moved = true;
     }
 
     ///cheapass bounds.
     if( moved ) {
         $$.hero.setState( $$.hero.facing+'_walk' );
+
+        $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
+        $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
+
     } else {
         $$.hero.setState( $$.hero.facing+'_idle' );
     }
@@ -323,10 +352,6 @@ $$.doCameraFollow();
             for( var i = 0; i<$$.renderstack.length; i++ ) {
                 $$.renderstack[i].render();
             }
-
-if($$._debug_showthings) {
-    $$.map.draw_rect($$.hero.last_tx, $$.hero.last_ty, '#FFFF00');
-}
 
             delete d;
             var d = new Date();

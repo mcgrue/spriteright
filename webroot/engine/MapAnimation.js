@@ -5,6 +5,7 @@ function MapAnimation(x, y, img, animation_def) {
     this.y = y;
     this.img = img;
     this._def = animation_def;
+    this.hotspot = this._def.hotspot;
 
     this.forceFrame = false;
 
