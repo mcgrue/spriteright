@@ -4,6 +4,8 @@
     <title>JAVASCRIPT VERGE</title>
     <meta name="description" content="A little HTML5 Canvas Experiment involving VERGE and The Sully Chronicles.">
 
+    <link href="reset.css" type="text/css" media="screen" rel="stylesheet" />
+
     <script src="engine/Text.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/MapImage.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/MapAnimation.js" type="text/javascript" charset="utf-8"></script>    
@@ -13,8 +15,7 @@
     <script src="engine/Keys.js" type="text/javascript" charset="utf-8"></script>
     <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
 
-    <script src="engine/jquery/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
-
+<script src="engine/jquery/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="engine/soundmanager/soundmanager2-jsmin.js"></script>
 <script>
 
@@ -68,6 +69,7 @@ soundManager.onready(function() {
 
         #canvas_container {
             margin: auto;
+            margin-top: 30px;
         }
 
         #log {
@@ -80,15 +82,14 @@ soundManager.onready(function() {
 <body>
     <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
     <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
-    <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />
-
-    <h1>HTML5/Canvas game experiment (WIP)</h1>
-    <p>by <a href="http://gruniverse.com">Grue</a> of <a href="http://verge-rpg.com">VERGE Games</a>.  <a href="https://github.com/mcgrue/js-verge">Available on github</a>  </p>
-    
+    <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />    
     <div class="game_container">
+        <h1>HTML5/Canvas game experiment (WIP)</h1>
+        <p>by <a href="http://gruniverse.com">Grue</a> of <a href="http://verge-rpg.com">VERGE Games</a>.  <a href="https://github.com/mcgrue/js-verge">Available on github</a>  </p>
+
         <div id="canvas_container">
             <p>WASD for some primitive movement.</p>
-            <p><span style="color: red; font-weight: bold;">press 'M' to MUTE.</span> Press 'o' to toggle obstructions.</p>            
+            <p><span style="color: red; font-weight: bold;">press 'M' to MUTE.</span> Press 'o' to toggle obstructions.<br /><br /></p>
             <canvas id="game_canvas"> 
                 <h3>This game requires HTML5 and Canvas.</h3>
                 <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
@@ -99,7 +100,7 @@ soundManager.onready(function() {
             <textarea id="log"></textarea>
         </div>
 
-        <p>(This version of Horace Wimp's Aurora.mod from <a href=http://www.dwedit.org/nes/nsf.php>http://www.dwedit.org/nes/nsf.php</a>)</p>
+        <p><br /><br />(This version of Horace Wimp's Aurora.mod from <a href=http://www.dwedit.org/nes/nsf.php>http://www.dwedit.org/nes/nsf.php</a>)</p>
     </div>
 
 <!--
