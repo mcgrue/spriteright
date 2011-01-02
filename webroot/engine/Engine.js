@@ -178,8 +178,7 @@ this.hero = false;
                             obj.text = '[debug mode, obs showing]';
                         } else {
                             obj.text = '';
-                        }
-                        
+                        }   
                     }
                 }
             );
@@ -193,6 +192,27 @@ this.hero = false;
             $$.renderstack[0].add(sprite);
             $$.hero = sprite;
             $$.hero.setState('down_walk');
+
+
+            var menu = new RenderThing(
+                0, 10,
+                50, 50,
+                function() {
+                    $$.context.fillStyle  ='#000099';
+                    $$.context.fillRect(
+                        this.x, this.y,
+                        (this.w*$$.scale), (this.h*$$.scale)
+                    );
+                }
+            );
+            menu.move({
+                x : 260,
+                y : 10,
+                time : 500
+            });
+$$.menubox = menu;
+
+            $$.renderstack[0].add(menu);
          
             $$.onComplete();
         }
@@ -269,6 +289,17 @@ updateControls : function() {
     if( k.held[k.O] ) {
         k.held[k.O] = false;
         $$._debug_showthings = !$$._debug_showthings;
+    }
+
+    if( k.held[k.M] ) {
+        k.held[k.M] = false;
+        $$._menu_direction = !$$._menu_direction;
+
+        $$.menubox.move({
+            x : ($$._menu_direction? -50 : 260) ,
+            y : 10,
+            time : 500
+        });
     }
 
     if( !$$.hero ) {
