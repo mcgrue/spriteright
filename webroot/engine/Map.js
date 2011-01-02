@@ -39,6 +39,15 @@ Map.prototype = {
         var y_orig = Math.floor($$.camera.y / this.vsp.tile.h);
         var x_width = Math.ceil($$.screen.width / this.vsp.tile.w);
         var y_width = Math.ceil($$.screen.height / this.vsp.tile.h);
+
+        var x_max = x_orig + x_width + 1;
+        var y_max = y_orig + y_width + 1;
+
+        if(x_orig < 0) { x_orig = 0; }
+        if(y_orig < 0) { y_orig = 0; }
+        if( x_max >= this.map.dimensions.x ) x_max = this.map.dimensions.x -1;
+        if( y_max >= this.map.dimensions.y ) y_max = this.map.dimensions.y -1;
+
         if( $$.camera.x % this.vsp.tile.w ) {
             x_width += 2;
         }
@@ -46,15 +55,14 @@ Map.prototype = {
             y_width += 2;
         }
         
-        var t = 0;
-    
+        var t = 0;    
         // very bad, doesn't respect weird render orders.
         for( var l = 0; l < this.map.layer_data.length; l++ ) { 
-            for( var y=y_orig; y<y_orig+y_width; y++ ) {
+            for( var y=y_orig; y<y_max; y++ ) {
                 var base = false;
-                for( var x=x_orig; x<x_orig+x_width; x++ ) {
+                for( var x=x_orig; x<x_max; x++ ) {
                     if( base === false ) {
-                        var base = flat_from_xy( x, y, this.map.dimensions.y );
+                        var base = flat_from_xy( x, y, this.map.dimensions.x );
                         var i = 0;
                     }
     

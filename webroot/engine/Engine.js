@@ -232,10 +232,21 @@ this.hero = false;
                 image: tileset_node,
                 tile: {w:16, h:16}
             };
-
+//debugger;
             $$.map = new Map(mapdata, vsp);
             $$.renderstack[0].addLayer('map', true);
             $$.renderstack[0].setActiveLayer(0);
+
+
+            var clearbox = new RenderThing(
+                0, 0,
+                320, 240, 
+                function() {
+                    fill_rect( 0,0,320,240, '#000000' );
+                }
+            );
+            
+            $$.renderstack[0].add(clearbox);
             $$.renderstack[0].add($$.map);
 
             txt = new Text(
@@ -252,7 +263,9 @@ this.hero = false;
                 10, 26,
                 "Hello.", {
                     beforeRender : function(obj) {
-                        obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+')';
+                        tx = parseInt($$.hero.x/16);
+                        ty = parseInt($$.hero.y/16)+1;
+                        obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+') ('+tx+','+ty+')';
                     }
                 }
             );
@@ -275,7 +288,7 @@ this.hero = false;
             var data = get_sync_json('./game/001_v3/darin.json.chr');
             var node = document.getElementById('hero');
 
-            var sprite = new MapAnimation(970, 970, node, data);
+            var sprite = new MapAnimation(300, 300, node, data);
 //var sprite = new MapImage(850, 850, 17, 33, node);
             $$.renderstack[0].add(sprite);
             $$.hero = sprite;
