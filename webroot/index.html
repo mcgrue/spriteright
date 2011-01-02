@@ -80,7 +80,7 @@ soundManager.onready(function() {
 
 </head>
 <body>
-    <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="tileset" />
+    <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="grue0060_vsp" />
     <img src="./game/001_v3/tropic2.vsp.png" style="width: 0px; height: 0px; " id="tropic2_vsp" />
     <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
     <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />    
@@ -112,12 +112,12 @@ soundManager.onready(function() {
     
     <script>
         var canvas_node = document.getElementById('game_canvas');
-        var tileset_node = document.getElementById('tileset');
+        var grue0060_vsp = document.getElementById('grue0060_vsp');
+        var tropic2_vsp = document.getElementById('tropic2_vsp');
 
-        //new Engine( canvas_node, 320, 240, 1, tileset_node, 'game/001_v3/simpletype_overworld.json', soundManager );
+//        new Engine( canvas_node, 320, 240, 1, grue0060_vsp, 'game/001_v3/simpletype_overworld.json', soundManager );
 
-var tropic2_vsp = document.getElementById('tropic2_vsp');
-new Engine( canvas_node, 320, 240, 1, tropic2_vsp, 'game/001_v3/paradise_isle2.json', soundManager );
+ new Engine( canvas_node, 320, 240, 1, tropic2_vsp, 'game/001_v3/paradise_isle2.json', soundManager );
 
         $('#move').click(
             function() {

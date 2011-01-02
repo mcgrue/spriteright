@@ -82,12 +82,12 @@ Map.prototype = {
                 
                 for( var x=x_orig; x<x_orig+x_width; x++ ) {
                     if( base === false ) {
-                        var base = flat_from_xy( x, y, this.map.dimensions.y );
+                        var base = flat_from_xy( x, y, this.map.dimensions.x );
                         var i = 0;
                     }
     
                     t = base + i;
-                    if( this.map.obs_data[t] ) {
+                    if( this.isObstructed(x,y) ) {
                         this.draw_rect( x,y, '#FF0000' );
                     }
                     i++;   
@@ -99,7 +99,7 @@ Map.prototype = {
     },
 
     isObstructed: function(x,y) {
-        return this.map.obs_data[flat_from_xy( x, y, this.map.dimensions.y )];
+        return this.map.obs_data[flat_from_xy(x, y, this.map.dimensions.x)];
     }
 }
 
