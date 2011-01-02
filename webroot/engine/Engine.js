@@ -161,17 +161,17 @@ function i_want_to_go_to_there( entity, dx, dy ) {
 
 
 /// currently only map-based obs and full-tile.  cheap and insufficient.  replace later.
-    var tx = parseInt(x1/16);
-    var ty = parseInt(y1/16);
+    var tx1 = parseInt(x1/16);
+    var ty1 = parseInt(y1/16);
+    tx2 = parseInt(x2/16);
+    ty2 = parseInt(y2/16);
 
-    if( $$.map.isObstructed(tx, ty) ) {
-        return false;
-    }
-
-    tx = parseInt(x2/16);
-    ty = parseInt(y2/16);
-
-    if( $$.map.isObstructed(tx, ty) ) {
+    if(
+        $$.map.isObstructed(tx1, ty1) ||
+        $$.map.isObstructed(tx1, ty2) ||
+        $$.map.isObstructed(tx2, ty1) ||
+        $$.map.isObstructed(tx2, ty2)    
+    ) {
         return false;
     }
 
