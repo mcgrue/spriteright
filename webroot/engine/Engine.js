@@ -297,7 +297,7 @@ this.hero = false;
                     $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
                 }
             );
-            menu.color = 'red';
+            menu.color = '#000099';
             menu.move({
                 x : 260,
                 y : 10,
