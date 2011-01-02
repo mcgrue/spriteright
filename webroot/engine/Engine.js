@@ -282,7 +282,6 @@ this.hero = false;
             $$.hero = sprite;
             $$.hero.setState('down_walk');
 
-
             var menu = new RenderThing(
                 0, 10,
                 50, 50,
@@ -303,9 +302,29 @@ this.hero = false;
                 y : 10,
                 time : 50
             });
+
+            var textBox = new RenderThing(
+                10, 180,
+                300, 50, 
+                function() {
+                    draw_menu_box(this);
+                    $$.context.fillStyle    = 'white';
+                    $$.context.font         = 'bold 16px Arial';
+                    $$.context.textBaseline = 'top';
+                    $$.context.fillText( 'Who are you and why have you come', this.x+8, this.y+5);
+                    $$.context.fillText( 'to this land of wonder?', this.x+8, this.y+26);
+                    //$$.context.fillText( 'LOL', this.x+5, this.y+25);
+                    //$$.context.fillText( 'BUTTS', this.x+5, this.y+35);
+                }
+            );
+
+            textBox.color = '#000099';
+
 $$.menubox = menu;
+$$.textBox = textBox;
 
             $$.renderstack[0].add(menu);
+            $$.renderstack[0].add(textBox);
          
             $$.onComplete();
         }
@@ -393,6 +412,8 @@ updateControls : function() {
             y : 10,
             time : 200
         });
+
+        $$.textBox.visible = ! $$.textBox.visible;
     }
 
     if( !$$.hero ) {
