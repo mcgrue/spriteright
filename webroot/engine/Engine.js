@@ -159,7 +159,6 @@ function i_want_to_go_to_there( entity, dx, dy ) {
     var x2 = x1 + entity.hotspot.w;
     var y2 = y1 + entity.hotspot.h;
 
-
 /// currently only map-based obs and full-tile.  cheap and insufficient.  replace later.
     var tx1 = parseInt(x1/16);
     var ty1 = parseInt(y1/16);
