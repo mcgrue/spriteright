@@ -46,6 +46,7 @@ Keys.prototype = {
     A: 65,	
     D: 68,
 
+    K: 75,
     M: 77,
     O: 79
 };

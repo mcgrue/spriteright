@@ -123,6 +123,23 @@ Map.prototype = {
         if( !ent.facing ) {
             throw "Entity had no facing, ergo couldn't face a tile.";
         }
+
+        var t = this.getTileCoordinates(ent.x+ent.hotspot.x, ent.y+ent.hotspot.y);
+
+        switch($$.hero.facing) {
+            case $$.map.SPRITE_FACING_SOUTH:
+                t.ty++; break;
+            case $$.map.SPRITE_FACING_NORTH:
+                t.ty--; break;
+            case $$.map.SPRITE_FACING_EAST:
+                t.tx++; break;
+            case $$.map.SPRITE_FACING_WEST:
+                t.tx--; break;
+            default:
+                throw "Unknown facing value: ("+$$.hero.facing+")";
+        }
+
+        return t;
     }
 
 }

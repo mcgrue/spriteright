@@ -159,12 +159,6 @@ function i_want_to_go_to_there( entity, dx, dy ) {
     var x2 = x1 + entity.hotspot.w;
     var y2 = y1 + entity.hotspot.h;
 
-/// hack to let you go into places for now.
-x1 += 3;
-y1 += 3;
-x2 -= 3;
-y2 -= 3;
-
 /// currently only map-based obs and full-tile.  cheap and insufficient.  replace later.
     var tx1 = parseInt(x1/16);
     var ty1 = parseInt(y1/16);
@@ -427,6 +421,21 @@ updateControls : function() {
     if( k.held[k.O] ) {
         k.held[k.O] = false;
         $$._debug_showthings = !$$._debug_showthings;
+    }
+
+    if( k.held[k.K] ) {
+        k.held[k.K] = false;
+
+
+        var faceTile = $$.map.getFacedTile($$.hero);
+        var faceZone = $$.map.getZone(faceTile.tx, faceTile.ty);
+
+        if( faceZone ) {
+            $$.log('Activating zone ' + faceZone );
+        } else {
+            $$.log('"Talk" Button pressed.');
+        }
+
     }
 
     if( k.held[k.M] ) {

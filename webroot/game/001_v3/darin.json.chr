@@ -14,13 +14,21 @@
         left_padding: 1
     },
 
+/// shrinking the hotspot so we can get through places without rewriting the obs system atm.
+    hotspot: {
+        x: 3,
+        y: 19,
+        w: 10,
+        h: 10,
+    },
+/*
     hotspot: {
         x: 0,
         y: 16,
         w: 16,
         h: 16,
     },
-
+*/
     default_wait : 33,
 
     animations : {
