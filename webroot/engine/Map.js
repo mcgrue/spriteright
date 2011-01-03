@@ -141,6 +141,5 @@ Map.prototype = {
 
         return t;
     }
-
 }
 

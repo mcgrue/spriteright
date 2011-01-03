@@ -40,7 +40,21 @@ Keys.prototype = {
 		this.release[key] = false;
 	},
 
+
+
+isActionButtonPressed : function() {
+    return $$.keys.held[$$.keys.K] || $$.keys.held[$$.keys.ENTER];
+},
+
+releaseActionButton : function() {
+    $$.keys.held[$$.keys.K] = false;
+    $$.keys.held[$$.keys.ENTER] = false;
+},
+
 	/// http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/Javascript-Char-Codes-Key-Codes.aspx
+    
+    ENTER: 13,
+
 	W: 87,
 	S: 83,
     A: 65,	

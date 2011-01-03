@@ -1,6 +1,5 @@
 var $$ = null;
 
-
 /// the basic drawing functions will suck until I apply these principles >:(
 /// http://code.anjanesh.net/2009/05/1-pixel-wide-line-parallel-to-axis-in.html
 function draw_pixel( x1, y1, color ) {
@@ -116,18 +115,6 @@ function get_sprite_coordinates( frame, dim, sheet ) {
     return {x:x,y:y};
 }
 
-function get_sync_json(url) {
-    var hax = false;
-    $.ajax({
-      url: './game/001_v3/darin.json.chr',
-      async : false,
-      success: function(data) {
-        eval( 'hax = ' + data );
-      }
-    });
-    return hax;
-}
-
 function overlap( x1, y1, w1, h1, x2, y2, w2, h2 ) {
 	return (x1 + w1 > x2 && y1 + h1 > y2 && x1 < x2 + w2 && y1 < y2 + w2);
 }
@@ -177,14 +164,17 @@ function i_want_to_go_to_there( entity, dx, dy ) {
     return true;
 }
 
-function Engine( canvas_node, width, height, scale, tileset_node, map_location, soundManager ) {
-    
-    this._debug_showthings = true;
+/////////////////////////////////////////////////////////////////////////////////////
+///////////// END global functions that desperately need a home /////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 
-    this.canvas = canvas_node;
-    this.context = this.canvas.getContext('2d');
 
-    this.soundManager = soundManager;
+/// TODO: finishInit() should not take care of loading game assets.
+/// That should be passed into loadGameAssetsFunc().
+/// There should also be a startGameFunc passed in here too, but right now it's all muddled.
+
+function Engine( canvas_node, width, height, scale, loadGameAssetsFunc, startGameFunc ) {
+    $$ = this;    
 
     this.screen = {
         width : width,
@@ -195,13 +185,32 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location, 
 
     this.camera = {x:1015, y:1015};
 
+    this.targetFPS = 60;
+
+    this.canvas = canvas_node;
+    this.context = this.canvas.getContext('2d');
+
+    this.visualLoader = new PrettyLoader();
+
+    this.assets = new Assets(
+        loadGameAssetsFunc,
+        function() { $$.finishInit(); }
+    );
+    this.assets.init();
+    
+    this.startGameFunc = startGameFunc;
+    
+    this.map_scripts = {};
+
+    this._debug_showthings = true;
+
     //set the proportions
     this.canvas.style.width = this.screen.width * this.scale;
     this.canvas.style.height = this.screen.height * this.scale;
     this.canvas.width = this.screen.width * this.scale;
     this.canvas.height = this.screen.height * this.scale;
  
-    this.targetFPS = 60;
+    
     this.rendering = false;
     
     this.tickTime = false;
@@ -211,159 +220,190 @@ function Engine( canvas_node, width, height, scale, tileset_node, map_location, 
     this._intervals = [];
 
     this.renderstack = [];
-    this.renderstack.push(
-        new McGrender('main')
-    );
-
-    this.keys = new Keys();
-
-this.hero = false;
-
-    $$ = this;
-
-    $$.tickTime = get_time(); //starting time.
-
-/// This is sorta game-specific code
-/// needs to be pulled out of the engine.
-    $.getJSON(
-        map_location,
-        function(mapdata) {
-            vsp = {
-                image: tileset_node,
-                tile: {w:16, h:16}
-            };
-//debugger;
-            $$.map = new Map(mapdata, vsp);
-            $$.renderstack[0].addLayer('map', true);
-            $$.renderstack[0].setActiveLayer(0);
-
-
-            var clearbox = new RenderThing(
-                0, 0,
-                320, 240, 
-                function() {
-                    fill_rect( 0,0,320,240, '#000000' );
-                }
-            );
-            
-            $$.renderstack[0].add(clearbox);
-            $$.renderstack[0].add($$.map);
-
-            txt = new Text(
-                10, 10,
-                "Hello.", {
-                    beforeRender : function(obj) {
-                        obj.text = 'FPS: ' + $$._fps;
-                    }
-                }
-            );
-            $$.renderstack[0].add(txt);
-
-            txt = new Text(
-                10, 26,
-                "Hello.", {
-                    beforeRender : function(obj) {
-                        tx = parseInt($$.hero.x/16);
-                        ty = parseInt($$.hero.y/16)+1;
-                        obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+') ('+tx+','+ty+')';
-                    }
-                }
-            );
-            $$.renderstack[0].add(txt);
-
-            txt = new Text(
-                10, 42,
-                "Hello.", {
-                    beforeRender : function(obj) {
-                        if($$._debug_showthings) {
-                            obj.text = '[debug mode, obs showing]';
-                        } else {
-                            obj.text = '';
-                        }   
-                    }
-                }
-            );
-            $$.renderstack[0].add(txt);
-
-            var data = get_sync_json('./game/001_v3/darin.json.chr');
-            var node = document.getElementById('hero');
-
-            var sprite = new MapAnimation(300, 300, node, data);
-//var sprite = new MapImage(850, 850, 17, 33, node);
-            $$.renderstack[0].add(sprite);
-            $$.hero = sprite;
-            $$.hero.setState('down_walk');
-
-            var menu = new RenderThing(
-                0, 10,
-                50, 50,
-                function() {
-                    draw_menu_box(this);
-                    $$.context.fillStyle    = 'white';
-                    $$.context.font         = '10px Arial';
-                    $$.context.textBaseline = 'top';
-                    $$.context.fillText( 'MENU', this.x+5, this.y+5);
-                    $$.context.fillText( 'ITEM', this.x+5, this.y+15);
-                    $$.context.fillText( 'LOL', this.x+5, this.y+25);
-                    $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
-                }
-            );
-            menu.color = '#000099';
-            menu.move({
-                x : 260,
-                y : 10,
-                time : 50
-            });
-
-            var textBox = new RenderThing(
-                10, 180,
-                300, 50, 
-                function() {
-                    if( !this.img ) {
-                        this.img = document.getElementById('speech');
-                    }
-
-                    draw_menu_box(this);
-                    $$.context.fillStyle    = 'white';
-                    $$.context.font         = 'bold 16px Arial';
-                    $$.context.textBaseline = 'top';
-                    $$.context.fillText( 'Who are you and why have you come', this.x+8, this.y+5);
-                    $$.context.fillText( 'to this land of wonder?', this.x+8, this.y+26);
-
-                    $$.context.drawImage(
-                        this.img,  0, 32, 32, 32,
-                        this.x, this.y - 34,
-                        32,32
-                    );
-                }
-            );
-
-            textBox.color = '#000099';
-
-$$.menubox = menu;
-$$.textBox = textBox;
-
-            $$.renderstack[0].add(menu);
-            $$.renderstack[0].add(textBox);
-         
-            $$.onComplete();
-        }
-    );
 }
 
 Engine.prototype = {
+
+    _soundmanagerInit : function() {
+        soundManager.url = 'engine/soundmanager/swf/';
+        soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+        soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
+        soundManager.debugMode = false;
+        // enable HTML5 audio support, if you're feeling adventurous. iPad/iPhone will always get this.
+        // soundManager.useHTML5Audio = true;
+        soundManager.onready(function() {
+        
+          if( window.location.href == 'http://localhost/js-verge/' ) return; //I don't want to hear it every time I debug...
+          
+          if (soundManager.supported()) {
+                soundManager.createSound({
+                  id: 'mySound',
+                  url: 'game/mp3/Hymn_to_Aurora_(NES_Cover)_www.dwedit.org.mp3',
+                  autoLoad: true,
+                  autoPlay: true,
+                  onload: function() {
+                    if($$){
+                        $$.log('The sound '+this.sID+' loaded!');
+                    }
+                  },
+                  volume: 20
+                });
+          } else {
+            debugger;
+          }
+        });
+    },
+
+///
+/// TODO: clean this shit up.  This is all game init code, not engine-init code!
+    finishInit : function() {
+        
+        this._soundmanagerInit();
+        
+        this.renderstack.push(
+            new McGrender('main')
+        );
+        
+        this.keys = new Keys();
+        
+        this.hero = false;
+        
+        $$.tickTime = get_time(); //starting time.
+        
+        /// This is sorta game-specific code
+        /// needs to be pulled out of the engine.
+        
+        var mapdata = $$.assets.get('paradise_isle2.json');
+        var tileset = $$.assets.get('tropic2.vsp');
+        
+        vsp = {
+            image: tileset,
+            tile: {w:16, h:16}
+        };
+        
+        $$.map = new Map(mapdata, vsp);
+        $$.renderstack[0].addLayer('map', true);
+        $$.renderstack[0].setActiveLayer(0);
+        
+        var clearbox = new RenderThing(
+            0, 0,
+            320, 240, 
+            function() {
+                fill_rect( 0,0,320,240, '#000000' );
+            }
+        );
+        
+        $$.renderstack[0].add(clearbox);
+        $$.renderstack[0].add($$.map);
+        
+        txt = new Text(
+            10, 10,
+            "Hello.", {
+                beforeRender : function(obj) {
+                    obj.text = 'FPS: ' + $$._fps;
+                }
+            }
+        );
+        $$.renderstack[0].add(txt);
+        
+        txt = new Text(
+            10, 26,
+            "Hello.", {
+                beforeRender : function(obj) {
+                    tx = parseInt($$.hero.x/16);
+                    ty = parseInt($$.hero.y/16)+1;
+                    obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+') ('+tx+','+ty+')';
+                }
+            }
+        );
+        $$.renderstack[0].add(txt);
+        
+        txt = new Text(
+            10, 42,
+            "Hello.", {
+                beforeRender : function(obj) {
+                    if($$._debug_showthings) {
+                        obj.text = '[debug mode, obs showing]';
+                    } else {
+                        obj.text = '';
+                    }   
+                }
+            }
+        );
+        $$.renderstack[0].add(txt);
+        
+        var hero_data = $$.assets.get( 'darin.json.chr' );
+        var hero_img = $$.assets.get( 'darin.chr' );
+        var sprite = new MapAnimation( 300, 300, hero_img, hero_data );
+        $$.renderstack[0].add( sprite );
+        
+        $$.hero = sprite;
+        $$.hero.setState( 'down_walk' );
+        
+        var menu = new RenderThing(
+            0, 10,
+            50, 50,
+            function() {
+                draw_menu_box(this);
+                $$.context.fillStyle    = 'white';
+                $$.context.font         = '10px Arial';
+                $$.context.textBaseline = 'top';
+                $$.context.fillText( 'MENU', this.x+5, this.y+5);
+                $$.context.fillText( 'ITEM', this.x+5, this.y+15);
+                $$.context.fillText( 'LOL', this.x+5, this.y+25);
+                $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
+            }
+        );
+        
+        menu.color = '#000099';
+        menu.move({
+            x : 260,
+            y : 10,
+            time : 50
+        });
+        
+        var textBox = new RenderThing(
+            10, 180,
+            300, 50, 
+            function() {
+                if( !this.img ) {
+                    this.img = document.getElementById('speech');
+                }
+        
+                draw_menu_box(this);
+                $$.context.fillStyle    = 'white';
+                $$.context.font         = 'bold 16px Arial';
+                $$.context.textBaseline = 'top';
+                $$.context.fillText( 'Who are you and why have you come', this.x+8, this.y+5);
+                $$.context.fillText( 'to this land of wonder?', this.x+8, this.y+26);
+        
+                $$.context.drawImage(
+                    this.img,  0, 32, 32, 32,
+                    this.x, this.y - 34,
+                    32,32
+                );
+            }
+        );
+        
+        textBox.color = '#000099';
+        
+        $$.menubox = menu;
+        $$.textBox = textBox;
+        
+        $$.renderstack[0].add(menu);
+        $$.renderstack[0].add(textBox);
+        
+        $$.onComplete();
+
+    },
+
     onComplete : function() {
         this.setRenderInterval(this.targetFPS);
-
         this.render();
     },
 
     isOnScreen: function( x, y, w, h ) {
         return overlap( x, y, w, h, $$.camera.x, $$.camera.y, $$.screen.width, $$.screen.height );
-    },
-
-    tick: function() {
-        debugger;
     },
 
     log: function(msg) {
@@ -423,19 +463,26 @@ updateControls : function() {
         $$._debug_showthings = !$$._debug_showthings;
     }
 
-    if( k.held[k.K] ) {
-        k.held[k.K] = false;
-
+    if( k.isActionButtonPressed() ) {
+        k.releaseActionButton();
 
         var faceTile = $$.map.getFacedTile($$.hero);
         var faceZone = $$.map.getZone(faceTile.tx, faceTile.ty);
 
         if( faceZone ) {
             $$.log('Activating zone ' + faceZone );
-        } else {
-            $$.log('"Talk" Button pressed.');
-        }
 
+            if( $$.map.zones[faceZone].method ) {
+                $$.map.call( $$.map.zones[faceZone].event );
+
+                $$.map[$$.map.zones[faceZone].event]();
+            } else {
+                $$.log('That event wasnt actually adjact.');
+            }
+            
+        } else {
+            $$.log("Nothing there.");
+        }
     }
 
     if( k.held[k.M] ) {
@@ -462,27 +509,21 @@ updateControls : function() {
 
     if( k.held[k.W] ) {
         dy -= moverate;
+        $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
     } else if( k.held[k.S] ) {
         dy += moverate;
+        $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
     }
 
     if( k.held[k.A] ) {
         dx -= moverate;
+        $$.hero.facing = $$.map.SPRITE_FACING_WEST;
     } else if( k.held[k.D] ) {
         dx += moverate;
+        $$.hero.facing = $$.map.SPRITE_FACING_EAST;
     }
 
-    if( (dx ||dy) && i_want_to_go_to_there( $$.hero, dx, dy ) ) {
-        if( dx < 0 ) {
-            $$.hero.facing = $$.map.SPRITE_FACING_WEST;
-        } else if( dx > 0 ) {
-            $$.hero.facing = $$.map.SPRITE_FACING_EAST;
-        } else if( dy < 0 ) {
-            $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
-        } else if( dy > 0 ) {
-            $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
-        }
-         
+    if( (dx ||dy) && i_want_to_go_to_there( $$.hero, dx, dy ) ) {         
         $$.hero.x += dx;
         $$.hero.y += dy;
          

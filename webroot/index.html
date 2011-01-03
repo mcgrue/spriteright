@@ -6,50 +6,16 @@
 
     <link href="reset.css" type="text/css" media="screen" rel="stylesheet" />
 
-    <script src="engine/Text.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/MapImage.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/MapAnimation.js" type="text/javascript" charset="utf-8"></script>    
-    <script src="engine/Map.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/RenderThing.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/McGrender.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/Keys.js" type="text/javascript" charset="utf-8"></script>
-    <script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
+	<script src="loader/Loader.js" type="text/javascript" charset="utf-8"></script> 
+	<script src="loader/Asset.js" type="text/javascript" charset="utf-8"></script>
+	<script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
 
+<!-- 3rd party engine scripts --> 
 <script src="engine/jquery/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="engine/soundmanager/soundmanager2-jsmin.js"></script>
-<script>
 
-soundManager.url = 'engine/soundmanager/swf/';
-soundManager.flashVersion = 9; // optional: shiny features (default = 8)
-soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
-soundManager.debugMode = false;
-// enable HTML5 audio support, if you're feeling adventurous. iPad/iPhone will always get this.
-// soundManager.useHTML5Audio = true;
-
-soundManager.onready(function() {
-
-  if( window.location.href == 'http://localhost/js-verge/' ) return; //I don't want to hear it every time I debug...
-  
-  if (soundManager.supported()) {
-        soundManager.createSound({
-          id: 'mySound',
-          url: 'game/mp3/Hymn_to_Aurora_(NES_Cover)_www.dwedit.org.mp3',
-          autoLoad: true,
-          autoPlay: true,
-          onload: function() {
-            if($$){
-                $$.log('The sound '+this.sID+' loaded!');
-            }
-          },
-          volume: 20
-        });
-  } else {
-    debugger;
-  }
-});
-
-</script>
-
+<!-- game scripts --> 
+<!--    <script src="./game/001_v3/paradise_isle2.js" type="text/javascript" charset="utf-8"></script> -->
+    
     <style>
         * {
             font-family: verdana;
@@ -80,16 +46,12 @@ soundManager.onready(function() {
 
 </head>
 <body>
-    <img src="./game/001_v3/GRUE0060.vsp.png" style="width: 0px; height: 0px; " id="grue0060_vsp" />
-    <img src="./game/001_v3/tropic2.vsp.png" style="width: 0px; height: 0px; " id="tropic2_vsp" />
-    <img src="./game/001_v3/darin.png" style="width: 0px; height: 0px; " id="hero" />
-    <img src="./game/001_v3/speech.png" style="width: 0px; height: 0px; " id="speech" />    
     <div class="game_container">
         <h1>HTML5/Canvas game experiment (very, very Work-In-Progress)</h1>
         <p>by <a href="http://gruniverse.com">Grue / Ben McGraw</a> of <a href="http://verge-rpg.com">VERGE Games</a>.  <a href="https://github.com/mcgrue/js-verge">Available on github</a></p>
 
         <div id="canvas_container">
-            <p>WASD for some primitive movement.</p>
+            <p>WASD for some primitive movement. <b>K or ENTER to talk to things</b>.</p>
             <p><span style="color: red; font-weight: bold;">press 'M' to MUTE.</span> Press 'o' to toggle obstructions.<br /><br /></p>
             <canvas id="game_canvas"> 
                 <h3>This game requires HTML5 and Canvas.</h3>
@@ -103,21 +65,26 @@ soundManager.onready(function() {
 
         <p><br /><br />(This version of Horace Wimp's Aurora.mod from <a href=http://www.dwedit.org/nes/nsf.php>http://www.dwedit.org/nes/nsf.php</a>)</p>
     </div>
-
-<!--
-    <input value="" id="x">
-    <input value="" id="y">
-    <button id="move">move</button>
--->
     
     <script>
         var canvas_node = document.getElementById('game_canvas');
-        var grue0060_vsp = document.getElementById('grue0060_vsp');
-        var tropic2_vsp = document.getElementById('tropic2_vsp');
 
 //        new Engine( canvas_node, 320, 240, 1, grue0060_vsp, 'game/001_v3/simpletype_overworld.json', soundManager );
 
- new Engine( canvas_node, 320, 240, 1, tropic2_vsp, 'game/001_v3/paradise_isle2.json', soundManager );
+    var load_game_assets = function()  {
+        this.Graphic('game/001_v3/darin.png',           'darin.chr');
+        this.Graphic('game/001_v3/GRUE0060.vsp.png',    'GRUE0060.vsp');
+
+        this.Json( 'game/001_v3/darin.json.chr', 'darin.json.chr' );
+        this.Json( 'game/001_v3/paradise_isle2.json', 'paradise_isle2.json' );
+        this.Script( 'game/001_v3/paradise_isle2.js', 'paradise_isle2.js' );
+
+        this.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
+        this.Graphic('game/001_v3/speech.png',          'speech.png');
+    }
+
+
+new Engine( canvas_node, 320, 240, 1, load_game_assets );
 
         $('#move').click(
             function() {
