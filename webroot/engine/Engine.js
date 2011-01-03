@@ -249,7 +249,7 @@ Engine.prototype = {
                   volume: 20
                 });
           } else {
-            debugger;
+                $$.log('The sound failed to play. :(');
           }
         });
     },
