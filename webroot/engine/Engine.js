@@ -367,7 +367,7 @@ Engine.prototype = {
             300, 50, 
             function() {
                 if( !this.img ) {
-                    this.img = document.getElementById('speech');
+                    this.img = $$.assets.get('speech.png');
                 }
         
                 draw_menu_box(this);
