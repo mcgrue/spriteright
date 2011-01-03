@@ -406,7 +406,7 @@ updateControls : function() {
     if( !$$._last_hero_move ) {
         var d = new Date();
         $$._last_hero_move = time;
-        $$.hero.facing = 'down';
+        $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
         $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
         delete d;
@@ -459,13 +459,13 @@ updateControls : function() {
 
     if( (dx ||dy) && i_want_to_go_to_there( $$.hero, dx, dy ) ) {
         if( dx < 0 ) {
-            $$.hero.facing = 'left';
+            $$.hero.facing = $$.map.SPRITE_FACING_WEST;
         } else if( dx > 0 ) {
-            $$.hero.facing = 'right';
+            $$.hero.facing = $$.map.SPRITE_FACING_EAST;
         } else if( dy < 0 ) {
-            $$.hero.facing = 'up';
+            $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
         } else if( dy > 0 ) {
-            $$.hero.facing = 'down';
+            $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         }
          
         $$.hero.x += dx;
@@ -474,15 +474,29 @@ updateControls : function() {
         moved = true;
     }
 
+    var facename = '';
+    switch($$.hero.facing) {
+        case $$.map.SPRITE_FACING_SOUTH:
+            facename = 'down'; break;
+        case $$.map.SPRITE_FACING_NORTH:
+            facename = 'up'; break;
+        case $$.map.SPRITE_FACING_EAST:
+            facename = 'right'; break;
+        case $$.map.SPRITE_FACING_WEST:
+            facename = 'left'; break;
+        default:
+            throw "Unknown facing value: ("+$$.hero.facing+")";
+    }
+
     ///cheapass bounds.
     if( moved ) {
-        $$.hero.setState( $$.hero.facing+'_walk' );
+        $$.hero.setState( facename+'_walk' );
 
         $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
         $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
 
     } else {
-        $$.hero.setState( $$.hero.facing+'_idle' );
+        $$.hero.setState( facename+'_idle' );
     }
 
     var d = new Date();

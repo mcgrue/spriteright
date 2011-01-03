@@ -7,6 +7,11 @@ function Map(map, vsp) {
 }
 
 Map.prototype = {
+
+    SPRITE_FACING_NORTH : 1,
+    SPRITE_FACING_SOUTH : 2,
+    SPRITE_FACING_EAST : 3,
+    SPRITE_FACING_WEST : 4,
     
     draw_rect: function( tx, ty, color ) {
         $$.context.fillStyle = color;
@@ -108,6 +113,17 @@ Map.prototype = {
 
     getZone: function(x,y) {
         return this.map.zone_data[flat_from_xy(x, y, this.map.dimensions.x)];
+    },
+
+    getTileCoordinates: function(x,y) {
+        return { tx: parseInt(x/this.vsp.tile.w), ty: parseInt(y/this.vsp.tile.h) };
+    },
+
+    getFacedTile: function(ent) {
+        if( !ent.facing ) {
+            throw "Entity had no facing, ergo couldn't face a tile.";
+        }
     }
+
 }
 
