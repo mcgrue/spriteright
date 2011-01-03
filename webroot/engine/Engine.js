@@ -466,23 +466,7 @@ updateControls : function() {
     if( k.isActionButtonPressed() ) {
         k.releaseActionButton();
 
-        var faceTile = $$.map.getFacedTile($$.hero);
-        var faceZone = $$.map.getZone(faceTile.tx, faceTile.ty);
-
-        if( faceZone ) {
-            $$.log('Activating zone ' + faceZone );
-
-            if( $$.map.zones[faceZone].method ) {
-                $$.map.call( $$.map.zones[faceZone].event );
-
-                $$.map[$$.map.zones[faceZone].event]();
-            } else {
-                $$.log('That event wasnt actually adjact.');
-            }
-            
-        } else {
-            $$.log("Nothing there.");
-        }
+        $$.map.activateAdjancentZone($$.hero);
     }
 
     if( k.held[k.M] ) {

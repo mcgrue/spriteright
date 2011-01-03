@@ -140,6 +140,27 @@ Map.prototype = {
         }
 
         return t;
+    },
+
+    activateAdjancentZone: function(ent) {
+        var faceTile = this.getFacedTile(ent);
+        var faceZone = this.getZone(faceTile.tx, faceTile.ty);
+
+        if( faceZone ) {
+            $$.log('Activating zone ' + faceZone );
+
+            if( this.map.zones[faceZone] && this.map.zones[faceZone].method ) {
+
+                $$.map_scripts[this.map.name][this.map.zones[faceZone].event]();
+            } else {
+                $$.log('That event wasnt actually adjact.');
+            }
+            
+        } else {
+            $$.log("Nothing there.");
+        }
     }
+
+    
 }
 
