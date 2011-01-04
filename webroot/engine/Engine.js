@@ -599,21 +599,19 @@ $$.updateControls();
 $$.doCameraFollow();
              
             $$.rendering = true;
-            var d = new Date();
-            $$.tickTime = d.getTime();
+
+            $$.tickTime = get_time();
             
             for( var i = 0; i<$$.renderstack.length; i++ ) {
                 $$.renderstack[i].render();
             }
 
-            delete d;
-            var d = new Date();
-            $$._timeEnd = d.getTime();
+            $$._timeEnd = get_time();
             $$.rendering = false;
             $$._fps = Math.floor(1000/($$.tickTime-$$._prevStart));
         
             $$._prevStart = $$.tickTime;
-            delete d;
+            
         } catch(e) {
             $$.killIntervals();
             throw e;
