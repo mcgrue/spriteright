@@ -258,7 +258,7 @@ Engine.prototype = {
 ///
 /// TODO: clean this shit up.  This is all game init code, not engine-init code!
     finishInit : function() {
-        
+
         this._soundmanagerInit();
         
         this.renderstack.push(
@@ -283,9 +283,11 @@ Engine.prototype = {
         };
         
         $$.map = new Map(mapdata, vsp);
-        $$.renderstack[0].addLayer('map', true);
-        $$.renderstack[0].setActiveLayer(0);
-        
+        var layer_bg  = $$.renderstack[0].addLayer('map_bg', true);
+        var layer_fg  = $$.renderstack[0].addLayer('entities', true);
+        var layer_ent = $$.renderstack[0].addLayer('map_fg', true);
+        var layer_ui  = $$.renderstack[0].addLayer('ui_elements', true);
+try {
         var clearbox = new RenderThing(
             0, 0,
             320, 240, 
@@ -294,8 +296,8 @@ Engine.prototype = {
             }
         );
         
-        $$.renderstack[0].add(clearbox);
-        $$.renderstack[0].add($$.map);
+        $$.renderstack[0].add(layer_bg, clearbox);
+        $$.renderstack[0].add(layer_bg, $$.map);
         
         txt = new Text(
             10, 10,
@@ -305,7 +307,7 @@ Engine.prototype = {
                 }
             }
         );
-        $$.renderstack[0].add(txt);
+        $$.renderstack[0].add(layer_ui, txt);
         
         txt = new Text(
             10, 26,
@@ -317,7 +319,7 @@ Engine.prototype = {
                 }
             }
         );
-        $$.renderstack[0].add(txt);
+        $$.renderstack[0].add(layer_ui, txt);
         
         txt = new Text(
             10, 42,
@@ -331,12 +333,12 @@ Engine.prototype = {
                 }
             }
         );
-        $$.renderstack[0].add(txt);
+        $$.renderstack[0].add(layer_ui, txt);
         
         var hero_data = $$.assets.get( 'darin.json.chr' );
         var hero_img = $$.assets.get( 'darin.chr' );
         var sprite = new MapAnimation( 300, 300, hero_img, hero_data );
-        $$.renderstack[0].add( sprite );
+        $$.renderstack[0].add( layer_ent, sprite );
         
         $$.hero = sprite;
         $$.hero.setState( 'down_walk' );
@@ -368,9 +370,11 @@ Engine.prototype = {
         $$.menubox = menu;
         $$.textBox = textBox;
         
-        $$.renderstack[0].add(menu);
-        $$.renderstack[0].add(textBox);
-        
+        $$.renderstack[0].add(layer_ui, menu);
+        $$.renderstack[0].add(layer_ui, textBox);
+} catch(e) {
+    alert('ERR: ' + e);
+}
         $$.onComplete();
     },
 

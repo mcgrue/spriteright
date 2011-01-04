@@ -6,7 +6,6 @@ function McGrender(name) {
 
     this.name = name;
     this.layers = [];
-    this._currentLayer = false;
 }
 
 McGrender.prototype = {
@@ -28,26 +27,18 @@ McGrender.prototype = {
 
         return this.layers.length - 1;
     },
-
-    setActiveLayer : function(i) {
-        i = parseInt(i);
-        if( i < 0 || i >= this.layers.length ) {
-            throw "invalid layer index: " + i;
+    
+    add : function( layer, obj ) {
+        layer = parseInt(layer);
+        if( layer < 0 || layer >= this.layers.length ) {
+            throw "invalid layer index: " + layer;
         }
 
-        this._currentLayer = i;
-    },
-    
-    add : function( obj ) {
         if( !obj.render ) {
             throw "tried to add an object that doesn't know how to render itself to the McGrender stack.";
         }
 
-        if( this._currentLayer === false ) {
-            throw "no active layer.";
-        }
-
-        this.layers[this._currentLayer].contents.push(obj);
+        this.layers[layer].contents.push(obj);
     },
 
     render : function() {
