@@ -6,6 +6,7 @@
 
     <link href="reset.css" type="text/css" media="screen" rel="stylesheet" />
 
+    <script src="loader/Util.js" type="text/javascript" charset="utf-8"></script> 
 	<script src="loader/Loader.js" type="text/javascript" charset="utf-8"></script> 
 	<script src="loader/Asset.js" type="text/javascript" charset="utf-8"></script>
 	<script src="engine/Engine.js" type="text/javascript" charset="utf-8"></script>
@@ -66,53 +67,41 @@
         <p><br /><br />(This version of Horace Wimp's Aurora.mod from <a href=http://www.dwedit.org/nes/nsf.php>http://www.dwedit.org/nes/nsf.php</a>)</p>
     </div>
     
+
     <script>
         var canvas_node = document.getElementById('game_canvas');
 
 //        new Engine( canvas_node, 320, 240, 1, grue0060_vsp, 'game/001_v3/simpletype_overworld.json', soundManager );
+      
+        var load_game_assets = function( loader )  {
 
-var load_game_assets = function( loader )  {
-
-    loader.Graphic('game/001_v3/darin.png',           'darin.chr');
-    loader.Graphic('game/001_v3/GRUE0060.vsp.png',    'GRUE0060.vsp');
-
-    loader.Json( 'game/001_v3/darin.json.chr',        'darin.json.chr' );
-    loader.Json( 'game/001_v3/paradise_isle2.json',   'paradise_isle2.json' );
-
-    loader.Script( 'game/001_v3/paradise_isle2.js',   'paradise_isle2.js' );
-
-    loader.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
-    loader.Graphic('game/001_v3/speech.png',          'speech.png');
-}
-
-new Engine( canvas_node, 320, 240, 1, load_game_assets );
-
-        $('#move').click(
-            function() {
-                if( $('#x').val() === 'stop' ) {
-                    $$.killIntervals();
-                } else {
-                    $$.camera.x = parseInt( $('#x').val() );
-                    $$.camera.y = parseInt( $('#y').val() );
-                }
-            }
-        );
+            loader.Graphic('game/001_v3/darin.png',           'darin.chr');
+            loader.Graphic('game/001_v3/GRUE0060.vsp.png',    'GRUE0060.vsp');
+        
+            loader.Json( 'game/001_v3/darin.json.chr',        'darin.json.chr' );
+            loader.Json( 'game/001_v3/paradise_isle2.json',   'paradise_isle2.json' );
+        
+            loader.Script( 'game/001_v3/paradise_isle2.js',   'paradise_isle2.js' );
+        
+            loader.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
+            loader.Graphic('game/001_v3/speech.png',          'speech.png');
+        
+            loader.Script( 'game/001_v3/SullyGame.js',        'SullyGame.js' );
+        }
+        
+        new Engine( canvas_node, 320, 240, 1, load_game_assets );
     </script>
 
     <script type="text/javascript">
-    
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-5387635-10']);
       _gaq.push(['_setDomainName', '.javerge.com']);
       _gaq.push(['_trackPageview']);
-    
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-
-    
     </script>
 
     
