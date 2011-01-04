@@ -153,14 +153,14 @@ Map.prototype = {
 
                 $$.map_scripts[this.map.name][this.map.zones[faceZone].event]();
             } else {
+var foo = this.map.zones[faceZone];
+debugger;
+
                 $$.log('That event wasnt actually adjact.');
             }
             
         } else {
             $$.log("Nothing there.");
         }
-    }
-
-    
+    }   
 }
-

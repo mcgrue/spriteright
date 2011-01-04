@@ -202,7 +202,7 @@ function Engine( canvas_node, width, height, scale, loadGameAssetsFunc, startGam
     
     this.map_scripts = {};
 
-    this._debug_showthings = true;
+    //this._debug_showthings = false;
 
     //set the proportions
     this.canvas.style.width = this.screen.width * this.scale;
@@ -322,7 +322,7 @@ Engine.prototype = {
             10, 42,
             "Hello.", {
                 beforeRender : function(obj) {
-                    if($$._debug_showthings) {
+                    if( $$._debug_showthings ) {
                         obj.text = '[debug mode, obs showing]';
                     } else {
                         obj.text = '';
@@ -357,7 +357,7 @@ Engine.prototype = {
         
         menu.color = '#000099';
         menu.move({
-            x : 260,
+            x : -50,
             y : 10,
             time : 50
         });
@@ -386,6 +386,7 @@ Engine.prototype = {
         );
         
         textBox.color = '#000099';
+        textBox.visible = false;
         
         $$.menubox = menu;
         $$.textBox = textBox;

@@ -71,18 +71,19 @@
 
 //        new Engine( canvas_node, 320, 240, 1, grue0060_vsp, 'game/001_v3/simpletype_overworld.json', soundManager );
 
-    var load_game_assets = function()  {
-        this.Graphic('game/001_v3/darin.png',           'darin.chr');
-        this.Graphic('game/001_v3/GRUE0060.vsp.png',    'GRUE0060.vsp');
+var load_game_assets = function( loader )  {
 
-        this.Json( 'game/001_v3/darin.json.chr',        'darin.json.chr' );
-        this.Json( 'game/001_v3/paradise_isle2.json',   'paradise_isle2.json' );
-        this.Script( 'game/001_v3/paradise_isle2.js',   'paradise_isle2.js' );
+    loader.Graphic('game/001_v3/darin.png',           'darin.chr');
+    loader.Graphic('game/001_v3/GRUE0060.vsp.png',    'GRUE0060.vsp');
 
-        this.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
-        this.Graphic('game/001_v3/speech.png',          'speech.png');
-    }
+    loader.Json( 'game/001_v3/darin.json.chr',        'darin.json.chr' );
+    loader.Json( 'game/001_v3/paradise_isle2.json',   'paradise_isle2.json' );
 
+    loader.Script( 'game/001_v3/paradise_isle2.js',   'paradise_isle2.js' );
+
+    loader.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
+    loader.Graphic('game/001_v3/speech.png',          'speech.png');
+}
 
 new Engine( canvas_node, 320, 240, 1, load_game_assets );
 
