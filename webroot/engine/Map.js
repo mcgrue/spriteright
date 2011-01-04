@@ -38,7 +38,12 @@ Map.prototype = {
         );
     },
 
-    render: function() {
+    render: function( arLayers ) {
+
+        if( !arLayers || !arLayers.length ) {
+            throw "Cannot render a map without layer rendering data.";
+        }
+
         var i = 0;
         var x_orig = Math.floor($$.camera.x / this.vsp.tile.w);
         var y_orig = Math.floor($$.camera.y / this.vsp.tile.h);
@@ -59,10 +64,10 @@ Map.prototype = {
         if( $$.camera.y % this.vsp.tile.h ) {
             y_width += 2;
         }
-        
+
         var t = 0;    
         // very bad, doesn't respect weird render orders.
-        for( var l = 0; l < this.map.layer_data.length; l++ ) { 
+        for( var l = 0; l < arLayers.length; l++ ) { 
             for( var y=y_orig; y<y_max; y++ ) {
                 var base = false;
                 for( var x=x_orig; x<x_max; x++ ) {
@@ -72,7 +77,7 @@ Map.prototype = {
                     }
     
                     t = base + i;
-                    this.draw_tile( x,y, this.map.layer_data[l][t] );
+                    this.draw_tile( x,y, this.map.layer_data[arLayers[l]][t] );
                     i++;
                 }
             }
