@@ -507,12 +507,10 @@ updateControls : function() {
         $$._menu_direction = !$$._menu_direction;
 
         $$.menubox.move({
-            x : ($$._menu_direction? -50 : 260) ,
+            x : ($$._menu_direction? -50 : 260),
             y : 10,
             time : 200
         });
-
-        $$.textBox.visible = ! $$.textBox.visible;
     }
 
     if( !$$.hero ) {
@@ -577,9 +575,7 @@ updateControls : function() {
         $$.hero.setState( facename+'_idle' );
     }
 
-    var d = new Date();
-    $$._last_hero_move = d.getTime();
-    delete d;
+    $$._last_hero_move = get_time();
 },
 
 /// abstract this from hero-following.
