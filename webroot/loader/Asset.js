@@ -51,8 +51,8 @@ Assets.prototype = {
     },
 
 	Script: function(script, id) {
-        if(this.assets[id]) throw "Tried to load a Script that was already loaded (id: '+id+')";
-
+        if(this.assets[id]) throw 'Tried to load a Script that was already loaded (id: '+id+')';
+        
 		this.assets[id] = {
             src : script,
             type : 'script',
@@ -68,8 +68,8 @@ Assets.prototype = {
         this.loadGameEngine();
     
         // load the game-specific assets.
-        this.loadAssets();
-    
+        this.loadAssets(this);
+
         this.startLoading();
     },
 
@@ -90,17 +90,13 @@ Assets.prototype = {
 		
 		//end loading if all assets loaded
 		if(this.loadedAssets == this.assetCount) {
-			
-            //run the entry point
 			this.endLoading();
 			return;
 		}
 	},
 
 	//this function is for loading scripts
-	stepScriptLoading: function() {
-		//increase assets loaded
-		this.loadedAssets ++;
+	stepScriptLoading: function() {		
 		
 		//update loader
 		$$.visualLoader.update( this.loadedAssets/this.assetCount );
@@ -127,6 +123,8 @@ Assets.prototype = {
 				this.assets[id].asset = src;
 				this.assets[id].loaded = true;
 				
+                this.loadedAssets ++;
+
 				break;
 			}
 		}
