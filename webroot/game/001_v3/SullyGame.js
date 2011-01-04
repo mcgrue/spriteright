@@ -3,6 +3,17 @@ function Game() {
 }
 
 Game.prototype = {
+
+    /// is called 
+    beforeRender : function() {
+        this.updateControls();
+        this.doCameraFollow();
+    },
+
+    afterRender : function() {
+
+    },
+
     updateControls : function() {
     
         var k = $$.keys;
@@ -128,6 +139,9 @@ Game.prototype = {
         $$.camera.y = parseInt((($$.camera.y - $$.screen.height/2) + ($$.hero.y + $$.hero.h/2))/2);
     },
 
+    
+    /// this function called after all the engine
+    /// resources have been loaded.
     startup : function() {
         $$.renderstack.push(
             new McGrender('main')

@@ -1,11 +1,5 @@
 var $$ = null;
 
-
-
-/// TODO: finishInit() should not take care of loading game assets.
-/// That should be passed into loadGameAssetsFunc().
-/// There should also be a startGameFunc passed in here too, but right now it's all muddled.
-
 function Engine( canvas_node, width, height, scale, loadGameAssetsFunc ) {
     $$ = this;    
 
@@ -85,8 +79,6 @@ Engine.prototype = {
         });
     },
 
-    ///
-    /// TODO: clean this shit up.  This is all game init code, not engine-init code!
     finishInit : function() {
 
         try {
@@ -96,166 +88,9 @@ Engine.prototype = {
         }
 
         this._soundmanagerInit();
-        
-        this.renderstack.push(
-            new McGrender('main')
-        );
-        
-        this.keys = new Keys();
-        
-        this.hero = false;
-        
-        $$.tickTime = get_time(); //starting time.
-        
-        /// This is sorta game-specific code
-        /// needs to be pulled out of the engine.
-        
-        var mapdata = $$.assets.get('paradise_isle2.json');
-        var tileset = $$.assets.get('tropic2.vsp');
-        
-        vsp = {
-            image: tileset,
-            tile: {w:16, h:16}
-        };
-        
-        $$.map = new Map(mapdata, vsp);
-        var layer_bg  = $$.renderstack[0].addLayer('map_bg', true);
-        var layer_ent  = $$.renderstack[0].addLayer('entities', true);
-        var layer_fg = $$.renderstack[0].addLayer('map_fg', true);
-        var layer_ui  = $$.renderstack[0].addLayer('ui_elements', true);
-try {
-        var clearbox = new RenderThing(
-            0, 0,
-            320, 240, 
-            function() {
-                fill_rect( 0,0,320,240, '#000000' );
-            }
-        );
-        
-        $$.renderstack[0].add(layer_bg, clearbox);
-        
-        var bg = [];
-        var fg = [];
-        var eLayer = false;
 
-        for( var i = 0; i<mapdata.layer_render_order.length; i++ ) {
-            var n = mapdata.layer_render_order[i];
-            if( !eLayer ) {
-                if( is_int(n) ) {
-                    bg.push(n);
-                } else if( n == 'E' ) {
-                    eLayer = true;
-                } else {
-                    // 'R' used to represent a rendering layer.
-                    // throw 'unknown renderstring token: ('+n+')';
-                }
-            } else {
-                if( is_int(n) ) {
-                    fg.push(n);
-                } else if( n == 'E' ) {
-                    // throw 'Why would there be two entity layers?';
-                } else {
-                    // throw 'unknown renderstring token: ('+n+')';
-                }
-            }
-        }
+        this.game.startup();        
 
-        if( bg.length ) {
-            $$.renderstack[0].add(
-                layer_bg, {
-                    render: function() {
-                        $$.map.render(bg);
-                    }
-                }
-            );
-        }
-
-        if( fg.length ) {
-            $$.renderstack[0].add(
-                layer_fg, {
-                    render: function() {
-                        $$.map.render(fg);
-                    }
-                }
-            );
-        }
-        
-        txt = new Text(
-            10, 10,
-            "Hello.", {
-                beforeRender : function(obj) {
-                    obj.text = 'FPS: ' + $$._fps;
-                }
-            }
-        );
-        $$.renderstack[0].add(layer_ui, txt);
-        
-        txt = new Text(
-            10, 26,
-            "Hello.", {
-                beforeRender : function(obj) {
-                    tx = parseInt($$.hero.x/16);
-                    ty = parseInt($$.hero.y/16)+1;
-                    obj.text = 'Coords: ('+$$.camera.x+','+$$.camera.y+') ('+tx+','+ty+')';
-                }
-            }
-        );
-        $$.renderstack[0].add(layer_ui, txt);
-        
-        txt = new Text(
-            10, 42,
-            "Hello.", {
-                beforeRender : function(obj) {
-                    if( $$._debug_showthings ) {
-                        obj.text = '[debug mode, obs showing]';
-                    } else {
-                        obj.text = '';
-                    }   
-                }
-            }
-        );
-        $$.renderstack[0].add(layer_ui, txt);
-        
-        var hero_data = $$.assets.get( 'darin.json.chr' );
-        var hero_img = $$.assets.get( 'darin.chr' );
-        var sprite = new MapAnimation( 300, 300, hero_img, hero_data );
-        $$.renderstack[0].add( layer_ent, sprite );
-        
-        $$.hero = sprite;
-        $$.hero.setState( 'down_walk' );
-        
-        var menu = new RenderThing(
-            0, 10,
-            50, 50,
-            function() {
-                draw_menu_box(this);
-                $$.context.fillStyle    = 'white';
-                $$.context.font         = '10px Arial';
-                $$.context.textBaseline = 'top';
-                $$.context.fillText( 'MENU', this.x+5, this.y+5);
-                $$.context.fillText( 'ITEM', this.x+5, this.y+15);
-                $$.context.fillText( 'LOL', this.x+5, this.y+25);
-                $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
-            }
-        );
-        
-        menu.color = '#000099';
-        menu.move({
-            x : -50,
-            y : 10,
-            time : 50
-        });
-        
-        var textBox = new TextBox();
-
-        $$.menubox = menu;
-        $$.textBox = textBox;
-        
-        $$.renderstack[0].add(layer_ui, menu);
-        $$.renderstack[0].add(layer_ui, textBox);
-} catch(e) {
-    alert('ERR: ' + e);
-}
         $$.onComplete();
     },
 
@@ -294,31 +129,29 @@ try {
         this._intervals = [];
     },
 
-
-
     render : function() {
         try {
             if( $$.rendering ) {
                 return;
             }
              
-$$.game.updateControls();
-$$.game.doCameraFollow();
-             
             $$.rendering = true;
-
+             
             $$.tickTime = get_time();
+             
+            $$.game.beforeRender();
             
             for( var i = 0; i<$$.renderstack.length; i++ ) {
                 $$.renderstack[i].render();
             }
-
+             
+            $$.game.afterRender();
+             
             $$._timeEnd = get_time();
             $$.rendering = false;
             $$._fps = Math.floor(1000/($$.tickTime-$$._prevStart));
-        
+             
             $$._prevStart = $$.tickTime;
-            
         } catch(e) {
             $$.killIntervals();
             throw e;
