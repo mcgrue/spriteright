@@ -150,13 +150,9 @@ Map.prototype = {
             $$.log('Activating zone ' + faceZone );
 
             if( this.map.zones[faceZone] && this.map.zones[faceZone].method ) {
-
                 $$.map_scripts[this.map.name][this.map.zones[faceZone].event]();
             } else {
-var foo = this.map.zones[faceZone];
-debugger;
-
-                $$.log('That event wasnt actually adjact.');
+                $$.log('That event wasnt actually adjacent-activation.');
             }
             
         } else {

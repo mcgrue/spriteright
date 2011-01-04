@@ -150,6 +150,7 @@ Assets.prototype = {
         this.Script('engine/MapAnimation.js', 'engine/MapAnimation.js');
         this.Script('engine/Map.js', 'engine/Map.js');
         this.Script('engine/RenderThing.js', 'engine/RenderThing.js');
+        this.Script('engine/TextBox.js', 'engine/TextBox.js');
         this.Script('engine/McGrender.js', 'engine/McGrender.js');
         this.Script('engine/Keys.js', 'engine/Keys.js');
         this.Script('engine/soundmanager/soundmanager2-jsmin.js', 'engine/soundmanager/soundmanager2-jsmin.js');

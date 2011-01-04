@@ -218,6 +218,7 @@ function Engine( canvas_node, width, height, scale, loadGameAssetsFunc, startGam
     this._timeEnd = false;
 
     this._intervals = [];
+    this.flags = {}
 
     this.renderstack = [];
 }
@@ -362,32 +363,8 @@ Engine.prototype = {
             time : 50
         });
         
-        var textBox = new RenderThing(
-            10, 180,
-            300, 50, 
-            function() {
-                if( !this.img ) {
-                    this.img = $$.assets.get('speech.png');
-                }
-        
-                draw_menu_box(this);
-                $$.context.fillStyle    = 'white';
-                $$.context.font         = 'bold 16px Arial';
-                $$.context.textBaseline = 'top';
-                $$.context.fillText( 'Who are you and why have you come', this.x+8, this.y+5);
-                $$.context.fillText( 'to this land of wonder?', this.x+8, this.y+26);
-        
-                $$.context.drawImage(
-                    this.img,  0, 32, 32, 32,
-                    this.x, this.y - 34,
-                    32,32
-                );
-            }
-        );
-        
-        textBox.color = '#000099';
-        textBox.visible = false;
-        
+        var textBox = new TextBox();
+
         $$.menubox = menu;
         $$.textBox = textBox;
         
@@ -395,7 +372,6 @@ Engine.prototype = {
         $$.renderstack[0].add(textBox);
         
         $$.onComplete();
-
     },
 
     onComplete : function() {
@@ -466,8 +442,12 @@ updateControls : function() {
 
     if( k.isActionButtonPressed() ) {
         k.releaseActionButton();
-
-        $$.map.activateAdjancentZone($$.hero);
+        
+        if( $$.textBox.visible ) {
+            $$.textBox.advanceConversation();
+        } else {
+            $$.map.activateAdjancentZone($$.hero);
+        }
     }
 
     if( k.held[k.M] ) {
@@ -484,6 +464,11 @@ updateControls : function() {
     }
 
     if( !$$.hero ) {
+        return;
+    }
+
+    /// let's turn of walking while you're talking.
+    if( $$.textBox.visible ) { 
         return;
     }
 
