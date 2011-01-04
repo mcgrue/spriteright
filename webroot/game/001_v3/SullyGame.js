@@ -1,5 +1,8 @@
 function Game() {
 
+    if( !this.beforeRender || !this.afterRender || !this.startup ) {
+        throw "Invalid game object: one of the required functions was missing.";
+    }
 }
 
 Game.prototype = {
