@@ -68,5 +68,57 @@ $$.map_scripts['paradise_isle2'] = {
             ]);
         }
     },
-};
 
+    // passage to the undersea cavern
+    undersea : function() {
+        $$.log('changemap to undersea cavern here.');
+    },
+    
+    enter_house : function() {
+        $$.log('move hero to inside house here.');
+        Warp(99,13,TNONE);
+    },
+
+    exit_house : function() {
+        $$.log('move hero to outside house here.');
+        //Warp(10,56,TNONE);
+    },
+    
+    pearl_cave : function() {
+        $$.log('Pearl Cave entrance.');
+
+        //AlterFTile(59,17,663,0);    
+        //AlterFTile(60,17,664,0);    
+        //SetTile(59,16,2,643);
+        //SetTile(60,16,2,644);
+    },
+    
+    chest_a : function()  {
+        $$.textBox.talk([
+            [1,'Mmmmph!'],
+            [1,"...it's locked."]
+        ]);
+    },
+    
+    girlfriend_check : function()  {
+        $$.textBox.talk([
+            [1,'Hrm... Crystal might get suspicious', 'if I sneak off the island without her...'],
+            [1,'...again.']
+        ]);
+    },
+    
+    normal_tree : function()  {
+        $$.textBox.talk([
+            [1,'This is a normal tree.', 'It has to work twice as hard as'],
+            [1,'a palm tree for half the recognition.']
+        ]);
+    },
+    
+    SaveDisable : function()  {
+$$.log('SaveDisable... hm, we need a place for global gamescripts, and a way to specify them in zones.');
+    },
+    
+    SaveEnable : function() {
+$$.log('SaveDisable... hm, we need a place for global gamescripts, and a way to specify them in zones.');    
+    }
+};
