@@ -71,6 +71,8 @@ function ignore()
     data['obs_data'] = {}
     data['zone_data'] = {}
 
+
+
     for i=1,v3.curmap.layers,1 do
         layer = i-1
         data['layer_data'][i] = {}
@@ -115,7 +117,7 @@ function ignore()
     data['zones'] = {}
 
     for i=1,v3.curmap.zones,1 do
-        data['zones'][""..i] = {
+        data['zones'][""..i-1] = {
             name = v3.zone[i-1].name,
             event = v3.zone[i-1].event,
             method = v3.zone[i-1].method,
