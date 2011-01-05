@@ -40,6 +40,41 @@ Keys.prototype = {
 		this.release[key] = false;
 	},
 
+isUpPressed : function() {
+    return $$.keys.held[$$.keys.W] || $$.keys.held[$$.keys.UP];
+},
+
+releaseUp : function() {
+    $$.keys.held[$$.keys.W] = false;
+    $$.keys.held[$$.keys.UP] = false;
+},
+
+isDownPressed : function() {
+    return $$.keys.held[$$.keys.S] || $$.keys.held[$$.keys.DOWN];
+},
+
+releaseDown : function() {
+    $$.keys.held[$$.keys.S] = false;
+    $$.keys.held[$$.keys.DOWN] = false;
+},
+
+isLeftPressed : function() {
+    return $$.keys.held[$$.keys.A] || $$.keys.held[$$.keys.LEFT];
+},
+
+releaseLeft : function() {
+    $$.keys.held[$$.keys.A] = false;
+    $$.keys.held[$$.keys.LEFT] = false;
+},
+
+isRightPressed : function() {
+    return $$.keys.held[$$.keys.D] || $$.keys.held[$$.keys.RIGHT];
+},
+
+releaseRight : function() {
+    $$.keys.held[$$.keys.D] = false;
+    $$.keys.held[$$.keys.RIGHT] = false;
+},
 
 
 isActionButtonPressed : function() {
@@ -62,5 +97,10 @@ releaseActionButton : function() {
 
     K: 75,
     M: 77,
-    O: 79
+    O: 79,
+
+    LEFT : 37,
+    RIGHT: 39,
+    UP: 38,
+    DOWN: 40
 };

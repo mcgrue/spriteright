@@ -21,18 +21,16 @@ Game.prototype = {
     
         var k = $$.keys;
     
-        var d = new Date();
-        var time = d.getTime();
-        delete d;
+        var time = get_time();
     
         if( !$$._last_hero_move ) {
-            var d = new Date();
             $$._last_hero_move = time;
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
             $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
             $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
-            delete d;
         }
+
+        $$.hero.last_tx, $$.hero.last_ty
     
         var moverate = parseInt((time - $$._last_hero_move) * .15);
     
@@ -80,18 +78,18 @@ Game.prototype = {
         var dx = 0;
         var dy = 0;
     
-        if( k.held[k.W] ) {
+        if( k.isUpPressed() ) {
             dy -= moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
-        } else if( k.held[k.S] ) {
+        } else if( k.isDownPressed() ) {
             dy += moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         }
     
-        if( k.held[k.A] ) {
+        if( k.isLeftPressed() ) {
             dx -= moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_WEST;
-        } else if( k.held[k.D] ) {
+        } else if( k.isRightPressed() ) {
             dx += moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_EAST;
         }
@@ -131,6 +129,7 @@ Game.prototype = {
         $$._last_hero_move = get_time();
     },
 
+    
     /// abstract this from hero-following.
     /// it should be able to follow anything with a (x,y,w,h)
     doCameraFollow : function() {

@@ -19,10 +19,15 @@
             font-family: verdana;
         }
 
+        body {
+            overflow: hidden;
+        }
+
         div.game_container {
             padding: 30px;
             height: 300px;
             padding-top: 0px;
+            width:500px; margin:0px auto;
         }
 
         #game_canvas {
@@ -32,8 +37,7 @@
         }
 
         #canvas_container {
-            margin: auto;
-            margin-top: 30px;
+            text-align: center;
         }
 
         #log {
@@ -46,21 +50,21 @@
 <body>
     <div class="game_container">
         <h1>HTML5/Canvas game experiment (very, very Work-In-Progress)</h1>
-        <p>by <a href="http://gruniverse.com">Grue / Ben McGraw</a> of <a href="http://verge-rpg.com">VERGE Games</a>.  <a href="https://github.com/mcgrue/js-verge">Available on github</a></p>
+        <p style="font-size: 14px; color: #888; margin-bottom: 10px;">by <a style="font-size: 14px; color: #888;" href="http://gruniverse.com">Grue / Ben McGraw</a> of <a style="font-size: 14px; color: #888;" href="http://verge-rpg.com">VERGE Games</a>.  <a style="font-size: 14px; color: #888;" href="https://github.com/mcgrue/js-verge">Available on github</a></p>
+
+        <p>WASD for some primitive movement.</p>
+        <p><b>K or ENTER to talk to things</b>.</p>
+        <p><span style="color: red; font-weight: bold;">press 'M' to MUTE.</span> Press 'o' to toggle obstructions.<br /><br /></p>
 
         <div id="canvas_container">
-            <p>WASD for some primitive movement. <b>K or ENTER to talk to things</b>.</p>
-            <p><span style="color: red; font-weight: bold;">press 'M' to MUTE.</span> Press 'o' to toggle obstructions.<br /><br /></p>
             <canvas id="game_canvas"> 
                 <h3>This game requires HTML5 and Canvas.</h3>
                 <p><a href="http://www.getfirefox.net/">Get Firefox?</a></p>
             </canvas>
+            <div>
+                <textarea id="log"></textarea>
+            </div>
         </div>
-
-        <div>
-            <textarea id="log"></textarea>
-        </div>
-
         <p><br /><br />(This version of Horace Wimp's Aurora.mod from <a href=http://www.dwedit.org/nes/nsf.php>http://www.dwedit.org/nes/nsf.php</a>)</p>
     </div>
     
