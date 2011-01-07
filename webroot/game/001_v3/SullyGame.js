@@ -26,11 +26,7 @@ Game.prototype = {
         if( !$$._last_hero_move ) {
             $$._last_hero_move = time;
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
-            $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
-            $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
         }
-
-        $$.hero.last_tx, $$.hero.last_ty
     
         var moverate = parseInt((time - $$._last_hero_move) * .15);
     
@@ -118,10 +114,22 @@ Game.prototype = {
         ///cheapass bounds.
         if( moved ) {
             $$.hero.setState( facename+'_walk' );
-    
+             
             $$.hero.last_tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
             $$.hero.last_ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
-    
+
+            $$.hero.previous_tiles = $$.hero.current_tiles;
+            $$.hero.current_tiles = calc_new_tiles($$.hero)
+debugger;
+            var changed = find_new_and_old_tiles( $$.hero.current_tiles, $$.hero.previous_tiles );
+            
+            if( changed ) {
+debugger;
+            // fire onEnterTile events
+            // fire onLeaveTile events
+
+            }
+
         } else {
             $$.hero.setState( facename+'_idle' );
         }
@@ -304,5 +312,63 @@ try {
 } catch(e) {
     alert('ERR: ' + e);
 }
+    }
+}
+
+
+function calc_new_tiles(ent) {
+    var tmp = {}
+
+    var tx = parseInt(($$.hero.x + $$.hero.hotspot.x)/ 16);
+    var ty = parseInt(($$.hero.y + $$.hero.hotspot.y)/ 16);
+
+    var tx2 = parseInt(($$.hero.x + $$.hero.hotspot.x + $$.hero.hotspot.w)/ 16);
+    var ty2 = parseInt(($$.hero.y + $$.hero.hotspot.y + $$.hero.hotspot.h)/ 16);
+
+    return {
+        topleft : [tx, ty],
+        bottomright : [tx2, ty2]
+    }
+}
+
+/// this is naive atm.  Can be optimized.
+function find_new_and_old_tiles( current, previous ) {
+    if( !previous ) {
+        return false;
+    }
+debugger;
+    if( /// there must be a better way to do this, but I can't think clearly atm and just want this done.
+        current.topleft[0] != previous.topleft[0] ||
+        current.topleft[1] != previous.topleft[1] ||
+        current.bottomright[0] != previous.bottomright[0] ||
+        current.bottomright[1] != previous.bottomright[1]
+    ) {
+        var cur = {};
+        for( var x = current.topleft[0]; x < current.bottomright[0]; x++ ) {
+            for( var y = current.topleft[1]; y < current.bottomright[1]; y++ ) {
+                cur[x+','+y] = [x,y];
+            }
+        }
+
+        var old = [];
+        for( var x = previous.topleft[0]; x < previous.bottomright[0]; x++ ) {
+            for( var y = previous.topleft[1]; y < previous.bottomright[1]; y++ ) {
+                if( cur[x+','+y] ) {
+                    delete cur[x+','+y];
+                } else {
+                    old.push( [x,y] );
+                }
+            }
+        }
+        
+        var _new = [];
+        for( var n in cur ) {
+            _new.push( cur[n] );
+        }
+//debugger;
+        return { 'new' : _new, 'old' : old };
+
+    } else {
+        return false;
     }
 }
