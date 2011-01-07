@@ -1,5 +1,4 @@
 function Game() {
-
     if( !this.beforeRender || !this.afterRender || !this.startup ) {
         throw "Invalid game object: one of the required functions was missing.";
     }
@@ -120,14 +119,19 @@ Game.prototype = {
 
             $$.hero.previous_tiles = $$.hero.current_tiles;
             $$.hero.current_tiles = calc_new_tiles($$.hero)
-debugger;
+
             var changed = find_new_and_old_tiles( $$.hero.current_tiles, $$.hero.previous_tiles );
             
             if( changed ) {
-debugger;
-            // fire onEnterTile events
-            // fire onLeaveTile events
-
+                var len = changed['new'].length;
+                for( var i = 0; i<len; i++ ) {
+                    $$.map.enterZone($$.hero, changed['new'][i][0], changed['new'][i][1]);
+                }
+/// when we implement leaveZone...
+///                var len = changed['old'].length;
+///                for( var i = 0; i<len; i++ ) {
+///                    $$.map.leaveZone($$.hero, changed['new'][i][0], changed['new'][i][1]);
+///                }
             }
 
         } else {
@@ -274,7 +278,7 @@ try {
         
         var hero_data = $$.assets.get( 'darin.json.chr' );
         var hero_img = $$.assets.get( 'darin.chr' );
-        var sprite = new MapAnimation( 300, 300, hero_img, hero_data );
+        var sprite = new MapAnimation( 160, 896, hero_img, hero_data );
         $$.renderstack[0].add( layer_ent, sprite );
         
         $$.hero = sprite;
@@ -336,7 +340,7 @@ function find_new_and_old_tiles( current, previous ) {
     if( !previous ) {
         return false;
     }
-debugger;
+
     if( /// there must be a better way to do this, but I can't think clearly atm and just want this done.
         current.topleft[0] != previous.topleft[0] ||
         current.topleft[1] != previous.topleft[1] ||
@@ -344,15 +348,15 @@ debugger;
         current.bottomright[1] != previous.bottomright[1]
     ) {
         var cur = {};
-        for( var x = current.topleft[0]; x < current.bottomright[0]; x++ ) {
-            for( var y = current.topleft[1]; y < current.bottomright[1]; y++ ) {
+        for( var x = current.topleft[0]; x <= current.bottomright[0]; x++ ) {
+            for( var y = current.topleft[1]; y <= current.bottomright[1]; y++ ) {
                 cur[x+','+y] = [x,y];
             }
         }
 
         var old = [];
-        for( var x = previous.topleft[0]; x < previous.bottomright[0]; x++ ) {
-            for( var y = previous.topleft[1]; y < previous.bottomright[1]; y++ ) {
+        for( var x = previous.topleft[0]; x <= previous.bottomright[0]; x++ ) {
+            for( var y = previous.topleft[1]; y <= previous.bottomright[1]; y++ ) {
                 if( cur[x+','+y] ) {
                     delete cur[x+','+y];
                 } else {
@@ -365,10 +369,21 @@ debugger;
         for( var n in cur ) {
             _new.push( cur[n] );
         }
-//debugger;
+debugger;
         return { 'new' : _new, 'old' : old };
 
     } else {
         return false;
     }
+}
+
+var TNONE = 0;
+
+function Warp(tx, ty, trans) {
+    $$.hero.x = tx*16;
+    $$.hero.y = ty*16;
+
+    $$.camera.x = parseInt($$.hero.x - ($$.screen.width/2));
+    $$.camera.y = parseInt($$.hero.y - ($$.screen.height/2));
+
 }

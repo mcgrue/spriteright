@@ -147,6 +147,18 @@ Map.prototype = {
         return t;
     },
 
+    enterZone : function(ent, tx, ty) {
+        var z = this.getZone(tx, ty);
+
+        if( this.map.zones[z] && !this.map.zones[z].method ) {
+            $$.map_scripts[this.map.name][this.map.zones[z].event]();
+        }
+    },
+
+    leaveZone : function(ent, tx, ty) {
+        //var z = this.getZone(tx, ty);
+    },
+
     activateAdjancentZone: function(ent) {
         var faceTile = this.getFacedTile(ent);
         var faceZone = this.getZone(faceTile.tx, faceTile.ty);

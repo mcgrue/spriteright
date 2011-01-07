@@ -76,12 +76,12 @@ $$.map_scripts['paradise_isle2'] = {
     
     enter_house : function() {
         $$.log('move hero to inside house here.');
-        Warp(99,13,TNONE);
+        Warp(99,12, 0);
     },
 
     exit_house : function() {
         $$.log('move hero to outside house here.');
-        //Warp(10,56,TNONE);
+        Warp(10,55, 0);
     },
     
     pearl_cave : function() {
