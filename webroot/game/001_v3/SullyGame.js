@@ -380,10 +380,13 @@ debugger;
 var TNONE = 0;
 
 function Warp(tx, ty, trans) {
+
+    var x = $$.camera.x - $$.hero.x;
+    var y = $$.camera.y - $$.hero.y;
+
     $$.hero.x = tx*16;
     $$.hero.y = ty*16;
 
-    $$.camera.x = parseInt($$.hero.x - ($$.screen.width/2));
-    $$.camera.y = parseInt($$.hero.y - ($$.screen.height/2));
-
+    $$.camera.x = $$.hero.x + x;
+    $$.camera.y = $$.hero.y + y;
 }
