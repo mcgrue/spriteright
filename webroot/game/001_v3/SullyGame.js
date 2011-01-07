@@ -355,9 +355,11 @@ function find_new_and_old_tiles( current, previous ) {
         }
 
         var old = [];
+        var step = [];
         for( var x = previous.topleft[0]; x <= previous.bottomright[0]; x++ ) {
             for( var y = previous.topleft[1]; y <= previous.bottomright[1]; y++ ) {
                 if( cur[x+','+y] ) {
+                    step.push( [x,y] );
                     delete cur[x+','+y];
                 } else {
                     old.push( [x,y] );
@@ -369,15 +371,24 @@ function find_new_and_old_tiles( current, previous ) {
         for( var n in cur ) {
             _new.push( cur[n] );
         }
-debugger;
-        return { 'new' : _new, 'old' : old };
+
+        return { 'new' : _new, 'old' : old, 'step' : step };
 
     } else {
-        return false;
+        var step = [];
+        for( var x = previous.topleft[0]; x <= previous.bottomright[0]; x++ ) {
+            for( var y = previous.topleft[1]; y <= previous.bottomright[1]; y++ ) {
+                step.push( [x,y] );
+            }
+        }
+
+        return { 'new' : [], 'old' : [], 'step' : step };
     }
 }
 
-var TNONE = 0;
+var Transition = {
+    NONE: 0,
+}
 
 function Warp(tx, ty, trans) {
 

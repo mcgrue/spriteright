@@ -38,7 +38,6 @@ $$.map_scripts['paradise_isle2'] = {
     },
     sancho : function() {
 
-        
         if( !$$.flags['SANCHO'] ) {
             $$.flags['SANCHO'] = 1;
 
@@ -75,13 +74,13 @@ $$.map_scripts['paradise_isle2'] = {
     },
     
     enter_house : function() {
+        Warp(99,12, Transition.NONE);
         $$.log('move hero to inside house here.');
-        Warp(99,12, 0);
     },
 
     exit_house : function() {
+        Warp(10,55, Transition.NONE);
         $$.log('move hero to outside house here.');
-        Warp(10,55, 0);
     },
     
     pearl_cave : function() {
