@@ -282,7 +282,7 @@ try {
         //var hero_data = $$.assets.get( 'crystal.json.chr' );
         //var hero_img = $$.assets.get( 'crystal.png' );
 
-/*
+
 var done = false;
 var i = 0;
 while( !done ) {
@@ -296,13 +296,12 @@ while( !done ) {
     var entity_data = $$.assets.get( e.chr ); // like 'crystal.json.chr', which was loaded in the asset loader.
     var entity_img = $$.assets.get( entity_data.image ); // like 'crystal.png', which was loaded in the asset loader.
 
-    var entity_sprite = new MapAnimation( e.x, e.y, hero_img, hero_data );
+    var entity_sprite = new MapAnimation( e.x, e.y, entity_img, entity_data );
     entity_sprite.setState( 'down_idle' );
     $$.renderstack[0].add( layer_ent, entity_sprite );
     
     i++;
 }
-*/
 
         var sprite = new MapAnimation( 160, 896, hero_img, hero_data );
         $$.renderstack[0].add( layer_ent, sprite );

@@ -123,8 +123,12 @@ MapAnimation.prototype = {
             var f = this.cur_frame;
         }
 
+        if( parseInt(f) != f ) {
+            throw "Invalid frametype: " + f
+        }
+
         var res = get_sprite_coordinates( f, this._def.dimensions, this._def.sheet );
-//debugger;
+
         $$.context.drawImage(
             this.img,
 
