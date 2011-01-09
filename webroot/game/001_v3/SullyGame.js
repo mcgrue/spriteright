@@ -276,8 +276,12 @@ try {
         );
         $$.renderstack[0].add(layer_ui, txt);
         
-        var hero_data = $$.assets.get( 'darin.json.chr' );
-        var hero_img = $$.assets.get( 'darin.chr' );
+        //var hero_data = $$.assets.get( 'darin.json.chr' );
+        //var hero_img = $$.assets.get( 'darin.chr' );
+
+        var hero_data = $$.assets.get( 'crystal.json.chr' );
+        var hero_img = $$.assets.get( 'crystal.png' );
+
         var sprite = new MapAnimation( 160, 896, hero_img, hero_data );
         $$.renderstack[0].add( layer_ent, sprite );
         

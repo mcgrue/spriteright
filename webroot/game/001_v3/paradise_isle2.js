@@ -76,6 +76,7 @@ $$.map_scripts['paradise_isle2'] = {
     enter_house : function() {
         Warp(99,12, Transition.NONE);
         $$.log('move hero to inside house here.');
+debugger;
     },
 
     exit_house : function() {

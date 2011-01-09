@@ -85,8 +85,11 @@
             loader.Graphic('game/001_v3/speech.png',          'speech.png');
         
             loader.Script( 'game/001_v3/SullyGame.js',        'SullyGame.js' );
+
+            loader.Json( 'game/001_v3/crystal.json.chr',      'crystal.json.chr' );
+            loader.Graphic('game/001_v3/crystal.png',         'crystal.png');
         }
-        
+
         new Engine( canvas_node, 320, 240, 1, load_game_assets );
     </script>
 
@@ -101,7 +104,5 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-
-    
 </body>
 </head>
