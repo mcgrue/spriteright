@@ -139,7 +139,7 @@ Assets.prototype = {
             return this.assets[id].asset;
         }
 
-        if( !this.assets[id].loaded ) throw "asset '"+id+"' not yet loaded.";
+        if( this.assets[id] && !this.assets[id].loaded ) throw "asset '"+id+"' not yet loaded.";
 
         throw "asset '"+id+"' not found.";
 	},
