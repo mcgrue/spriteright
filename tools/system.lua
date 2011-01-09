@@ -71,8 +71,6 @@ function ignore()
     data['obs_data'] = {}
     data['zone_data'] = {}
 
-
-
     for i=1,v3.curmap.layers,1 do
         layer = i-1
         data['layer_data'][i] = {}
@@ -117,14 +115,65 @@ function ignore()
     data['zones'] = {}
 
     for i=1,v3.curmap.zones,1 do
-        data['zones'][""..i-1] = {
-            name = v3.zone[i-1].name,
-            event = v3.zone[i-1].event,
-            method = v3.zone[i-1].method,
-            percent = v3.zone[i-1].percent,
-            delay = v3.zone[i-1].delay
+        idx = i - 1
+        data['zones'][idx] = {
+            name = v3.zone[idx].name,
+            event = v3.zone[idx].event,
+            method = v3.zone[idx].method,
+            percent = v3.zone[idx].percent,
+            delay = v3.zone[idx].delay
         }
     end
+
+--[[
+    int entities;
+    int entity.x[entity];
+    int entity.y[entity];
+    int entity.specframe[entity];
+    int entity.frame[entity];
+    int entity.hotx[entity];
+    int entity.hoty[entity];
+    int entity.hotw[entity];
+    int entity.hoth[entity];
+    int entity.movecode[entity];
+    int entity.face[entity];
+    int entity.speed[entity];
+    int entity.visible[entity];
+    int entity.obstruct[entity];
+    int entity.obstructable[entity];
+    string entity.script[entity];
+    string entity.chr[entity];
+    int entity.lucent[entity];
+    int entity.framew[entity], entity.frameh[entity];
+    string entity.description[entity];
+]]
+    --- entities
+    data['entities'] = {}
+    for i=1, v3.entities, 1 do
+        idx = i - 1
+
+        data['entities'][idx] = {
+            x = v3.entity[idx].x,
+            y = v3.entity[idx].y,
+            hotx = v3.entity[idx].hotx,
+            hoty = v3.entity[idx].hoty,
+            hotw = v3.entity[idx].hotw,
+            hoth = v3.entity[idx].hoth,
+            speed = v3.entity[idx].speed,
+            movecode = v3.entity[idx].movecode,
+            face = v3.entity[idx].face,
+            visible = v3.entity[idx].visible,
+            obstuction = v3.entity[idx].obstuct,
+            obstructable = v3.entity[idx].obstructable,
+            script = v3.entity[idx].script,
+            chr = v3.entity[idx].chr,
+            lucent = v3.entity[idx].lucent,
+            framew = v3.entity[idx].framew,
+            frameh = v3.entity[idx].frameh,
+            description = v3.entity[idx].description,
+        }
+    end
+
 
     --- output the json map.
     outfile = v3.curmap.name .. '.json'

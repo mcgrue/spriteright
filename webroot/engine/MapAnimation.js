@@ -124,7 +124,7 @@ MapAnimation.prototype = {
         }
 
         var res = get_sprite_coordinates( f, this._def.dimensions, this._def.sheet );
-
+//debugger;
         $$.context.drawImage(
             this.img,
 

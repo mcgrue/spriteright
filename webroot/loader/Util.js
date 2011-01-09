@@ -98,6 +98,7 @@ function get_time() {
 }
 
 function get_sprite_coordinates( frame, dim, sheet ) {
+    if( parseInt(frame) != frame ) throw "Invalid frame type: " + frame;
 
     if(!sheet.padding) {
         sheet.padding = 0;
