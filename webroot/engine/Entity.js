@@ -2,7 +2,16 @@
 
 /// Largely transliterated from C to JS from
 /// https://github.com/mcgrue/verge3/blob/master/verge/Source/g_entity.cpp
-function Entity(x, y, def) {
+function Entity(x, y, def, index) {
+    this.index = index;
+
+    if( !index ) {
+        throw "No entity index.  Do we even want that as a concept?";
+    }
+
+    this.image = Asset.get( def.image )
+    this.mapAnimation = new MapAnimation(x, y, this.image, def);
+
     this.x = x;
     this.y = y;
     this.face = -1;
@@ -22,13 +31,15 @@ function Entity(x, y, def) {
     this.movecode = 0;
     this.obstruction = false;
     this.obstructable = false;
-    this.delay = 0;
+    this.next_think_time = 0;
 
     this.active = false;
 
     this.className = 'Entity';
 
     /// deleted most everythign related to framect.
+
+    this.wander_delay = 75;
 
 /*
 	follower = 0;
@@ -68,6 +79,11 @@ Entity.prototype = {
     SOUTH : 2,
     EAST : 3,
     WEST : 4,
+
+    MOVETYPE_PLAYER : 0,
+    MOVETYPE_ZONE : 1,
+    MOVETYPE_BOX : 2, 
+    MOVETYPE_SCRIPT : 3,
 
     setFace : function( d ) {
         if ((d > 0) && (d <= 4)) {
@@ -163,7 +179,7 @@ Entity.prototype = {
         this.movecode = 0;
         this.obstruction = false;
         this.obstructable = false;
-        this.delay = 0;
+        this.next_think_time = 0;
     },
 
     clearStalk : function() {
@@ -180,16 +196,16 @@ Entity.prototype = {
         /// for non-player-input-driven entities who are obstructable
         if( this != $$.hero && ! this.follow && this.obstructable ) {
             switch( this.face ) {
-                case this.NORTH: if( ObstructDirTick(NORTH) ) return; break;
-                case this.SOUTH: if( ObstructDirTick(SOUTH) ) return; break;
-                case this.WEST: if( ObstructDirTick(WEST) ) return; break;
-                case this.EAST: if( ObstructDirTick(EAST) ) return; break;
+                case this.NORTH: if( this.ObstructDirTick(this.NORTH) ) return; break;
+                case this.SOUTH: if( this.ObstructDirTick(this.SOUTH) ) return; break;
+                case this.WEST: if( this.ObstructDirTick(this.WEST) ) return; break;
+                case this.EAST: if( this.ObstructDirTick(this.EAST) ) return; break;
                 default: throw "Entity::move_tick() - bad face value!! ("+this.face+")";
             }
         }
     
         // update pathxy for following
-        for( var i = thisFOLLOWDISTANCE-2; i>=0; i-- ) {
+        for( var i = this.FOLLOWDISTANCE-2; i>=0; i-- ) {
             this.path[i+1] = path[i];
         }
 
@@ -211,7 +227,7 @@ Entity.prototype = {
         this.y += dy;
     
         if( this.follower ) {
-            this.follower.move_tick();
+            this.follower.moveTick();
         }
     },
 
@@ -221,152 +237,163 @@ Entity.prototype = {
             return;
         } 
 
+        /// this is highly suspect.  Not sure exactly what's going on here at a higher level.
+        /// 100 hertz binding for think?
+        /// almost certainly wrong for spriteright. -grue
+        this.speedct += this.speed;
+        this.num_ticks = this.speedct / 100;
+        this.speedct %= 100;
+
+        if( this.next_think_time > $$.tickTime ) {
+            return;
+        }
+
+        if( num_ticks < 0 ) {
+            throw "Invalid num_ticks: " + num_ticks;
+        }
+
+        while( num_ticks ) {
+            num_ticks--;
+    
+            if( this.ready() ) {
+                switch( movecode ) {
+                    // MOVETYPE_PLAYER
+                    case 0: if( this == $$.hero && !invc ) { $$.game.processUserInputForPlayer(); } break;
+
+                    // MOVETYPE_ZONE
+                    case 1: this._doWanderzone(); break;
+
+                    // MOVETYPE_BOX
+                    case 2: this._doWanderbox(); break;
+                    
+                    // MOVETYPE_SCRIPT
+                    case 3: this._doMovescript(); break;
+
+                    default: err("Entity::think(), unknown movecode value");
+                }
+            }
+
+            if( ! this.ready() ) {
+                this.moveTick();
+            }
+        }
+    },
+
+    /// when do we use ObstructDirTick vs ObstructDir?
+
+    ObstructDirTick : function( d ) {
+        $$.__grue_actor_index = this.index;
+    
+        var x, y;
+        var ex = this.x;
+        var ey = this.y;
+        var hoth = this.mapAnimation.hotspot.h;
+        var hotw = this.mapAnimation.hotspot.w;
+    
+        if( !this.obstructable ) {
+            return false;
+        }
+
+        switch( d ) {
+            case NORTH:
+                for( x=ex; x<ex+hotw; x++ )
+                    if( this.ObstructAt(x, ey-1) ) return true;
+                break;
+            case SOUTH:
+                for( x=ex; x<ex+hotw; x++ )
+                    if( this.ObstructAt(x, ey+hoth) ) return true;
+                break;
+            case WEST:
+                for( y=ey; y<ey+hoth; y++ )
+                    if( this.ObstructAt(ex-1, y) ) return true;
+                break;
+            case EAST:
+                for( y=ey; y<ey+hoth; y++ )
+                    if( this.ObstructAt(ex+hotw, y) ) return true;
+                break;
+        }
+
+        return false;
+    },
+
+    ObstructDir : function( d ) {
+        $$.__grue_actor_index = this.index;
+    
+        var i, x, y;
+        var ex = this.x;
+        var ey = this.y;
+        var hotw = this.mapAnimation.hotspot.w;
+        var hoth = this.mapAnimation.hotspot.h;
+    
+        if (!obstructable) {
+            return false;
+        }
+
+        switch ( d ) {
+            case this.NORTH:
+                for( i=0; i<hoth; i++ )
+                    for( x=ex; x<ex+hotw; x++ )
+                        if( this.ObstructAt(x, ey-i-1) ) return true;
+                break;
+            case this.SOUTH:
+                for( i=0; i<hoth; i++ )
+                    for( x=ex; x<ex+hotw; x++ )
+                        if( this.ObstructAt(x, ey+i+hoth) ) return true;
+                break;
+            case this.WEST:
+                for( i=0; i<hotw; i++ )
+                    for( y=ey; y<ey+hoth; y++ )
+                        if( this.ObstructAt(ex-i-1, y) ) return true;
+                break;
+            case this.EAST:
+                for( i=0; i<hotw; i++ )
+                    for( y=ey; y<ey+hoth; y++ )
+                        if( this.ObstructAt(ex+hotw+i, y) ) return true;
+                break;
+        }
+         
+        return false;
+    },
+
+    _doWanderzone : function() {
+        var ub=false, db=false, lb=false, rb=false;
+        var ex = parseInt( this.x/$$.map.vsp.tile.w );
+        var ey = parseInt( this.y/$$.map.vsp.tile.h );
+        var myzone = $$.map.getZone( ex, ey );
+    
+        if( this.ObstructDir(this.EAST) || $$.map.getZone(ex+1, ey) != myzone) rb=true;
+        if( this.ObstructDir(this.WEST) || $$.map.getZone(ex-1, ey) != myzone) lb=true;
+        if( this.ObstructDir(this.SOUTH) || $$.map.getZone(ex, ey+1) != myzone) db=true;
+        if( this.ObstructDir(this.NORTH) || current_map->zone(ex, ey-1) != myzone) ub=true;
+    
+        if (rb && lb && db && ub) return; // Can't move in any direction
+    
+        this.next_think_time = $$.tickTime + this.wander_delay;
+        while (1)
+        {
+            int i = rnd(0,3);
+            switch (i)
+            {
+                case 0:
+                    if (rb) break;
+                    set_waypoint_relative(16, 0);
+                    return;
+                case 1:
+                    if (lb) break;
+                    set_waypoint_relative(-16, 0);
+                    return;
+                case 2:
+                    if (db) break;
+                    set_waypoint_relative(0, 16);
+                    return;
+                case 3:
+                    if (ub) break;
+                    set_waypoint_relative(0, -16);
+                    return;
+            }
+        }
     }
-}
 
-
-
-
-
-void Entity::think()
-{
-	int num_ticks;
-	if (!active) return;
-
-	if (delay>systemtime)
-	{
-		framect = 0;
-		return;
-	}
-
-	speedct += speed;
-	num_ticks = speedct / 100;
-	speedct %= 100;
-
-	while (num_ticks)
-	{
-		num_ticks--;
-
-		if (ready())
-		{
-			switch (movecode)
-			{
-				case 0: if (this == $$.hero && !invc) ProcessControls(); break;
-				case 1: do_wanderzone(); break;
-				case 2: do_wanderbox(); break;
-				case 3: do_movescript(); break;
-				default: err("Entity::think(), unknown movecode value");
-			}
-		}
-		if (!ready())
-			move_tick();
-	}
-}
-
-bool Entity::ObstructDirTick(int d)
-{
-	__grue_actor_index = this->index;
-
-	int x, y;
-	int ex = getx();
-	int ey = gety();
-
-	if (!obstructable) return false;
-	switch (d)
-	{
-		case NORTH:
-			for (x=ex; x<ex+hotw; x++)
-				if (ObstructAt(x, ey-1)) return true;
-			break;
-		case SOUTH:
-			for (x=ex; x<ex+hotw; x++)
-				if (ObstructAt(x, ey+hoth)) return true;
-			break;
-		case WEST:
-			for (y=ey; y<ey+hoth; y++)
-				if (ObstructAt(ex-1, y)) return true;
-			break;
-		case EAST:
-			for (y=ey; y<ey+hoth; y++)
-				if (ObstructAt(ex+hotw, y)) return true;
-			break;
-	}
-	return false;
-}
-
-bool Entity::ObstructDir(int d)
-{
-	__grue_actor_index = this->index;
-
-	int i, x, y;
-	int ex = getx();
-	int ey = gety();
-
-	if (!obstructable) return false;
-	switch (d)
-	{
-		case NORTH:
-			for (i=0; i<hoth; i++)
-				for (x=ex; x<ex+hotw; x++)
-					if (ObstructAt(x, ey-i-1)) return true;
-			break;
-		case SOUTH:
-			for (i=0; i<hoth; i++)
-				for (x=ex; x<ex+hotw; x++)
-					if (ObstructAt(x, ey+i+hoth)) return true;
-			break;
-		case WEST:
-			for (i=0; i<hotw; i++)
-				for (y=ey; y<ey+hoth; y++)
-					if (ObstructAt(ex-i-1, y)) return true;
-			break;
-		case EAST:
-			for (i=0; i<hotw; i++)
-				for (y=ey; y<ey+hoth; y++)
-					if (ObstructAt(ex+hotw+i, y)) return true;
-			break;
-	}
-	return false;
-}
-
-void Entity::do_wanderzone()
-{
-	bool ub=false, db=false, lb=false, rb=false;
-	int ex = getx()/16;
-	int ey = gety()/16;
-	int myzone = current_map->zone(ex, ey);
-
-	if (ObstructDir(EAST) || current_map->zone(ex+1, ey) != myzone) rb=true;
-	if (ObstructDir(WEST) || current_map->zone(ex-1, ey) != myzone) lb=true;
-	if (ObstructDir(SOUTH) || current_map->zone(ex, ey+1) != myzone) db=true;
-	if (ObstructDir(NORTH) || current_map->zone(ex, ey-1) != myzone) ub=true;
-
-	if (rb && lb && db && ub) return; // Can't move in any direction
-
-	delay = systemtime + wdelay;
-	while (1)
-	{
-		int i = rnd(0,3);
-		switch (i)
-		{
-			case 0:
-				if (rb) break;
-				set_waypoint_relative(16, 0);
-				return;
-			case 1:
-				if (lb) break;
-				set_waypoint_relative(-16, 0);
-				return;
-			case 2:
-				if (db) break;
-				set_waypoint_relative(0, 16);
-				return;
-			case 3:
-				if (ub) break;
-				set_waypoint_relative(0, -16);
-				return;
-		}
-	}
 }
 
 void Entity::do_wanderbox()
@@ -382,7 +409,7 @@ void Entity::do_wanderbox()
 
 	if (rb && lb && db && ub) return; // Can't move in any direction
 
-	delay = systemtime + wdelay;
+	this.next_think_time = $$.tickTime + this.wander_delay;
 	while (1)
 	{
 		int i = rnd(0,3);
@@ -472,7 +499,7 @@ void Entity::do_movescript()
 				setspeed(atoi(&movestr[moveofs]));
 				break;
 			case 'W': moveofs++;
-				delay = systemtime + atoi(&movestr[moveofs]);
+				this.next_think_time = $$.tickTime + atoi(&movestr[moveofs]);
 				break;
 			case 'F': moveofs++;
 				setface(vc2me[atoi(&movestr[moveofs])]);
@@ -579,16 +606,12 @@ void Entity::SetMoveScript(const char *s)
 	movecode = 3;
 }
 
-void Entity::SetWanderDelay(int n)
-{
-	wdelay = n;
-}
 
 void Entity::SetMotionless()
 {
     clear_stalk();
 	set_waypoint(getx(), gety());
 	movecode = 0;
-	delay = 0;
+	this.next_think_time = 0;
 }
 */

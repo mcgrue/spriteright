@@ -16,6 +16,10 @@ Game.prototype = {
 
     },
 
+    processUserInputForPlayer : function() {
+        throw "processUserInputForPlayer, lol";
+    },
+
     updateControls : function() {
     
         var k = $$.keys;
