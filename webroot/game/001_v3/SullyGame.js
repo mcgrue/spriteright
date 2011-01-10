@@ -151,6 +151,12 @@ Game.prototype = {
     
         $$.camera.x = parseInt((($$.camera.x - $$.screen.width/2) + ($$.hero.x + $$.hero.w/2))/2);
         $$.camera.y = parseInt((($$.camera.y - $$.screen.height/2) + ($$.hero.y + $$.hero.h/2))/2);
+
+        if( $$.camera.x < 0 ) $$.camera.x = 0;
+        else if( $$.camera.x > ($$.map.width -$$.screen.width) ) $$.camera.x = ($$.map.width -$$.screen.width);
+
+        if( $$.camera.y < 0 ) $$.camera.y = 0;
+        else if( $$.camera.y > ($$.map.height -$$.screen.height) ) $$.camera.y = ($$.map.height -$$.screen.height);
     },
 
     

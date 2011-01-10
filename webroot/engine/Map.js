@@ -3,6 +3,9 @@ function Map(map, vsp) {
     this.map = map;
     this.vsp = vsp;
 
+    this.height = this.vsp.tile.h * (this.map.dimensions.y - 1);
+    this.width = this.vsp.tile.w * (this.map.dimensions.x - 1);
+
 //    this.clouds = document.getElementById('clouds');
 }
 
@@ -175,5 +178,5 @@ Map.prototype = {
         } else {
             $$.log("Nothing there.");
         }
-    }   
+    },
 }
