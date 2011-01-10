@@ -12,8 +12,6 @@ function Map(map, vsp) {
 
     this.height = this.vsp.tile.h * (this.map.dimensions.y - 1);
     this.width = this.vsp.tile.w * (this.map.dimensions.x - 1);
-
-//    this.clouds = document.getElementById('clouds');
 }
 
 Map.prototype = {
@@ -32,6 +30,19 @@ Map.prototype = {
         $$.context.fillRect(
             x, y,
             (this.vsp.tile.w*$$.scale), (this.vsp.tile.h*$$.scale)
+        );
+    },
+
+    draw_obs: function( tx, ty, t ) {
+            
+        //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        $$.context.drawImage(
+            this.obs,  0, t*this.vsp.tile.h, this.vsp.tile.w, this.vsp.tile.h,
+            
+            (tx*this.vsp.tile.w - $$.camera.x)*$$.scale,
+            (ty*this.vsp.tile.h - $$.camera.y)*$$.scale,
+
+            this.vsp.tile.w*$$.scale, this.vsp.tile.h*$$.scale
         );
     },
 
@@ -107,13 +118,14 @@ Map.prototype = {
                     }
     
                     t = base + i;
-                    if( this.isObstructed(x,y) ) {
-                        this.draw_rect( x,y, '#FF0000' );
-                    }
+
 
                     if( this.getZone(x,y) ) {
                         this.draw_rect( x,y, '#00FF00' );
                     }
+
+                    this.draw_obs( x,y, this.isObstructed(x,y) );
+
                     i++;   
                 }
             }

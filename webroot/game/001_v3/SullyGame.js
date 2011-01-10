@@ -443,14 +443,18 @@ int obstructpixel(int x, int y) {
     int t=obslayer[((y>>4)*mapwidth)+(x>>4)];
     return tileset->GetObs(t, x&15, y&15);
 }
+*/
 
 /// an entity has coordinates, dimensions, and a bounding box.
 /// return true if you can make that move.
 /// return false if you'd go bump in the night.
+/*
 function is_obstructed_at( px, py ) {
      
-	if( current_map->obstructpixel(x, y) ) {
-         
+	if( $$.map.obstructPixel(px, py) ) {
+debugger;
+
+
 		if( isEntityCollisionCapturing(a) ) {
 			event_tx = x/16;
 			event_ty = y/16;
@@ -459,7 +463,7 @@ function is_obstructed_at( px, py ) {
 			event_entity_hit = -1;
 			onEntityCollision();
 		}
-     
+   
 		return true;
 	}
 
@@ -480,8 +484,5 @@ function is_obstructed_at( px, py ) {
 	}
 
 	return false;
-}*/
-
-function is_obstructed_at( px, py ) {
-    return false;
 }
+*/

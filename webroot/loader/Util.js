@@ -134,3 +134,15 @@ function y_from_flat( flatval, yMax ) {
 function flat_from_xy( x, y, yMax ) {
     return y*yMax + x;
 }
+
+function sign(i) {
+    if(i) {
+        if( i < 0 ) {
+            return -1;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
