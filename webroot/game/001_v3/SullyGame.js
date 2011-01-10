@@ -177,10 +177,10 @@ Game.prototype = {
         /// needs to be pulled out of the engine.
         
         var mapdata = $$.assets.get('paradise_isle2.json');
-        var tileset = $$.assets.get('tropic2.vsp');
         
         vsp = {
-            image: tileset,
+            name: 'tropic2.vsp',
+            image: null,
             tile: {w:16, h:16}
         };
         
