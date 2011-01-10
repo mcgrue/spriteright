@@ -134,12 +134,12 @@ Map.prototype = {
         }
     },
 
-    isObstructed: function(x,y) {
-        return this.map.obs_data[flat_from_xy(x, y, this.map.dimensions.x)];
+    isObstructed: function(tx,ty) {
+        return this.map.obs_data[flat_from_xy(tx, ty, this.map.dimensions.x)];
     },
 
-    getZone: function(x,y) {
-        return this.map.zone_data[flat_from_xy(x, y, this.map.dimensions.x)];
+    getZone: function(tx,ty) {
+        return this.map.zone_data[flat_from_xy(tx, ty, this.map.dimensions.x)];
     },
 
     getTileCoordinates: function(x,y) {
