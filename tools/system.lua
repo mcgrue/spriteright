@@ -25,6 +25,19 @@ function autoexec()
     v3.map("maps/paradise_isle2.map")
 end
 
+function write_obstruction_bmp()
+    obsSetLen = v3.curmap.numobs * 16
+    obsSetTileCnt = v3.curmap.numobs
+    obsSetImage = v3.newImage(16, obsSetLen)
+    v3.RectFill(0,0, 16,obsSetLen, v3.RGB(255,0,255), obsSetImage)
+
+    for i=0, obsSetTileCnt-1, 1 do
+        v3.BlitObs(0, 16*i, i, obsSetImage)
+    end
+
+    WriteFileBitmap24( obsSetImage, v3.curmap.savevsp .. '.obs' )
+end
+
 function start()
 
 --[[    c = v3.EntitySpawn(0, 0, 'res/chrs/darin.chr')
@@ -179,8 +192,10 @@ function ignore()
     outfile = v3.curmap.name .. '.json'
     f = v3.FileOpen( outfile, v3.FILE_WRITE )
     v3.FileWrite( f, json.encode(data) )
-    v3.FileClose( f );
+    v3.FileClose( f )
 
     --- output the bmp vsp
     WriteFileBitmap24( v3.curmap.tileset, v3.curmap.savevsp )
+
+    write_obstruction_bmp()
 end
