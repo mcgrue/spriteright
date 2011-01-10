@@ -134,35 +134,3 @@ function y_from_flat( flatval, yMax ) {
 function flat_from_xy( x, y, yMax ) {
     return y*yMax + x;
 }
-
-/// an entity has coordinates, dimensions, and a bounding box.
-/// return true if you can make that move.
-/// return false if you'd go bump in the night.
-function i_want_to_go_to_there( entity, dx, dy ) {
-    if( typeof entity.hotspot == 'undefined' ) {
-        throw "entities without a .hotspot member cannot collide.";
-    }
-
-    var x1 = entity.x + entity.hotspot.x + dx;
-    var y1 = entity.y + entity.hotspot.y + dy;
-
-    var x2 = x1 + entity.hotspot.w;
-    var y2 = y1 + entity.hotspot.h;
-
-/// currently only map-based obs and full-tile.  cheap and insufficient.  replace later.
-    var tx1 = parseInt(x1/16);
-    var ty1 = parseInt(y1/16);
-    tx2 = parseInt(x2/16);
-    ty2 = parseInt(y2/16);
-
-    if(
-        $$.map.isObstructed(tx1, ty1) ||
-        $$.map.isObstructed(tx1, ty2) ||
-        $$.map.isObstructed(tx2, ty1) ||
-        $$.map.isObstructed(tx2, ty2)    
-    ) {
-        return false;
-    }
-
-    return true;
-}

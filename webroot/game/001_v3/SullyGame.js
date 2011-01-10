@@ -89,7 +89,7 @@ Game.prototype = {
             $$.hero.facing = $$.map.SPRITE_FACING_EAST;
         }
     
-        if( (dx ||dy) && i_want_to_go_to_there( $$.hero, dx, dy ) ) {         
+        if( (dx ||dy) && !is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) ) {         
             $$.hero.x += dx;
             $$.hero.y += dy;
              
@@ -283,6 +283,10 @@ try {
         //var hero_img = $$.assets.get( 'crystal.png' );
 
 
+//// investigate: void Entity::do_movescript()
+//// ProcessControls()
+//// onEntityCollision()
+
 var done = false;
 var i = 0;
 while( !done ) {
@@ -425,4 +429,53 @@ function Warp(tx, ty, trans) {
 
     $$.camera.x = $$.hero.x + x;
     $$.camera.y = $$.hero.y + y;
+}
+
+/*
+int obstructpixel(int x, int y) {
+    if ( x<0 || y<0 || (x>>4)>=mapwidth || (y>>4)>=mapheight ) return 1;
+    int t=obslayer[((y>>4)*mapwidth)+(x>>4)];
+    return tileset->GetObs(t, x&15, y&15);
+}
+
+/// an entity has coordinates, dimensions, and a bounding box.
+/// return true if you can make that move.
+/// return false if you'd go bump in the night.
+function is_obstructed_at( px, py ) {
+     
+	if( current_map->obstructpixel(x, y) ) {
+         
+		if( isEntityCollisionCapturing(a) ) {
+			event_tx = x/16;
+			event_ty = y/16;
+			event_entity = __grue_actor_index;
+			event_zone = current_map->zone(x/16, y/16);
+			event_entity_hit = -1;
+			onEntityCollision();
+		}
+     
+		return true;
+	}
+
+	int ent_idx = EntityObsAt(x, y);
+
+	if( ent_idx > -1 ) {
+
+		if( isEntityCollisionCapturing() ) {
+			event_tx = x/16;
+			event_ty = y/16;
+			event_entity = __grue_actor_index;
+			event_zone = -1;
+			event_entity_hit = ent_idx;
+			onEntityCollision();
+		}
+
+		return true;
+	}
+
+	return false;
+}*/
+
+function is_obstructed_at( px, py ) {
+    return false;
 }
