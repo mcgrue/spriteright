@@ -22,7 +22,8 @@ function split(str, pat)
 end
 
 function autoexec()
-    v3.map("maps/paradise_isle2.map")
+    --v3.map("maps/paradise_isle2.map")
+    v3.map("maps/simpletype_overworld.map")
 end
 
 function write_obstruction_bmp()
@@ -36,6 +37,25 @@ function write_obstruction_bmp()
     end
 
     WriteFileBitmap24( obsSetImage, v3.curmap.savevsp .. '.obs' )
+end
+
+function write_tileset_bmp()
+    numTiles = v3.ImageHeight(v3.curmap.tileset) / 16
+    numRows = (numTiles / 16) + 1
+
+    im = v3.NewImage( 256, numRows * 16 )
+
+    i = 0
+    for y=0, numRows, 1 do
+        for x=0, 16, 1 do
+            if i < numTiles then
+                v3.BlitTile(x*16, y*16, i, im)
+                i = i + 1
+            end
+        end
+    end
+
+    WriteFileBitmap24( im, v3.curmap.savevsp )   
 end
 
 function start()
@@ -194,8 +214,7 @@ function ignore()
     v3.FileWrite( f, json.encode(data) )
     v3.FileClose( f )
 
-    --- output the bmp vsp
-    WriteFileBitmap24( v3.curmap.tileset, v3.curmap.savevsp )
-
+    --- output the image data
     write_obstruction_bmp()
+    write_tileset_bmp()
 end
