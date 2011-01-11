@@ -47,10 +47,14 @@ Map.prototype = {
     },
 
     draw_tile: function( tx, ty, t ) {
-            
+
+        var col = x_from_flat( t, 16 );
+        var row = y_from_flat( t, 16 );
+
         //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
         $$.context.drawImage(
-            this.vsp.image,  0, t*this.vsp.tile.h, this.vsp.tile.w, this.vsp.tile.h,
+            this.vsp.image,
+            col*this.vsp.tile.h, row*this.vsp.tile.w, this.vsp.tile.w, this.vsp.tile.h,
             
             (tx*this.vsp.tile.w - $$.camera.x)*$$.scale,
             (ty*this.vsp.tile.h - $$.camera.y)*$$.scale,

@@ -2,14 +2,15 @@
 
 /// Largely transliterated from C to JS from
 /// https://github.com/mcgrue/verge3/blob/master/verge/Source/g_entity.cpp
-function Entity(x, y, def, index) {
+function MapEntity(x, y, def, index) {
     this.index = index;
 
     if( !index ) {
         throw "No entity index.  Do we even want that as a concept?";
     }
 
-    this.image = Asset.get( def.image )
+    this.image = $$.assets.get( def.image );
+    
     this.mapAnimation = new MapAnimation(x, y, this.image, def);
 
     this.x = x;
@@ -74,7 +75,7 @@ function Entity(x, y, def, index) {
  */
 }
 
-Entity.prototype = {
+MapEntity.prototype = {
     NORTH : 1,
     SOUTH : 2,
     EAST : 3,
@@ -85,6 +86,22 @@ Entity.prototype = {
     MOVETYPE_BOX : 2, 
     MOVETYPE_SCRIPT : 3,
 
+    render : function() {
+        this.mapAnimation.render();
+    },
+
+    setState : function(s) {
+        this.mapAnimation.setState(s);
+    },
+
+    getTX : function() {
+        return parseInt( this.x/$$.map.vsp.tile.w );
+    },
+
+    getTY : function() {
+        return parseInt( this.y/$$.map.vsp.tile.h );
+    },
+
     setFace : function( d ) {
         if ((d > 0) && (d <= 4)) {
             this.face = d; 
@@ -94,7 +111,7 @@ Entity.prototype = {
     },
 
     _zeroPath : function(x,y,f) {
-        for( var i=0; i<FOLLOWDISTANCE; i++ ) {
+        for( var i=0; i<this.FOLLOWDISTANCE; i++ ) {
             this.path.push( [x,y,this.SOUTH] )
         }
     }, 
@@ -355,86 +372,69 @@ Entity.prototype = {
         return false;
     },
 
+    _doRandomWalk : function(rb, lb, db, ub) {
+        while (1) {
+            var i = rnd(0,3);
+            switch( i )  {
+                case 0:
+                    if( rb ) break;
+                    this.setWaypointRelative($$.map.vsp.tile.w, 0);
+                    return;
+                case 1:
+                    if( lb ) break;
+                    this.setWaypointRelative(-$$.map.vsp.tile.w, 0);
+                    return;
+                case 2:
+                    if( db ) break;
+                    this.setWaypointRelative(0,$$.map.vsp.tile.y);
+                    return;
+                case 3:
+                    if( ub ) break;
+                    this.setWaypointRelative(0, -$$.map.vsp.tile.y);
+                    return;
+            }
+        }
+    },
+
     _doWanderzone : function() {
         var ub=false, db=false, lb=false, rb=false;
-        var ex = parseInt( this.x/$$.map.vsp.tile.w );
-        var ey = parseInt( this.y/$$.map.vsp.tile.h );
+        var ex = this.getTX();
+        var ey = this.getTY();
         var myzone = $$.map.getZone( ex, ey );
     
         if( this.ObstructDir(this.EAST) || $$.map.getZone(ex+1, ey) != myzone) rb=true;
         if( this.ObstructDir(this.WEST) || $$.map.getZone(ex-1, ey) != myzone) lb=true;
         if( this.ObstructDir(this.SOUTH) || $$.map.getZone(ex, ey+1) != myzone) db=true;
-        if( this.ObstructDir(this.NORTH) || current_map->zone(ex, ey-1) != myzone) ub=true;
+        if( this.ObstructDir(this.NORTH) || $$.map.getZone(ex, ey-1) != myzone) ub=true;
     
         if (rb && lb && db && ub) return; // Can't move in any direction
     
         this.next_think_time = $$.tickTime + this.wander_delay;
-        while (1)
-        {
-            int i = rnd(0,3);
-            switch (i)
-            {
-                case 0:
-                    if (rb) break;
-                    set_waypoint_relative(16, 0);
-                    return;
-                case 1:
-                    if (lb) break;
-                    set_waypoint_relative(-16, 0);
-                    return;
-                case 2:
-                    if (db) break;
-                    set_waypoint_relative(0, 16);
-                    return;
-                case 3:
-                    if (ub) break;
-                    set_waypoint_relative(0, -16);
-                    return;
-            }
-        }
+
+        this._doRandomWalk(rb, lb, db, ub);
+    },
+
+    _doWanderbox : function() {
+        var ub=false, db=false, lb=false, rb=false;
+        var ex = this.getTX();
+        var ey = this.getTY();
+    
+        if (ObstructDir(EAST) || ex+1 > wx2) rb=true;
+        if (ObstructDir(WEST) || ex-1 < wx1) lb=true;
+        if (ObstructDir(SOUTH) || ey+1 > wy2) db=true;
+        if (ObstructDir(NORTH) || ey-1 < wy1) ub=true;
+    
+        if (rb && lb && db && ub) return; // Can't move in any direction
+    
+        this.next_think_time = $$.tickTime + this.wander_delay;
+        
+        this._doRandomWalk(rb, lb, db, ub);
     }
 
+
 }
 
-void Entity::do_wanderbox()
-{
-	bool ub=false, db=false, lb=false, rb=false;
-	int ex = getx()/16;
-	int ey = gety()/16;
-
-	if (ObstructDir(EAST) || ex+1 > wx2) rb=true;
-	if (ObstructDir(WEST) || ex-1 < wx1) lb=true;
-	if (ObstructDir(SOUTH) || ey+1 > wy2) db=true;
-	if (ObstructDir(NORTH) || ey-1 < wy1) ub=true;
-
-	if (rb && lb && db && ub) return; // Can't move in any direction
-
-	this.next_think_time = $$.tickTime + this.wander_delay;
-	while (1)
-	{
-		int i = rnd(0,3);
-		switch (i)
-		{
-			case 0:
-				if (rb) break;
-				set_waypoint_relative(16, 0);
-				return;
-			case 1:
-				if (lb) break;
-				set_waypoint_relative(-16, 0);
-				return;
-			case 2:
-				if (db) break;
-				set_waypoint_relative(0, 16);
-				return;
-			case 3:
-				if (ub) break;
-				set_waypoint_relative(0, -16);
-				return;
-		}
-	}
-}
-
+/*
 void Entity::do_movescript()
 {
 	static char vc2me[] = { 2, 1, 3, 4 };

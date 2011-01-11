@@ -317,10 +317,11 @@ while( !done ) {
     i++;
 }
 
+//$$.hero = new MapEntity(160, 896, hero_data, 1);
+
         var sprite = new MapAnimation( 160, 896, hero_img, hero_data );
-        $$.renderstack[0].add( layer_ent, sprite );
-        
         $$.hero = sprite;
+        $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
         
         var menu = new RenderThing(
@@ -448,6 +449,10 @@ int obstructpixel(int x, int y) {
     return tileset->GetObs(t, x&15, y&15);
 }
 */
+
+function is_obstructed_at( px, py ) {
+    return false;
+}
 
 /// an entity has coordinates, dimensions, and a bounding box.
 /// return true if you can make that move.
