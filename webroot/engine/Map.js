@@ -109,7 +109,7 @@ Map.prototype = {
         }
 
         if( $$._debug_showthings ) {
-            $$.context.globalCompositeOperation = 'lighter';
+            //$$.context.globalCompositeOperation = 'lighter';
 
             for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 
