@@ -22,8 +22,8 @@ function split(str, pat)
 end
 
 function autoexec()
-    --v3.map("maps/paradise_isle2.map")
-    v3.map("maps/simpletype_overworld.map")
+    v3.map("maps/paradise_isle2.map")
+    --v3.map("maps/simpletype_overworld.map")
 end
 
 function write_obstruction_bmp()
@@ -47,7 +47,7 @@ function write_tileset_bmp()
 
     i = 0
     for y=0, numRows, 1 do
-        for x=0, 16, 1 do
+        for x=0, 15, 1 do
             if i < numTiles then
                 v3.BlitTile(x*16, y*16, i, im)
                 i = i + 1
