@@ -146,3 +146,7 @@ function sign(i) {
 
     return 0;
 }
+
+function rnd(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
