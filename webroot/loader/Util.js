@@ -1,3 +1,19 @@
+function ComposeClasses(receivingClass, givingClass) {
+   for(methodName in givingClass.prototype) {
+      if(!receivingClass.prototype[methodName]) {
+         receivingClass.prototype[methodName] = givingClass.prototype[methodName];
+      }
+   }
+}
+
+function MixIn( receivingInstance, givingClass ) {
+   for(methodName in givingClass.prototype) {
+      if( !receivingInstance[methodName] ) {
+         receivingInstance[methodName] = givingClass.prototype[methodName];
+      }
+   }
+}
+
 function is_int( input ) {
     return parseInt(input) == input;
 }

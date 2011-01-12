@@ -42,6 +42,9 @@ function MapEntity(x, y, def, index) {
 
     this.wander_delay = 75;
 
+    // pixels per step
+    this.playerstep = 1;
+
 /*
 	follower = 0;
 	follow = 0;
@@ -74,6 +77,8 @@ function MapEntity(x, y, def, index) {
 		pathf[i] = SOUTH;
  */
 }
+
+// extend(BaseClass, ChildClass);
 
 MapEntity.prototype = {
     NORTH : 1,
@@ -273,7 +278,7 @@ MapEntity.prototype = {
             num_ticks--;
     
             if( this.ready() ) {
-                switch( movecode ) {
+                switch( this.movecode ) {
                     // MOVETYPE_PLAYER
                     case 0: if( this == $$.hero && !invc ) { $$.game.processUserInputForPlayer(); } break;
 
@@ -314,19 +319,19 @@ MapEntity.prototype = {
         switch( d ) {
             case NORTH:
                 for( x=ex; x<ex+hotw; x++ )
-                    if( this.ObstructAt(x, ey-1) ) return true;
+                    if( ObstructAt(x, ey-1) ) return true;
                 break;
             case SOUTH:
                 for( x=ex; x<ex+hotw; x++ )
-                    if( this.ObstructAt(x, ey+hoth) ) return true;
+                    if( ObstructAt(x, ey+hoth) ) return true;
                 break;
             case WEST:
                 for( y=ey; y<ey+hoth; y++ )
-                    if( this.ObstructAt(ex-1, y) ) return true;
+                    if( ObstructAt(ex-1, y) ) return true;
                 break;
             case EAST:
                 for( y=ey; y<ey+hoth; y++ )
-                    if( this.ObstructAt(ex+hotw, y) ) return true;
+                    if( ObstructAt(ex+hotw, y) ) return true;
                 break;
         }
 
@@ -350,22 +355,22 @@ MapEntity.prototype = {
             case this.NORTH:
                 for( i=0; i<hoth; i++ )
                     for( x=ex; x<ex+hotw; x++ )
-                        if( this.ObstructAt(x, ey-i-1) ) return true;
+                        if( ObstructAt(x, ey-i-1) ) return true;
                 break;
             case this.SOUTH:
                 for( i=0; i<hoth; i++ )
                     for( x=ex; x<ex+hotw; x++ )
-                        if( this.ObstructAt(x, ey+i+hoth) ) return true;
+                        if( ObstructAt(x, ey+i+hoth) ) return true;
                 break;
             case this.WEST:
                 for( i=0; i<hotw; i++ )
                     for( y=ey; y<ey+hoth; y++ )
-                        if( this.ObstructAt(ex-i-1, y) ) return true;
+                        if( ObstructAt(ex-i-1, y) ) return true;
                 break;
             case this.EAST:
                 for( i=0; i<hotw; i++ )
                     for( y=ey; y<ey+hoth; y++ )
-                        if( this.ObstructAt(ex+hotw+i, y) ) return true;
+                        if( ObstructAt(ex+hotw+i, y) ) return true;
                 break;
         }
          
@@ -429,9 +434,66 @@ MapEntity.prototype = {
         this.next_think_time = $$.tickTime + this.wander_delay;
         
         this._doRandomWalk(rb, lb, db, ub);
+    },
+
+    // returns distance possible to move up to
+    // the first obstruction in the given direction
+    MaxPlayerMove : function( direction, max ) {
+    
+        var x, y;
+        var ex = this.x;
+        var ey = this.y;
+    
+        // check to see if the player is obstructable at all
+        if (!this.obstructable) return max;
+    
+        for( var check = 1; check <= max+1; check++ ) {
+            switch( direction ) {
+                case NORTH:
+                    for (x=ex; x<ex+ this.hotw; x++)
+                        if (ObstructAt(x, ey-check)) return check-1;
+                    break;
+                case SOUTH:
+                    for (x=ex; x<ex+this.hotw; x++)
+                        if (ObstructAt(x, ey+this.hoth+check-1)) return check-1;
+                    break;
+                case WEST:
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex-check, y)) return check-1;
+                    break;
+                case EAST:
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex+this.hotw+check-1, y)) return check-1;
+                    break;
+                case NW:
+                    for (x=ex; x<ex+this.hotw; x++)
+                        if (ObstructAt(x-check, ey-check)) return check-1;
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex-check, y-check)) return check-1;
+                    break;
+                case SW:
+                    for (x=ex; x<ex+this.hotw; x++)
+                        if (ObstructAt(x-check, ey+this.hoth+check-1)) return check-1;
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex-check, y+check)) return check-1;
+                    break;
+                case NE:
+                    for (x=ex; x<ex+this.hotw; x++)
+                        if (ObstructAt(x+check, ey-check)) return check-1;
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex+this.hotw+check-1, y-check)) return check-1;
+                    break;
+                case SE:
+                    for (x=ex; x<ex+this.hoth; x++)
+                        if (ObstructAt(x+check, ey+this.hoth+check-1)) return check-1;
+                    for (y=ey; y<ey+this.hoth; y++)
+                        if (ObstructAt(ex+this.hotw+check-1, y+check)) return check-1;
+                    break;
+            }
+        }
+
+        return parseInt(max);
     }
-
-
 }
 
 /*

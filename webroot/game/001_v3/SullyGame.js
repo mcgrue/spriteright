@@ -323,7 +323,9 @@ while( !done ) {
         $$.hero = sprite;
         $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
-        
+        MixIn($$.hero, MapEntity);
+        $$.hero.movecode = 0;
+
         var menu = new RenderThing(
             0, 10,
             50, 50,
@@ -495,3 +497,199 @@ debugger;
 	return false;
 }
 */
+
+/// ah sick of this transliteration.  GLOABLTIME.
+var NORTH = 1;
+var SOUTH = 2;
+var EAST = 3;
+var WEST = 4;
+var NE = 5;
+var NW = 6;
+var SE = 7;
+var SW = 8;
+
+function ObstructAt( px, py ) {
+    
+	if( $$.map.obstructPixel(x,y) ) {
+/*
+		if( isEntityCollisionCapturing() ) {
+			event_tx = x/16;
+			event_ty = y/16;
+			event_entity = __grue_actor_index;
+			event_zone = current_map->zone(x/16, y/16);
+			event_entity_hit = -1;
+			onEntityCollision();
+		}
+*/
+		return true;
+	}
+
+	var ent_idx = $$.map.obstructEntity(x,y);
+
+	if( ent_idx !== false ) {
+
+/*
+		if( isEntityCollisionCapturing() ) {
+			event_tx = x/16;
+			event_ty = y/16;
+			event_entity = __grue_actor_index;
+			event_zone = -1;
+			event_entity_hit = ent_idx;
+			onEntityCollision();
+		}
+*/
+		return true;
+	}
+
+	return false;
+}
+
+function ProcessControls( myself ) {
+	
+    // No player movement can be done if there's no ready player, or if there's a script active.
+	if( !myself || !myself.ready() ) {
+		return;
+	}
+
+//	if( myself->movecode == 3 ) {
+//		ScriptEngine::PlayerEntityMoveCleanup();
+//	}
+
+    var up = $$.keys.isUpPressed();
+    var down = $$.keys.isDownPressed();
+    var left = $$.keys.isLeftPressed();
+    var right = $$.keys.isRightPressed();
+
+	// check diagonals first
+	if( left && up ) {
+		myself.setFace(myself.WEST);
+		var dist = MaxPlayerMove(NW, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(-1*dist, -1*dist);
+			return;
+		}
+	}
+
+	if( right && up ) {
+		myself.setface(myself.EAST);
+		var dist = MaxPlayerMove(NE, myself.playerstep);
+		if (dist) {
+			myself.setWaypointRelative(dist, -1*dist);
+			return;
+		}
+	}
+
+	if( left && down ) {
+		myself.setface( myself.WEST );
+		var dist = MaxPlayerMove(SW, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(-1*dist, dist);
+			return;
+		}
+	}
+
+	if( right && down ) {
+		myself.setFace( myself.EAST );
+		var dist = MaxPlayerMove(SE, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(dist, dist);
+			return;
+		}
+	}
+
+	// check four cardinal directions last
+	if( up ) {
+		myself.setFace( myself.NORTH );
+		var dist = MaxPlayerMove(NORTH, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(0, -1*dist);
+			return;
+		}
+
+        dist = MaxPlayerMove(NW, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.WEST );
+            myself.setWaypointRelative(-1*dist, -1*dist);
+            return;
+        }
+
+        dist = MaxPlayerMove(NE, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.EAST );
+            myself.setWaypointRelative(dist, -1*dist);
+            return;
+        }
+	}
+
+	if( down ) {
+		myself.setFace( myself.SOUTH );
+		var dist = MaxPlayerMove(SOUTH, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(0, dist);
+			return;
+		}
+
+        // check for sliding along walls if we permit diagonals
+        dist = MaxPlayerMove(SW, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.WEST );
+            myself.setWaypointRelative(-1*dist, 1*dist);
+            return;
+        }
+
+        dist = MaxPlayerMove(SE, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.EAST );
+            myself.setWaypointRelative(dist, dist);
+            return;
+        }
+	}
+
+	if( left ) {
+		myself.setFace( myself.WEST );
+		var dist = MaxPlayerMove(WEST, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(-1*dist, 0);
+			return;
+		}
+
+        // check for sliding along walls if we permit diagonals
+        dist = MaxPlayerMove(NW, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.WEST );
+            myself.setWaypointRelative(-1*dist, -1*dist);
+            return;
+        }
+
+        dist = MaxPlayerMove(SW, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.WEST );
+            myself.setWaypointRelative(-1*dist, 1*dist);
+            return;
+        }
+	}
+
+	if( right ) {
+		myself.setFace( myself.EAST );
+		var dist = MaxPlayerMove(EAST, myself.playerstep);
+		if( dist ) {
+			myself.setWaypointRelative(dist, 0);
+			return;
+		}
+
+        // check for sliding along walls if we permit diagonals
+        dist = MaxPlayerMove(NE, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.EAST );
+            myself.setWaypointRelative(dist, -1*dist);
+            return;
+        }
+
+        dist = MaxPlayerMove(SE, myself.playerstep);
+        if( dist ) {
+            myself.setFace( myself.EAST );
+            myself.setWaypointRelative(dist, dist);
+            return;
+        }
+	}
+}

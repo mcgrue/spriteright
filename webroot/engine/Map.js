@@ -202,4 +202,14 @@ Map.prototype = {
             $$.log("Nothing there.");
         }
     },
+
+    obstructPixel : function( px, py ) {
+        // currently unimplemented
+        return false;
+    },
+
+    obstructEntity : function( px, py ) {
+        // currently unimplemented
+        return false;
+    }
 }

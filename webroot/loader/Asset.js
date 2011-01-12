@@ -149,7 +149,7 @@ Assets.prototype = {
         this.Script('engine/MapImage.js', 'engine/MapImage.js');
         this.Script('engine/MapAnimation.js', 'engine/MapAnimation.js');
         this.Script('engine/Map.js', 'engine/Map.js');
-        this.Script('engine/Entity.js', 'engine/Entity.js');
+        this.Script('engine/MapEntity.js', 'engine/MapEntity.js');
         this.Script('engine/RenderThing.js', 'engine/RenderThing.js');
         this.Script('engine/TextBox.js', 'engine/TextBox.js');
         this.Script('engine/McGrender.js', 'engine/McGrender.js');
