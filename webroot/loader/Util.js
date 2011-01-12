@@ -166,3 +166,36 @@ function sign(i) {
 function rnd(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+
+function loadImageData(url, callback) {
+    var ctx = document.createElement('canvas').getContext('2d');
+    var img = new Image();
+    img.onload = function() {
+        ctx.drawImage(img,0,0);
+        imageData = ctx.getImageData(0, 0, img.width, img.height);
+        callback(imageData);
+    };
+    img.src = url;
+}
+
+function getImageData(img) {
+    if(!img.complete) throw "Image not yet loaded.";
+    var ctx = document.createElement('canvas').getContext('2d');
+    ctx.width =  img.width;
+    ctx.height = img.height;
+    ctx.drawImage(img,0,0);
+    var res = ctx.getImageData(0, 0, img.width, img.height);
+debugger;
+    return res;
+}
+
+function getPixel( imageData, x, y ) {
+    index = (x + y * imageData.width) * 4;
+    return [
+        imageData.data[index+0],
+        imageData.data[index+1],
+        imageData.data[index+2],
+        imageData.data[index+3]
+    ];
+}

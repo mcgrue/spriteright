@@ -10,8 +10,18 @@ function Map(map, vsp) {
         this.obs = $$.assets.get( 'standard_obs.png' );
     }
 
+    this.obsImgData = getImageData(this.obs);
+
+debugger;
+
     this.height = this.vsp.tile.h * (this.map.dimensions.y - 1);
     this.width = this.vsp.tile.w * (this.map.dimensions.x - 1);
+
+    if( this.vsp.tile.h == 16 && this.vsp.tile.w == 16 ) {
+        this.obstructPixel = this.obstructPixel16;
+    } else {
+        this.obstructPixel = this.obstructPixelGeneric;
+    }
 }
 
 Map.prototype = {
@@ -91,7 +101,7 @@ Map.prototype = {
         }
 
         var t = 0;    
-        // very bad, doesn't respect weird render orders.
+
         for( var l = 0; l < arLayers.length; l++ ) { 
             for( var y=y_orig; y<y_max; y++ ) {
                 var base = false;
@@ -109,7 +119,6 @@ Map.prototype = {
         }
 
         if( $$._debug_showthings ) {
-            //$$.context.globalCompositeOperation = 'lighter';
 
             for( var y=y_orig; y<y_orig+y_width; y++ ) {
                 
@@ -128,7 +137,7 @@ Map.prototype = {
                         this.draw_rect( x,y, '#00FF00' );
                     }
 
-                    this.draw_obs( x,y, this.isObstructed(x,y) );
+                    this.draw_obs( x,y, this.getObstructionTile(x,y) );
 
                     i++;   
                 }
@@ -138,7 +147,7 @@ Map.prototype = {
         }
     },
 
-    isObstructed: function(tx,ty) {
+    getObstructionTile: function(tx,ty) {
         return this.map.obs_data[flat_from_xy(tx, ty, this.map.dimensions.x)];
     },
 
@@ -203,9 +212,45 @@ Map.prototype = {
         }
     },
 
-    obstructPixel : function( px, py ) {
+    obstructPixelGeneric : function( px, py ) {
+        if( x<0 || y<0 || x >= this.width || y >= this.height ) {
+            return true;
+        }
+
+        var tc = this.getTileCoordinates(px, py);
+
+        var t = this.getObstructionTile(tc.tx,tc.ty);
+
+        if( !t ) return false;
+
+    },
+
+    obstructPixel16 : function( px, py ) {
+
+        if( x<0 || y<0 || x >= this.width || y >= this.height ) {
+            return true;
+        }
+
+        var t = this.map.obs_data[((y>>4)*this.map.dimensions.x)+(x>>4)];
+
+        if( !t ) return false;
+
+/*
+	int obstructpixel(int x, int y)
+	{
+		if (x<0 || y<0 || (x>>4)>=mapwidth || (y>>4)>=mapheight) return 1;
+		int t=obslayer[((y>>4)*mapwidth)+(x>>4)];
+		return tileset->GetObs(t, x&15, y&15);
+	}
+*/
+    
+
         // currently unimplemented
         return false;
+    },
+
+    getObsPixel : function( obsIdx, x, y ) {
+
     },
 
     obstructEntity : function( px, py ) {
