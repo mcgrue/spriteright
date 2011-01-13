@@ -71,12 +71,13 @@ Game.prototype = {
         if( $$.textBox.visible ) { 
             return;
         }
-    
+/*       
         var moved = false;
     
         var dx = 0;
         var dy = 0;
-    
+
+ 
         if( k.isUpPressed() ) {
             dy -= moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
@@ -143,6 +144,7 @@ Game.prototype = {
         }
     
         $$._last_hero_move = get_time();
+*/
     },
 
     
