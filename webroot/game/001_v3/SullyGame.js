@@ -10,6 +10,7 @@ Game.prototype = {
     beforeRender : function() {
         this.updateControls();
         this.doCameraFollow();
+$$.hero.think();
     },
 
     afterRender : function() {
@@ -17,7 +18,7 @@ Game.prototype = {
     },
 
     processUserInputForPlayer : function() {
-        throw "processUserInputForPlayer, lol";
+        ProcessControls($$.hero);
     },
 
     updateControls : function() {
@@ -326,7 +327,11 @@ while( !done ) {
         $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
         MixIn($$.hero, MapEntity);
-        $$.hero.movecode = 0;
+
+        $$.hero.init(1);
+
+        //$$.hero.movecode = 0;
+        //$$.hero.active = true;
 
         var menu = new RenderThing(
             0, 10,
@@ -566,7 +571,7 @@ function ProcessControls( myself ) {
 	// check diagonals first
 	if( left && up ) {
 		myself.setFace(myself.WEST);
-		var dist = MaxPlayerMove(NW, myself.playerstep);
+		var dist = myself.MaxPlayerMove(NW, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(-1*dist, -1*dist);
 			return;
@@ -574,8 +579,8 @@ function ProcessControls( myself ) {
 	}
 
 	if( right && up ) {
-		myself.setface(myself.EAST);
-		var dist = MaxPlayerMove(NE, myself.playerstep);
+		myself.setFace(myself.EAST);
+		var dist = myself.MaxPlayerMove(NE, myself.playerstep);
 		if (dist) {
 			myself.setWaypointRelative(dist, -1*dist);
 			return;
@@ -583,8 +588,8 @@ function ProcessControls( myself ) {
 	}
 
 	if( left && down ) {
-		myself.setface( myself.WEST );
-		var dist = MaxPlayerMove(SW, myself.playerstep);
+		myself.setFace( myself.WEST );
+		var dist = myself.MaxPlayerMove(SW, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(-1*dist, dist);
 			return;
@@ -593,7 +598,7 @@ function ProcessControls( myself ) {
 
 	if( right && down ) {
 		myself.setFace( myself.EAST );
-		var dist = MaxPlayerMove(SE, myself.playerstep);
+		var dist = myself.MaxPlayerMove(SE, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(dist, dist);
 			return;
@@ -603,20 +608,20 @@ function ProcessControls( myself ) {
 	// check four cardinal directions last
 	if( up ) {
 		myself.setFace( myself.NORTH );
-		var dist = MaxPlayerMove(NORTH, myself.playerstep);
+		var dist = myself.MaxPlayerMove(NORTH, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(0, -1*dist);
 			return;
 		}
 
-        dist = MaxPlayerMove(NW, myself.playerstep);
+        dist = myself.MaxPlayerMove(NW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
             myself.setWaypointRelative(-1*dist, -1*dist);
             return;
         }
 
-        dist = MaxPlayerMove(NE, myself.playerstep);
+        dist = myself.MaxPlayerMove(NE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
             myself.setWaypointRelative(dist, -1*dist);
@@ -626,21 +631,21 @@ function ProcessControls( myself ) {
 
 	if( down ) {
 		myself.setFace( myself.SOUTH );
-		var dist = MaxPlayerMove(SOUTH, myself.playerstep);
+		var dist = myself.MaxPlayerMove(SOUTH, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(0, dist);
 			return;
 		}
 
         // check for sliding along walls if we permit diagonals
-        dist = MaxPlayerMove(SW, myself.playerstep);
+        dist = myself.MaxPlayerMove(SW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
             myself.setWaypointRelative(-1*dist, 1*dist);
             return;
         }
 
-        dist = MaxPlayerMove(SE, myself.playerstep);
+        dist = myself.MaxPlayerMove(SE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
             myself.setWaypointRelative(dist, dist);
@@ -650,21 +655,21 @@ function ProcessControls( myself ) {
 
 	if( left ) {
 		myself.setFace( myself.WEST );
-		var dist = MaxPlayerMove(WEST, myself.playerstep);
+		var dist = myself.MaxPlayerMove(WEST, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(-1*dist, 0);
 			return;
 		}
 
         // check for sliding along walls if we permit diagonals
-        dist = MaxPlayerMove(NW, myself.playerstep);
+        dist = myself.MaxPlayerMove(NW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
             myself.setWaypointRelative(-1*dist, -1*dist);
             return;
         }
 
-        dist = MaxPlayerMove(SW, myself.playerstep);
+        dist = myself.MaxPlayerMove(SW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
             myself.setWaypointRelative(-1*dist, 1*dist);
@@ -674,21 +679,21 @@ function ProcessControls( myself ) {
 
 	if( right ) {
 		myself.setFace( myself.EAST );
-		var dist = MaxPlayerMove(EAST, myself.playerstep);
+		var dist = myself.MaxPlayerMove(EAST, myself.playerstep);
 		if( dist ) {
 			myself.setWaypointRelative(dist, 0);
 			return;
 		}
 
         // check for sliding along walls if we permit diagonals
-        dist = MaxPlayerMove(NE, myself.playerstep);
+        dist = myself.MaxPlayerMove(NE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
             myself.setWaypointRelative(dist, -1*dist);
             return;
         }
 
-        dist = MaxPlayerMove(SE, myself.playerstep);
+        dist = myself.MaxPlayerMove(SE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
             myself.setWaypointRelative(dist, dist);

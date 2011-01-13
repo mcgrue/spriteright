@@ -4,79 +4,7 @@
 /// https://github.com/mcgrue/verge3/blob/master/verge/Source/g_entity.cpp
 function MapEntity(x, y, def, index) {
 
-    this.index = index;
-
-    if( !index ) {
-        throw "No entity index.  Do we even want that as a concept?";
-    }
-
-    this.image = $$.assets.get( def.image );
-    
-    this.mapAnimation = new MapAnimation(x, y, this.image, def);
-
-    this.x = x;
-    this.y = y;
-    this.face = -1;
-
-    this.path = [];
-    this.FOLLOWDISTANCE = 16;
-	this._zeroPath(x,y,this.SOUTH);
-
-    this.speed = -1;
-    
-    this.follow = null;
-    this.follower = null;
-
-    this.waypointx = -1;
-    this.waypointy = -1;
-
-    this.movecode = 0;
-    this.obstruction = false;
-    this.obstructable = false;
-    this.next_think_time = 0;
-
-    this.active = false;
-
-    this.className = 'Entity';
-
-    /// deleted most everythign related to framect.
-
-    this.wander_delay = 75;
-
-    // pixels per step
-    this.playerstep = 1;
-
-/*
-	follower = 0;
-	follow = 0;
-	delay = 0;
-	lucent = 0;
-	wdelay = 75;
-	setxy(x1, y1);
-	setspeed(100);
-	speedct = 0;
-	chr = RequestCHR(chrfn);
-	hotw = chr->hw;
-	hoth = chr->hh;
-	visible = true;
-	active = true;
-	specframe = 0;
-	movecode = 0;
-	moveofs = 0;
-	framect = 0;
-	frame = 0;
-	face = SOUTH;
-	hookrender = "";
-	script = "";
-	description = "";
-	memset(movestr, 0, 256);
-	obstructable = 0;
-	obstruction = 0;
-	for (int i=0; i<FOLLOWDISTANCE; i++)
-		pathx[i] = x,
-		pathy[i] = y,
-		pathf[i] = SOUTH;
- */
+    this.init(index, x,y, def );
 }
 
 // extend(BaseClass, ChildClass);
@@ -92,6 +20,91 @@ MapEntity.prototype = {
     MOVETYPE_BOX : 2, 
     MOVETYPE_SCRIPT : 3,
 
+    init :  function(index, x,y, def ) {
+
+    this.index = index;
+
+    if( !index ) {
+        throw "No entity index.  Do we even want that as a concept?";
+    }
+
+    if( def ) {
+        this.image = $$.assets.get( def.image );
+        this.mapAnimation = new MapAnimation(x, y, this.image, def);
+    }
+
+    if(x >= 0 && y >= 0 ) {
+        this.x = x;
+        this.y = y;
+    }
+    this.face = -1;
+
+    this.FOLLOWDISTANCE = 16;
+	this._zeroPath(x,y,this.SOUTH);
+
+    this.speed = -1;
+    
+    this.follow = null;
+    this.follower = null;
+
+    this.waypointx = this.x;
+    this.waypointy = this.y;
+
+    this.movecode = 0;
+    this.obstruction = false;
+    this.obstructable = false;
+    this.next_think_time = 0;
+
+    this.active = true;
+
+    this.className = 'Entity';
+
+    /// deleted most everythign related to framect.
+
+    this.wander_delay = 75;
+
+    // pixels per step
+    this.playerstep = 1;
+
+    this.speedct = 0;
+    this.speed = 100;
+    this.visible = true;
+	this.active = true;
+
+    this.path = [];
+	for (var i=0; i<this.FOLLOWDISTANCE; i++) {
+		this.path = [x,y,this.SOUTH];
+    }
+
+/*
+	follower = 0;
+	follow = 0;
+	delay = 0;
+	lucent = 0;
+	wdelay = 75;
+	setxy(x1, y1);
+	setspeed(100);
+	
+	chr = RequestCHR(chrfn);
+	hotw = chr->hw;
+	hoth = chr->hh;
+
+	specframe = 0;
+	movecode = 0;
+	moveofs = 0;
+	framect = 0;
+	frame = 0;
+	face = SOUTH;
+	hookrender = "";
+	script = "";
+	description = "";
+	memset(movestr, 0, 256);
+	obstructable = 0;
+	obstruction = 0;
+ */
+    },
+
+/*
     render : function() {
         this.mapAnimation.render();
     },
@@ -99,6 +112,7 @@ MapEntity.prototype = {
     setState : function(s) {
         this.mapAnimation.setState(s);
     },
+*/
 
     getTX : function() {
         return parseInt( this.x/$$.map.vsp.tile.w );
@@ -117,6 +131,7 @@ MapEntity.prototype = {
     },
 
     _zeroPath : function(x,y,f) {
+        this.path = [];
         for( var i=0; i<this.FOLLOWDISTANCE; i++ ) {
             this.path.push( [x,y,this.SOUTH] )
         }
@@ -229,7 +244,7 @@ MapEntity.prototype = {
     
         // update pathxy for following
         for( var i = this.FOLLOWDISTANCE-2; i>=0; i-- ) {
-            this.path[i+1] = path[i];
+            this.path[i+1] = this.path[i];
         }
 
         this.path[0] = [this.x, this.y, this.face];
@@ -258,13 +273,13 @@ MapEntity.prototype = {
     	var num_ticks;
         if( !this.active ) {
             return;
-        } 
+        }
 
         /// this is highly suspect.  Not sure exactly what's going on here at a higher level.
         /// 100 hertz binding for think?
         /// almost certainly wrong for spriteright. -grue
         this.speedct += this.speed;
-        this.num_ticks = this.speedct / 100;
+        num_ticks = this.speedct / 100;
         this.speedct %= 100;
 
         if( this.next_think_time > $$.tickTime ) {
@@ -281,7 +296,7 @@ MapEntity.prototype = {
             if( this.ready() ) {
                 switch( this.movecode ) {
                     // MOVETYPE_PLAYER
-                    case 0: if( this == $$.hero && !invc ) { $$.game.processUserInputForPlayer(); } break;
+                    case 0: if( this == $$.hero ) { $$.game.processUserInputForPlayer(); } break;
 
                     // MOVETYPE_ZONE
                     case 1: this._doWanderzone(); break;
