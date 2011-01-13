@@ -185,9 +185,7 @@ function getImageData(img) {
     ctx.width =  img.width;
     ctx.height = img.height;
     ctx.drawImage(img,0,0);
-    var res = ctx.getImageData(0, 0, img.width, img.height);
-debugger;
-    return res;
+    return ctx.getImageData(0, 0, img.width, img.height);
 }
 
 function getPixel( imageData, x, y ) {

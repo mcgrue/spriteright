@@ -12,8 +12,6 @@ function Map(map, vsp) {
 
     this.obsImgData = getImageData(this.obs);
 
-debugger;
-
     this.height = this.vsp.tile.h * (this.map.dimensions.y - 1);
     this.width = this.vsp.tile.w * (this.map.dimensions.x - 1);
 
@@ -223,17 +221,31 @@ Map.prototype = {
 
         if( !t ) return false;
 
+        t = t * this.vsp.tile.h;
+
+        var pix = getPixel( this.obsImgData, px&(this.vsp.tile.w-1), t + py&(this.vsp.tile.h-1));
+
+        return pix;
     },
 
     obstructPixel16 : function( px, py ) {
-
-        if( x<0 || y<0 || x >= this.width || y >= this.height ) {
+debugger;
+        if( px<0 || py<0 || px >= this.width || py >= this.height ) {
             return true;
         }
 
-        var t = this.map.obs_data[((y>>4)*this.map.dimensions.x)+(x>>4)];
+        var t = this.map.obs_data[((py>>4)*this.map.dimensions.x)+(px>>4)];
 
         if( !t ) return false;
+
+        t = t << 4;
+
+        var pix = getPixel( this.obsImgData, px&15, t + py&15);
+
+    debugger;
+
+        return pix;
+    },
 
 /*
 	int obstructpixel(int x, int y)
@@ -243,18 +255,10 @@ Map.prototype = {
 		return tileset->GetObs(t, x&15, y&15);
 	}
 */
-    
-
-        // currently unimplemented
-        return false;
-    },
-
-    getObsPixel : function( obsIdx, x, y ) {
-
-    },
 
     obstructEntity : function( px, py ) {
         // currently unimplemented
+
         return false;
     }
 }

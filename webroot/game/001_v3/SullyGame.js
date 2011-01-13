@@ -509,8 +509,9 @@ var SE = 7;
 var SW = 8;
 
 function ObstructAt( px, py ) {
-    
-	if( $$.map.obstructPixel(x,y) ) {
+
+debugger;    
+	if( $$.map.obstructPixel(px,py) ) {
 /*
 		if( isEntityCollisionCapturing() ) {
 			event_tx = x/16;
@@ -524,7 +525,7 @@ function ObstructAt( px, py ) {
 		return true;
 	}
 
-	var ent_idx = $$.map.obstructEntity(x,y);
+	var ent_idx = $$.map.obstructEntity(px,py);
 
 	if( ent_idx !== false ) {
 

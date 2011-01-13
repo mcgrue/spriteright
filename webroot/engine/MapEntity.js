@@ -3,6 +3,7 @@
 /// Largely transliterated from C to JS from
 /// https://github.com/mcgrue/verge3/blob/master/verge/Source/g_entity.cpp
 function MapEntity(x, y, def, index) {
+
     this.index = index;
 
     if( !index ) {
