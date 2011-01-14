@@ -22,86 +22,86 @@ MapEntity.prototype = {
 
     init :  function(index, x,y, def ) {
 
-    this.index = index;
-
-    if( !index ) {
-        throw "No entity index.  Do we even want that as a concept?";
-    }
-
-    if( def ) {
-        this.image = $$.assets.get( def.image );
-        this.mapAnimation = new MapAnimation(x, y, this.image, def);
-    }
-
-    if(x >= 0 && y >= 0 ) {
-        this.x = x;
-        this.y = y;
-    }
-    this.face = -1;
-
-    this.FOLLOWDISTANCE = 16;
-	this._zeroPath(x,y,this.SOUTH);
-
-    this.speed = -1;
+        this.index = index;
     
-    this.follow = null;
-    this.follower = null;
-
-    this.waypointx = this.x;
-    this.waypointy = this.y;
-
-    this.movecode = 0;
-    this.obstruction = false;
-    this.obstructable = false;
-    this.next_think_time = 0;
-
-    this.active = true;
-
-    this.className = 'Entity';
-
-    /// deleted most everythign related to framect.
-
-    this.wander_delay = 75;
-
-    // pixels per step
-    this.playerstep = 1;
-
-    this.speedct = 0;
-    this.speed = 100;
-    this.visible = true;
-	this.active = true;
-
-    this.path = [];
-	for (var i=0; i<this.FOLLOWDISTANCE; i++) {
-		this.path = [x,y,this.SOUTH];
-    }
-
-/*
-	follower = 0;
-	follow = 0;
-	delay = 0;
-	lucent = 0;
-	wdelay = 75;
-	setxy(x1, y1);
-	setspeed(100);
-	
-	chr = RequestCHR(chrfn);
-	hotw = chr->hw;
-	hoth = chr->hh;
-
-	specframe = 0;
-	movecode = 0;
-	moveofs = 0;
-	framect = 0;
-	frame = 0;
-	face = SOUTH;
-	hookrender = "";
-	script = "";
-	description = "";
-	memset(movestr, 0, 256);
-	obstructable = 0;
-	obstruction = 0;
- */
+        if( !index ) {
+            throw "No entity index.  Do we even want that as a concept?";
+        }
+    
+        if( def ) {
+            this.image = $$.assets.get( def.image );
+            this.mapAnimation = new MapAnimation(x, y, this.image, def);
+        }
+    
+        if(x >= 0 && y >= 0 ) {
+            this.x = x;
+            this.y = y;
+        }
+        this.face = this.SOUTH;
+    
+        this.FOLLOWDISTANCE = 16;
+        this._zeroPath(x,y,this.SOUTH);
+    
+        this.speed = -1;
+        
+        this.follow = null;
+        this.follower = null;
+    
+        this.waypointx = this.x;
+        this.waypointy = this.y;
+    
+        this.movecode = 0;
+        this.obstruction = false;
+        this.obstructable = false;
+        this.next_think_time = 0;
+    
+        this.active = true;
+    
+        this.className = 'Entity';
+    
+        /// deleted most everythign related to framect.
+    
+        this.wander_delay = 75;
+    
+        // pixels per step
+        this.playerstep = 1;
+    
+        this.speedct = 0;
+        this.speed = 100;
+        this.visible = true;
+        this.active = true;
+    
+        this.path = [];
+        for (var i=0; i<this.FOLLOWDISTANCE; i++) {
+            this.path = [x,y,this.SOUTH];
+        }
+    
+    /*
+        follower = 0;
+        follow = 0;
+        delay = 0;
+        lucent = 0;
+        wdelay = 75;
+        setxy(x1, y1);
+        setspeed(100);
+        
+        chr = RequestCHR(chrfn);
+        hotw = chr->hw;
+        hoth = chr->hh;
+    
+        specframe = 0;
+        movecode = 0;
+        moveofs = 0;
+        framect = 0;
+        frame = 0;
+        face = SOUTH;
+        hookrender = "";
+        script = "";
+        description = "";
+        memset(movestr, 0, 256);
+        obstructable = 0;
+        obstruction = 0;
+     */
     },
 
 /*
@@ -250,8 +250,7 @@ MapEntity.prototype = {
     
         /// for non-player-input-driven entities who are obstructable
         if( this != $$.hero && ! this.follow && this.obstructable ) {
-debugger;
-this._defaulAnimationUpdater( dx || dy );
+            this._defaulAnimationUpdater( dx || dy );
             switch( this.face ) {
                 case this.NORTH: if( this.ObstructDirTick(this.NORTH) ) return; break;
                 case this.SOUTH: if( this.ObstructDirTick(this.SOUTH) ) return; break;
@@ -315,7 +314,10 @@ this._defaulAnimationUpdater( dx || dy );
             if( this.ready() ) {
                 switch( this.movecode ) {
                     // MOVETYPE_PLAYER
-                    case 0: if( this == $$.hero ) { $$.game.processUserInputForPlayer(); } break;
+                    case 0: if( this == $$.hero ) {
+                        this._defaulAnimationUpdater( $$.game.processUserInputForPlayer() );
+                    }
+                    break;
 
                     // MOVETYPE_ZONE
                     case 1: this._doWanderzone(); break;
