@@ -156,6 +156,23 @@ MapEntity.prototype = {
             follower.setSpeed(s);
         }
     },
+
+    _defaulAnimationUpdater : function( isWalking ) {
+        var s;
+        if( isWalking ) {
+            s = '_walk';
+        } else {
+            s = '_idle';
+        }
+        switch( this.face ) {
+            case this.NORTH: return 'up'+s;
+            case this.SOUTH: return 'down'+s;
+            case this.EAST: return 'right'+s;
+            case this.WEST: return 'left'+s;
+        }
+
+        throw "Unknown face: " + this.face;
+    },
     
     _faceChanger : function(dx, dy) {
         switch( sign(dy) ) {
@@ -212,7 +229,7 @@ MapEntity.prototype = {
             this.follow.path[this.FOLLOWDISTANCE-1][2]
         );
 
-        this.set_waypoint( this.x, this.y );
+        this.setWaypoint( this.x, this.y );
         
         this.movecode = 0;
         this.obstruction = false;
@@ -233,6 +250,8 @@ MapEntity.prototype = {
     
         /// for non-player-input-driven entities who are obstructable
         if( this != $$.hero && ! this.follow && this.obstructable ) {
+debugger;
+this._defaulAnimationUpdater( dx || dy );
             switch( this.face ) {
                 case this.NORTH: if( this.ObstructDirTick(this.NORTH) ) return; break;
                 case this.SOUTH: if( this.ObstructDirTick(this.SOUTH) ) return; break;
