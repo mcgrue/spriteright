@@ -10,7 +10,6 @@ Game.prototype = {
     beforeRender : function() {
         this.updateControls();
         this.doCameraFollow();
-$$.hero.think();
     },
 
     afterRender : function() {
@@ -72,7 +71,7 @@ $$.hero.think();
         if( $$.textBox.visible ) { 
             return;
         }
-/*       
+     
         var moved = false;
     
         var dx = 0;
@@ -145,7 +144,6 @@ $$.hero.think();
         }
     
         $$._last_hero_move = get_time();
-*/
     },
 
     
@@ -326,9 +324,6 @@ while( !done ) {
         $$.hero = sprite;
         $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
-        MixIn($$.hero, MapEntity);
-
-        $$.hero.init(1);
 
         //$$.hero.movecode = 0;
         //$$.hero.active = true;
@@ -573,7 +568,7 @@ function ProcessControls( myself ) {
 		myself.setFace(myself.WEST);
 		var dist = myself.MaxPlayerMove(NW, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(-1*dist, -1*dist);
+			myself.setWaypointRelative(-1*dist, -1*dist, 1);
 			return true;
 		}
 	}
@@ -582,7 +577,7 @@ function ProcessControls( myself ) {
 		myself.setFace(myself.EAST);
 		var dist = myself.MaxPlayerMove(NE, myself.playerstep);
 		if (dist) {
-			myself.setWaypointRelative(dist, -1*dist);
+			myself.setWaypointRelative(dist, -1*dist, 1);
 			return true;
 		}
 	}
@@ -591,7 +586,7 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.WEST );
 		var dist = myself.MaxPlayerMove(SW, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(-1*dist, dist);
+			myself.setWaypointRelative(-1*dist, dist, 1);
 			return true;
 		}
 	}
@@ -600,7 +595,7 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.EAST );
 		var dist = myself.MaxPlayerMove(SE, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(dist, dist);
+			myself.setWaypointRelative(dist, dist, 1);
 			return true;
 		}
 	}
@@ -610,21 +605,21 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.NORTH );
 		var dist = myself.MaxPlayerMove(NORTH, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(0, -1*dist);
+			myself.setWaypointRelative(0, -1*dist, 1);
 			return true;
 		}
 
         dist = myself.MaxPlayerMove(NW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, -1*dist);
+            myself.setWaypointRelative(-1*dist, -1*dist, 1);
             return true;
         }
 
         dist = myself.MaxPlayerMove(NE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, -1*dist);
+            myself.setWaypointRelative(dist, -1*dist, 1);
             return true;
         }
 	}
@@ -633,7 +628,7 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.SOUTH );
 		var dist = myself.MaxPlayerMove(SOUTH, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(0, dist);
+			myself.setWaypointRelative(0, dist, 1);
 			return true;
 		}
 
@@ -641,14 +636,14 @@ function ProcessControls( myself ) {
         dist = myself.MaxPlayerMove(SW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, 1*dist);
+            myself.setWaypointRelative(-1*dist, 1*dist, 1);
             return true;
         }
 
         dist = myself.MaxPlayerMove(SE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, dist);
+            myself.setWaypointRelative(dist, dist, 1);
             return true;
         }
 	}
@@ -657,7 +652,7 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.WEST );
 		var dist = myself.MaxPlayerMove(WEST, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(-1*dist, 0);
+			myself.setWaypointRelative(-1*dist, 0, 1);
 			return true;
 		}
 
@@ -665,14 +660,14 @@ function ProcessControls( myself ) {
         dist = myself.MaxPlayerMove(NW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, -1*dist);
+            myself.setWaypointRelative(-1*dist, -1*dist, 1);
             return true;
         }
 
         dist = myself.MaxPlayerMove(SW, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, 1*dist);
+            myself.setWaypointRelative(-1*dist, 1*dist, 1);
             return true;
         }
 	}
@@ -681,7 +676,7 @@ function ProcessControls( myself ) {
 		myself.setFace( myself.EAST );
 		var dist = myself.MaxPlayerMove(EAST, myself.playerstep);
 		if( dist ) {
-			myself.setWaypointRelative(dist, 0);
+			myself.setWaypointRelative(dist, 0, 1);
 			return true;
 		}
 
@@ -689,14 +684,14 @@ function ProcessControls( myself ) {
         dist = myself.MaxPlayerMove(NE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, -1*dist);
+            myself.setWaypointRelative(dist, -1*dist, 1);
             return true;
         }
 
         dist = myself.MaxPlayerMove(SE, myself.playerstep);
         if( dist ) {
             myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, dist);
+            myself.setWaypointRelative(dist, dist, 1);
             return true;
         }
 	}

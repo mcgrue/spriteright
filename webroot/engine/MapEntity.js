@@ -51,8 +51,8 @@ MapEntity.prototype = {
         this.waypointy = this.y;
     
         this.movecode = 0;
-        this.obstruction = false;
-        this.obstructable = false;
+        this.obstruction = true;
+        this.obstructable = true;
         this.next_think_time = 0;
     
         this.active = true;
@@ -195,6 +195,7 @@ MapEntity.prototype = {
     }, 
 
     setWaypointRelative : function(x, y, changeFace)  {
+//debugger;
     	this.waypointx += x;
     	this.waypointy += y;
         
@@ -315,7 +316,9 @@ MapEntity.prototype = {
                 switch( this.movecode ) {
                     // MOVETYPE_PLAYER
                     case 0: if( this == $$.hero ) {
-                        this._defaulAnimationUpdater( $$.game.processUserInputForPlayer() );
+                        $$.game.processUserInputForPlayer()
+                        this._defaulAnimationUpdater( 1 );
+                        //this.next_think_time = $$.tickTime + (1000/60);
                     }
                     break;
 
