@@ -31,7 +31,7 @@ Game.prototype = {
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         }
     
-        var moverate = parseInt((time - $$._last_hero_move) * .15);
+        var moverate = parseInt((time - $$._last_hero_move) * .10); // 100 px/sec
     
         if( k.held[k.M] && $$.soundManager ) {
             $$.soundManager.stopAll();
@@ -77,7 +77,6 @@ Game.prototype = {
         var dx = 0;
         var dy = 0;
 
- 
         if( k.isUpPressed() ) {
             dy -= moverate;
             $$.hero.facing = $$.map.SPRITE_FACING_NORTH;
@@ -94,11 +93,8 @@ Game.prototype = {
             $$.hero.facing = $$.map.SPRITE_FACING_EAST;
         }
     
-        if( (dx ||dy) && !is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) ) {         
-            $$.hero.x += dx;
-            $$.hero.y += dy;
-             
-            moved = true;
+        if( (dx ||dy) && !is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) ) {
+            moved = attempt_to_move( dx, dy, $$.hero );
         }
     
         var facename = '';
@@ -697,4 +693,12 @@ function ProcessControls( myself ) {
 	}
 
     return false;
+}
+
+
+function attempt_to_move( dx, dy, ent ) {
+    ent.x += dx;
+    ent.y += dy;
+
+    return true;
 }
