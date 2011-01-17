@@ -141,7 +141,17 @@ Map.prototype = {
                 }
             }
 
-            $$.context.globalCompositeOperation = 'source-over';
+            $$.context.fillStyle = '#FF00FF';
+
+            var x = ($$.hero.x + $$.hero.hotspot.x - $$.camera.x)*$$.scale;
+            var y = ($$.hero.y + $$.hero.hotspot.y - $$.camera.y)*$$.scale;
+
+            $$.context.fillRect(
+                x, y,
+                ($$.hero.hotspot.w*$$.scale), ($$.hero.hotspot.h*$$.scale)
+            );
+
+            // $$.context.globalCompositeOperation = 'source-over';
         }
     },
 
