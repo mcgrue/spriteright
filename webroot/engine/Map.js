@@ -239,7 +239,6 @@ Map.prototype = {
     },
 
     obstructPixel16 : function( px, py ) {
-debugger;
         if( px<0 || py<0 || px >= this.width || py >= this.height ) {
             return true;
         }
@@ -251,8 +250,6 @@ debugger;
         t = t << 4;
 
         var pix = getPixel( this.obsImgData, px&15, t + py&15);
-
-    debugger;
 
         return pix;
     },

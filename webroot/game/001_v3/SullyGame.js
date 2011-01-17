@@ -30,8 +30,16 @@ Game.prototype = {
             $$._last_hero_move = time;
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         }
-    
-        var moverate = parseInt((time - $$._last_hero_move) * .10); // 100 px/sec
+/*
+        else if( time - $$._last_hero_move < 34 ) { // clamp to 30 fps for move update?
+            return;
+        }
+*/
+        var moverate = parseInt( (time - $$._last_hero_move) * .10 ); // 100 px/sec
+        if( moverate < 3 ) return;
+
+        //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
+//$$.log('moverate: ' + moverate);
     
         if( k.held[k.M] && $$.soundManager ) {
             $$.soundManager.stopAll();
@@ -47,6 +55,10 @@ Game.prototype = {
             
             if( $$.textBox.visible ) {
                 $$.textBox.advanceConversation();
+
+                /// a hack to stop you from flying off as soon as you leave a textbox.  needs beter solution.
+                $$._last_hero_move = false;
+                moverate = 0;
             } else {
                 $$.map.activateAdjancentZone($$.hero);
             }
@@ -93,7 +105,8 @@ Game.prototype = {
             $$.hero.facing = $$.map.SPRITE_FACING_EAST;
         }
     
-        if( (dx ||dy) && !is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) ) {
+        //!is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) 
+        if( (dx ||dy) ) {
             moved = attempt_to_move( dx, dy, $$.hero );
         }
     
@@ -508,7 +521,6 @@ var SW = 8;
 
 function ObstructAt( px, py ) {
 
-debugger;    
 	if( $$.map.obstructPixel(px,py) ) {
 /*
 		if( isEntityCollisionCapturing() ) {
@@ -543,162 +555,139 @@ debugger;
 	return false;
 }
 
-function ProcessControls( myself ) {
-	
-    // No player movement can be done if there's no ready player, or if there's a script active.
-	if( !myself || !myself.ready() ) {
-		return false;
-	}
+function _midpoint_helper(coord1, coord2) {
+    return [
+        parseInt( (coord1[0] + coord2[0]) /2 ),
+        parseInt( (coord1[1] + coord2[1]) /2 )
+    ];
+}
 
-//	if( myself->movecode == 3 ) {
-//		ScriptEngine::PlayerEntityMoveCleanup();
-//	}
 
-    var up = $$.keys.isUpPressed();
-    var down = $$.keys.isDownPressed();
-    var left = $$.keys.isLeftPressed();
-    var right = $$.keys.isRightPressed();
+function find_base_points_for_obstructing(dx, dy, ent) {
 
-	// check diagonals first
-	if( left && up ) {
-		myself.setFace(myself.WEST);
-		var dist = myself.MaxPlayerMove(NW, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(-1*dist, -1*dist, 1);
-			return true;
-		}
-	}
+    if( !dx && !dy ) {
+        throw "There is no movement.  There is no need for obstructing.  Why are we here?";
+    }
 
-	if( right && up ) {
-		myself.setFace(myself.EAST);
-		var dist = myself.MaxPlayerMove(NE, myself.playerstep);
-		if (dist) {
-			myself.setWaypointRelative(dist, -1*dist, 1);
-			return true;
-		}
-	}
+    var top_left = [ent.x+ent.hotspot.x, ent.y+ent.hotspot.y];
+    var top_right = [top_left[0]+ent.hotspot.w, top_left[1]]
+    var bottom_left = [top_left[0], top_left[1]+ent.hotspot.h];
+    var bottom_right = [top_right[0], bottom_left[1]];
 
-	if( left && down ) {
-		myself.setFace( myself.WEST );
-		var dist = myself.MaxPlayerMove(SW, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(-1*dist, dist, 1);
-			return true;
-		}
-	}
+    if( dx == 0 ) {
+        // north and south only
 
-	if( right && down ) {
-		myself.setFace( myself.EAST );
-		var dist = myself.MaxPlayerMove(SE, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(dist, dist, 1);
-			return true;
-		}
-	}
+        if( dy < 0 ) { // north
+            return [
+                top_left,
+                _midpoint_helper(top_left, top_right),
+                top_right,
+            ];
 
-	// check four cardinal directions last
-	if( up ) {
-		myself.setFace( myself.NORTH );
-		var dist = myself.MaxPlayerMove(NORTH, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(0, -1*dist, 1);
-			return true;
-		}
+        } else { // south
+            return [
+                bottom_left,
+                _midpoint_helper(bottom_left, bottom_right),
+                bottom_right
+            ];
+        }
+    }
 
-        dist = myself.MaxPlayerMove(NW, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, -1*dist, 1);
-            return true;
+    if( dy == 0 ) {
+        // east and west only
+        
+        if( dx < 0 ) { //west
+            return [
+                top_left,
+                _midpoint_helper(top_left, bottom_left),
+                bottom_left
+            ];
+        } else { // east
+            return [
+                top_right,
+                _midpoint_helper(top_right, bottom_right),
+                bottom_right
+            ];
+        }
+    }
+
+    if( dx < 0 ) {
+        // northeast and southeast only
+
+        if( dy < 0 ) { //northeast
+            return [
+                top_left,
+                top_right,
+                bottom_right
+            ];
+        } else { //southeast
+            return [
+                top_right,
+                bottom_right,
+                bottom_left
+            ];
         }
 
-        dist = myself.MaxPlayerMove(NE, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, -1*dist, 1);
-            return true;
+    } else {
+        // northwest and southwest only
+        
+        if( dy < 0 ) { //northwest
+            return [
+                bottom_right,
+                top_right,
+                top_left
+            ];
+        } else { //southwest
+            return [
+                bottom_right,
+                top_right,
+                top_left
+            ];
         }
-	}
-
-	if( down ) {
-		myself.setFace( myself.SOUTH );
-		var dist = myself.MaxPlayerMove(SOUTH, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(0, dist, 1);
-			return true;
-		}
-
-        // check for sliding along walls if we permit diagonals
-        dist = myself.MaxPlayerMove(SW, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, 1*dist, 1);
-            return true;
-        }
-
-        dist = myself.MaxPlayerMove(SE, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, dist, 1);
-            return true;
-        }
-	}
-
-	if( left ) {
-		myself.setFace( myself.WEST );
-		var dist = myself.MaxPlayerMove(WEST, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(-1*dist, 0, 1);
-			return true;
-		}
-
-        // check for sliding along walls if we permit diagonals
-        dist = myself.MaxPlayerMove(NW, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, -1*dist, 1);
-            return true;
-        }
-
-        dist = myself.MaxPlayerMove(SW, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.WEST );
-            myself.setWaypointRelative(-1*dist, 1*dist, 1);
-            return true;
-        }
-	}
-
-	if( right ) {
-		myself.setFace( myself.EAST );
-		var dist = myself.MaxPlayerMove(EAST, myself.playerstep);
-		if( dist ) {
-			myself.setWaypointRelative(dist, 0, 1);
-			return true;
-		}
-
-        // check for sliding along walls if we permit diagonals
-        dist = myself.MaxPlayerMove(NE, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, -1*dist, 1);
-            return true;
-        }
-
-        dist = myself.MaxPlayerMove(SE, myself.playerstep);
-        if( dist ) {
-            myself.setFace( myself.EAST );
-            myself.setWaypointRelative(dist, dist, 1);
-            return true;
-        }
-	}
-
-    return false;
+    }
 }
 
 
 function attempt_to_move( dx, dy, ent ) {
-    ent.x += dx;
-    ent.y += dy;
 
-    return true;
+    var x = Math.abs(dx);
+    var y = Math.abs(dy);
+
+    var tick_x, tick_y, ticks;
+
+    if( x > y ) {
+        ticks = x;
+        tick_x = dx;
+        tick_y = dy / x;
+    } else {
+        ticks = y;
+        tick_x = dx / y;
+        tick_y = dy;
+    }
+
+    var good_dx = 0, good_dy = 0;
+    
+    // determine
+    var arBasePoints = find_base_points_for_obstructing(dx, dy, ent);
+
+    for( var i=0; i<ticks; i++ ) {
+        x = parseInt(i * tick_x);
+        y = parseInt(i * tick_y);
+
+        if(
+            ObstructAt(arBasePoints[0][0]+x, arBasePoints[0][1]+y) ||
+            ObstructAt(arBasePoints[1][0]+x, arBasePoints[1][1]+y) ||
+            ObstructAt(arBasePoints[2][0]+x, arBasePoints[2][1]+y)
+        ) {
+            break;
+        }
+
+        good_dx = x;
+        good_dy = y;
+    } 
+
+    ent.x += good_dx;
+    ent.y += good_dy;
+
+    return good_dx || good_dy;
 }
