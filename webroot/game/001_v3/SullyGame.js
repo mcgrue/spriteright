@@ -628,24 +628,57 @@ function find_base_points_for_obstructing(dx, dy, ent) {
         
         if( dy < 0 ) { //northwest
             return [
-                bottom_right,
-                top_right,
-                top_left
+                bottom_left,
+                top_left,
+                top_right
             ];
         } else { //southwest
             return [
+                top_left,
+                bottom_left,
                 bottom_right,
-                top_right,
-                top_left
             ];
         }
     }
 }
 
 
-function attempt_to_move( dx, dy, ent ) {
+function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints ) {
+    var good_dx = 0, good_dy = 0;
+    var x, y;
 
-    var log = " ("+dx+","+dy+") ";
+    var len = arBasePoints.length;
+
+    for( var i=0; i<=ticks; i++ ) {
+        x = parseInt(i * tick_x);
+        y = parseInt(i * tick_y);
+
+        if( x != good_dx && y != good_dx ) { // broken line
+            for( var xx=good_dx; xx<=x; xx++ ) {
+                for( var yy=good_dy; yy<=y; yy++ ) {
+                    for( var j=0; j<len; j++ ) {
+                        if( ObstructAt(arBasePoints[j][0]+xx, arBasePoints[j][1]+yy) ) {
+                            return [good_dx, good_dy];
+                        }
+                    }
+                }
+            }   
+        } else {
+            for( var j=0; j<len; j++ ) {
+                if( ObstructAt(arBasePoints[j][0]+x, arBasePoints[j][1]+y) ) {
+                    return [good_dx, good_dy];
+                }
+            }
+        }
+        
+        good_dx = x;
+        good_dy = y;
+    }
+
+    return [good_dx, good_dy];
+}
+
+function attempt_to_move( dx, dy, ent ) {
 
     var x = Math.abs(dx);
     var y = Math.abs(dy);
@@ -662,33 +695,13 @@ function attempt_to_move( dx, dy, ent ) {
         tick_y = sign(dy);
     }
 
-    var good_dx = 0, good_dy = 0;
-    
     // determine
     var arBasePoints = find_base_points_for_obstructing(dx, dy, ent);
 
-    for( var i=0; i<=ticks; i++ ) {
-        x = parseInt(i * tick_x);
-        y = parseInt(i * tick_y);
+    var res = _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints );
 
-        if(
-            ObstructAt(arBasePoints[0][0]+x, arBasePoints[0][1]+y) ||
-            ObstructAt(arBasePoints[1][0]+x, arBasePoints[1][1]+y) ||
-            ObstructAt(arBasePoints[2][0]+x, arBasePoints[2][1]+y)
-        ) {
-            break;
-        }
+    ent.x += res[0];
+    ent.y += res[1];
 
-        good_dx = x;
-        good_dy = y;
-    }
-
-    log += " ("+good_dx+","+good_dy+") "
-
-    ent.x += good_dx;
-    ent.y += good_dy;
-
-$$.log( "move: " + log );
-
-    return good_dx || good_dy;
+    return res[0] || res[1];
 }

@@ -233,9 +233,9 @@ Map.prototype = {
 
         t = t * this.vsp.tile.h;
 
-        var pix = getPixel( this.obsImgData, px&(this.vsp.tile.w-1), t + py&(this.vsp.tile.h-1));
+        var pix = getPixel( this.obsImgData, px&(this.vsp.tile.w-1), t + (py&(this.vsp.tile.h-1)));
 
-        return pix;
+        return pix[0] | pix[1] | pix[2] | pix[3];
     },
 
     obstructPixel16 : function( px, py ) {
