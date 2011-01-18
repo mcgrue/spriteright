@@ -654,8 +654,13 @@ function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints ) {
         y = parseInt(i * tick_y);
 
         if( x != good_dx && y != good_dx ) { // broken line
-            for( var xx=good_dx; xx<=x; xx++ ) {
-                for( var yy=good_dy; yy<=y; yy++ ) {
+            var startx = smaller(good_dx,x);
+            var endx = bigger(good_dx,x);
+            var starty = smaller(good_dy,y);
+            var endy = bigger(good_dy,y);
+            
+            for( var xx=startx; xx<=endx; xx++ ) {
+                for( var yy=starty; yy<=endy; yy++ ) {
                     for( var j=0; j<len; j++ ) {
                         if( ObstructAt(arBasePoints[j][0]+xx, arBasePoints[j][1]+yy) ) {
                             return [good_dx, good_dy];

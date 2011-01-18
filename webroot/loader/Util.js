@@ -196,3 +196,13 @@ function getPixel( imageData, x, y ) {
         imageData.data[index+3]
     ];
 }
+
+function smaller(x,y) {
+    if(x < y) return x;
+    return y;
+}
+
+function bigger(x,y) {
+    if(x > y) return x;
+    return y;
+}
