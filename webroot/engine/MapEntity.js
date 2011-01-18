@@ -14,6 +14,10 @@ MapEntity.prototype = {
     SOUTH : 2,
     EAST : 3,
     WEST : 4,
+    NW : 5,
+    SW : 6,
+    NE : 7,
+    SE : 8
 
     MOVETYPE_PLAYER : 0,
     MOVETYPE_ZONE : 1,

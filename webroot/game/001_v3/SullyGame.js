@@ -577,6 +577,8 @@ function find_base_points_for_obstructing(dx, dy, ent) {
         // north and south only
 
         if( dy < 0 ) { // north
+            ent.face = ent.NORTH;
+            
             return [
                 top_left,
                 _midpoint_helper(top_left, top_right),
@@ -584,6 +586,8 @@ function find_base_points_for_obstructing(dx, dy, ent) {
             ];
 
         } else { // south
+            ent.face = ent.SOUTH;
+
             return [
                 bottom_left,
                 _midpoint_helper(bottom_left, bottom_right),
@@ -596,12 +600,16 @@ function find_base_points_for_obstructing(dx, dy, ent) {
         // east and west only
         
         if( dx < 0 ) { //west
+            ent.face = ent.WEST;
+
             return [
                 top_left,
                 _midpoint_helper(top_left, bottom_left),
                 bottom_left
             ];
         } else { // east
+            ent.face = ent.EAST;
+            
             return [
                 top_right,
                 _midpoint_helper(top_right, bottom_right),
@@ -614,12 +622,16 @@ function find_base_points_for_obstructing(dx, dy, ent) {
         // northeast and southeast only
 
         if( dy < 0 ) { //northeast
+            
+            ent.face = ent.NE;
+            
             return [
                 top_left,
                 top_right,
                 bottom_right
             ];
         } else { //southeast
+            ent.face = ent.SE;
             return [
                 top_right,
                 bottom_right,
@@ -631,12 +643,16 @@ function find_base_points_for_obstructing(dx, dy, ent) {
         // northwest and southwest only
         
         if( dy < 0 ) { //northwest
+            ent.face = ent.NW;
+ 
             return [
                 bottom_right,
                 top_right,
                 top_left
             ];
         } else { //southwest
+            ent.face = ent.SW;
+ 
             return [
                 bottom_right,
                 top_right,
@@ -649,50 +665,61 @@ function find_base_points_for_obstructing(dx, dy, ent) {
 
 function attempt_to_move( dx, dy, ent ) {
 
-    var log = " ("+dx+","+dy+") ";
-
     var x = Math.abs(dx);
     var y = Math.abs(dy);
 
-    var tick_x, tick_y, ticks;
+    var tick_x, tick_y, ticks_left;
 
     if( x > y ) {
-        ticks = x;
+        ticks_left = x;
         tick_x = sign(dx);
         tick_y = dy / x;
     } else {
-        ticks = y;
+        ticks_left = y;
         tick_x = dx / y;
         tick_y = sign(dy);
     }
 
-    var good_dx = 0, good_dy = 0;
+    var ox = ent.x, oy = ent.y;
     
-    // determine
+    // determine which sides we should look for obstruction upon.
     var arBasePoints = find_base_points_for_obstructing(dx, dy, ent);
+$$.log( 'ent.face: ' + ent.face );
+    do_move( ticks_left, tick_x, tick_y, arBasePoints, ent );
 
-    for( var i=0; i<=ticks; i++ ) {
-        x = parseInt(i * tick_x);
-        y = parseInt(i * tick_y);
+    ent.x = parseInt(ent.x);
+    ent.y = parseInt(ent.y);
 
-        if(
-            ObstructAt(arBasePoints[0][0]+x, arBasePoints[0][1]+y) ||
-            ObstructAt(arBasePoints[1][0]+x, arBasePoints[1][1]+y) ||
-            ObstructAt(arBasePoints[2][0]+x, arBasePoints[2][1]+y)
-        ) {
-            break;
+    return ent.x != ox || ent.y != oy;
+}
+
+function do_move( ticks_left, tick_x, tick_y, arBasePoints, ent ) {
+
+    if(
+        ObstructAt(
+            parseInt(arBasePoints[0][0]+tick_x),
+            parseInt(arBasePoints[0][1]+tick_y)
+        ) ||
+        ObstructAt(
+            parseInt(arBasePoints[1][0]+tick_x),
+            parseInt(arBasePoints[1][1]+tick_y)
+        ) ||
+        ObstructAt(
+            parseInt(arBasePoints[2][0]+tick_x),
+            parseInt(arBasePoints[2][1]+tick_y)
+        )
+    ) {
+        debugger;
+        return;
+    } else {
+        ent.x += tick_x;
+        ent.y += tick_y;
+    
+        if( ticks_left > 0 ) {
+$$.log( 'ticks_left: ' + ticks_left );
+            do_move( ticks_left-1, tick_x, tick_y, arBasePoints, ent );
+        } else {
+            debugger;
         }
-
-        good_dx = x;
-        good_dy = y;
     }
-
-    log += " ("+good_dx+","+good_dy+") "
-
-    ent.x += good_dx;
-    ent.y += good_dy;
-
-$$.log( "move: " + log );
-
-    return good_dx || good_dy;
 }

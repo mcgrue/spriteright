@@ -23,6 +23,14 @@ function MapAnimation(x, y, img, animation_def) {
 }
 
 MapAnimation.prototype = {
+    NORTH : 1,
+    SOUTH : 2,
+    EAST : 3,
+    WEST : 4,
+    NW : 5,
+    SW : 6,
+    NE : 7,
+    SE : 8,
 
     setState: function(s, force) {
         if( this.animation_state == s && !force ) {
