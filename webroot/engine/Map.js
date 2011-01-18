@@ -20,6 +20,8 @@ function Map(map, vsp) {
     } else {
         this.obstructPixel = this.obstructPixelGeneric;
     }
+
+    this.callScript('initmap');
 }
 
 Map.prototype = {
@@ -202,6 +204,14 @@ Map.prototype = {
         //var z = this.getZone(tx, ty);
     },
 
+    callScript : function(scriptName) {
+        if( $$.map_scripts[this.map.name][scriptName] ) {
+            $$.map_scripts[this.map.name][scriptName]();
+        } else {
+            $$.log( 'attempted to call a script named "'+scriptName+'", but that wasnt in the maps scripts.' );
+        }
+    },
+
     activateAdjancentZone: function(ent) {
         var faceTile = this.getFacedTile(ent);
         var faceZone = this.getZone(faceTile.tx, faceTile.ty);
@@ -210,7 +220,7 @@ Map.prototype = {
             $$.log('Activating zone ' + faceZone );
 
             if( this.map.zones[faceZone] && this.map.zones[faceZone].method ) {
-                $$.map_scripts[this.map.name][this.map.zones[faceZone].event]();
+                this.callScript(this.map.zones[faceZone].event);
             } else {
                 $$.log('That event wasnt actually adjacent-activation.');
             }

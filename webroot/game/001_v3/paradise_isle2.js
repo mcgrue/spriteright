@@ -1,5 +1,12 @@
 
 $$.map_scripts['paradise_isle2'] = {
+
+    initmap : function() {
+//setObs(11, 54, 3);
+//setObs(9, 54, 4);
+        $$.log( 'paradise isle maps autoexec was called.' );
+    },
+
     sully : function() {
 
         if( !$$.flags['SULLY'] ) {

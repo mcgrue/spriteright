@@ -727,7 +727,7 @@ function attempt_to_move( dx, dy, ent ) {
         /// we're going to cheat for the two special case
         /// tiles in the basic obs set. 
         if( t == 3 || t == 4 ) {
-            
+
             if( t == 3 ) { // -> \
                 switch( ent.facing ) {
                     case $$.map.SPRITE_FACING_SOUTH:
