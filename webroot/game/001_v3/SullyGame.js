@@ -722,7 +722,8 @@ function attempt_to_move( dx, dy, ent ) {
         var tc = $$.map.getTileCoordinates(ent.lastHitPixel[0], ent.lastHitPixel[1]);
         var t = $$.map.getObstructionTile(tc.tx,tc.ty);
 
-        var d = bigger( Math.abs(Math.abs(dx)-Math.abs(res[0])), Math.abs(Math.abs(dy)-Math.abs(res[1])) );
+        //var d = bigger( Math.abs(Math.abs(dx)-Math.abs(res[0])), Math.abs(Math.abs(dy)-Math.abs(res[1])) );
+        var d = 2;
 
         /// we're going to cheat for the two special case
         /// tiles in the basic obs set. 
