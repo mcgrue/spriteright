@@ -7,6 +7,9 @@ $$.map_scripts['paradise_isle2'] = {
         $$.map.setObstructionTile(11, 55, 3);
         $$.map.setObstructionTile(9, 55, 4);
 
+        $$.map.setObstructionTile(98, 13, 3);
+        $$.map.setObstructionTile(100,13, 4);
+
         $$.log( 'paradise isle maps autoexec was called.' );
     },
 
