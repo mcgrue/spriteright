@@ -35,8 +35,7 @@ Game.prototype = {
             return;
         }
 */
-        var moverate = parseInt( (time - $$._last_hero_move) * .10 ); // 100 px/sec
-        if( moverate < 3 ) return;
+        var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
 
         //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
 //$$.log('moverate: ' + moverate);
@@ -650,6 +649,8 @@ function find_base_points_for_obstructing(dx, dy, ent) {
 
 function attempt_to_move( dx, dy, ent ) {
 
+    var log = " ("+dx+","+dy+") ";
+
     var x = Math.abs(dx);
     var y = Math.abs(dy);
 
@@ -657,12 +658,12 @@ function attempt_to_move( dx, dy, ent ) {
 
     if( x > y ) {
         ticks = x;
-        tick_x = dx;
+        tick_x = sign(dx);
         tick_y = dy / x;
     } else {
         ticks = y;
         tick_x = dx / y;
-        tick_y = dy;
+        tick_y = sign(dy);
     }
 
     var good_dx = 0, good_dy = 0;
@@ -670,7 +671,7 @@ function attempt_to_move( dx, dy, ent ) {
     // determine
     var arBasePoints = find_base_points_for_obstructing(dx, dy, ent);
 
-    for( var i=0; i<ticks; i++ ) {
+    for( var i=0; i<=ticks; i++ ) {
         x = parseInt(i * tick_x);
         y = parseInt(i * tick_y);
 
@@ -684,10 +685,14 @@ function attempt_to_move( dx, dy, ent ) {
 
         good_dx = x;
         good_dy = y;
-    } 
+    }
+
+    log += " ("+good_dx+","+good_dy+") "
 
     ent.x += good_dx;
     ent.y += good_dy;
+
+$$.log( "move: " + log );
 
     return good_dx || good_dy;
 }
