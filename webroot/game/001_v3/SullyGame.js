@@ -643,17 +643,19 @@ function find_base_points_for_obstructing(dx, dy, ent) {
 }
 
 
-function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints ) {
+function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints, ent) {
     var good_dx = 0, good_dy = 0;
     var x, y;
 
     var len = arBasePoints.length;
 
+    var two_dir_mode = tick_x && tick_y;
+
     for( var i=0; i<=ticks; i++ ) {
         x = parseInt(i * tick_x);
         y = parseInt(i * tick_y);
 
-        if( x != good_dx && y != good_dx ) { // broken line
+        if( two_dir_mode && x != good_dx && y != good_dx ) { // broken line
             var startx = smaller(good_dx,x);
             var endx = bigger(good_dx,x);
             var starty = smaller(good_dy,y);
@@ -663,15 +665,21 @@ function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints ) {
                 for( var yy=starty; yy<=endy; yy++ ) {
                     for( var j=0; j<len; j++ ) {
                         if( ObstructAt(arBasePoints[j][0]+xx, arBasePoints[j][1]+yy) ) {
-                            return [good_dx, good_dy];
+                            
+                            ent.lastHitPixel = [arBasePoints[j][0]+xx, arBasePoints[j][1]+yy];
+
+                            return [good_dx, good_dy, 1];
                         }
                     }
                 }
-            }   
+            }
         } else {
             for( var j=0; j<len; j++ ) {
                 if( ObstructAt(arBasePoints[j][0]+x, arBasePoints[j][1]+y) ) {
-                    return [good_dx, good_dy];
+
+                    ent.lastHitPixel = [arBasePoints[j][0]+x, arBasePoints[j][1]+y];
+
+                    return [good_dx, good_dy, 1];
                 }
             }
         }
@@ -680,7 +688,7 @@ function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints ) {
         good_dy = y;
     }
 
-    return [good_dx, good_dy];
+    return [good_dx, good_dy, 0];
 }
 
 function attempt_to_move( dx, dy, ent ) {
@@ -703,10 +711,74 @@ function attempt_to_move( dx, dy, ent ) {
     // determine
     var arBasePoints = find_base_points_for_obstructing(dx, dy, ent);
 
-    var res = _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints );
+    var res = _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints, ent);
 
     ent.x += res[0];
     ent.y += res[1];
+    
+    if( res[2] ) { /// ie, movus interruptus
+        //debugger;
+
+        var tc = $$.map.getTileCoordinates(ent.lastHitPixel[0], ent.lastHitPixel[1]);
+        var t = $$.map.getObstructionTile(tc.tx,tc.ty);
+
+        var d = bigger( Math.abs(Math.abs(dx)-Math.abs(res[0])), Math.abs(Math.abs(dy)-Math.abs(res[1])) );
+
+        /// we're going to cheat for the two special case
+        /// tiles in the basic obs set. 
+        if( t == 3 || t == 4 ) {
+            
+            if( t == 3 ) { // -> \
+                switch( ent.facing ) {
+                    case $$.map.SPRITE_FACING_SOUTH:
+                        ent.x += d;
+                        ent.y += d;
+                        break;
+                    case $$.map.SPRITE_FACING_NORTH:
+                        ent.x -= d;
+                        ent.y -= d;
+                        break;
+                    case $$.map.SPRITE_FACING_EAST:
+                        ent.x += d;
+                        ent.y += d;
+                        break;
+                    case $$.map.SPRITE_FACING_WEST:
+                        ent.x -= d;
+                        ent.y -= d;
+                        break;
+                    default:
+                        break;
+                }    
+            } else { //   -> /
+                switch( ent.facing ) {
+                    case $$.map.SPRITE_FACING_SOUTH:
+                        ent.x -= d;
+                        ent.y += d;
+                        break;
+                    case $$.map.SPRITE_FACING_NORTH:
+                        ent.x += d;
+                        ent.y -= d;
+                        break;
+                    case $$.map.SPRITE_FACING_EAST:
+                        ent.x += d;
+                        ent.y -= d;
+                        break;
+                    case $$.map.SPRITE_FACING_WEST:
+                        ent.x -= d;
+                        ent.y += d;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            res[0] += d;
+            res[1] += d;
+        }
+    }
+
+    ent.x = parseInt(ent.x);
+    ent.y = parseInt(ent.y);
 
     return res[0] || res[1];
 }
