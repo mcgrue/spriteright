@@ -4,6 +4,9 @@ $$.map_scripts['paradise_isle2'] = {
     initmap : function() {
 //setObs(11, 54, 3);
 //setObs(9, 54, 4);
+        $$.map.setObstructionTile(11, 55, 3);
+        $$.map.setObstructionTile(9, 55, 4);
+
         $$.log( 'paradise isle maps autoexec was called.' );
     },
 

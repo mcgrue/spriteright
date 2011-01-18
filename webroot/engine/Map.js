@@ -21,6 +21,8 @@ function Map(map, vsp) {
         this.obstructPixel = this.obstructPixelGeneric;
     }
 
+    $$.map = this;
+
     this.callScript('initmap');
 }
 
@@ -155,6 +157,10 @@ Map.prototype = {
 
             // $$.context.globalCompositeOperation = 'source-over';
         }
+    },
+
+    setObstructionTile: function(tx,ty,obs) {
+        this.map.obs_data[flat_from_xy(tx, ty, this.map.dimensions.x)] = obs;
     },
 
     getObstructionTile: function(tx,ty) {
