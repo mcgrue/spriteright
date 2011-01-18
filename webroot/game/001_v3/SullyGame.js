@@ -731,17 +731,11 @@ function attempt_to_move( dx, dy, ent ) {
             if( t == 3 ) { // -> \
                 switch( ent.facing ) {
                     case $$.map.SPRITE_FACING_SOUTH:
-                        ent.x += d;
-                        ent.y += d;
-                        break;
-                    case $$.map.SPRITE_FACING_NORTH:
-                        ent.x -= d;
-                        ent.y -= d;
-                        break;
                     case $$.map.SPRITE_FACING_EAST:
                         ent.x += d;
                         ent.y += d;
                         break;
+                    case $$.map.SPRITE_FACING_NORTH:
                     case $$.map.SPRITE_FACING_WEST:
                         ent.x -= d;
                         ent.y -= d;
@@ -752,20 +746,14 @@ function attempt_to_move( dx, dy, ent ) {
             } else { //   -> /
                 switch( ent.facing ) {
                     case $$.map.SPRITE_FACING_SOUTH:
+                    case $$.map.SPRITE_FACING_WEST:
                         ent.x -= d;
                         ent.y += d;
                         break;
                     case $$.map.SPRITE_FACING_NORTH:
-                        ent.x += d;
-                        ent.y -= d;
-                        break;
                     case $$.map.SPRITE_FACING_EAST:
                         ent.x += d;
                         ent.y -= d;
-                        break;
-                    case $$.map.SPRITE_FACING_WEST:
-                        ent.x -= d;
-                        ent.y += d;
                         break;
                     default:
                         break;
