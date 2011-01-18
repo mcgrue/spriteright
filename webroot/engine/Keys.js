@@ -78,17 +78,20 @@ releaseRight : function() {
 
 
 isActionButtonPressed : function() {
-    return $$.keys.held[$$.keys.K] || $$.keys.held[$$.keys.ENTER];
+    return $$.keys.held[$$.keys.K] || $$.keys.held[$$.keys.ENTER] || $$.keys.held[$$.keys.SPACE];
 },
 
 releaseActionButton : function() {
     $$.keys.held[$$.keys.K] = false;
     $$.keys.held[$$.keys.ENTER] = false;
+    $$.keys.held[$$.keys.SPACE] = false;
 },
 
 	/// http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/Javascript-Char-Codes-Key-Codes.aspx
     
     ENTER: 13,
+
+    SPACE: 32,
 
 	W: 87,
 	S: 83,
