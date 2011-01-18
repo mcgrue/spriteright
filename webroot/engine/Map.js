@@ -239,6 +239,7 @@ Map.prototype = {
     },
 
     obstructPixel16 : function( px, py ) {
+
         if( px<0 || py<0 || px >= this.width || py >= this.height ) {
             return true;
         }
@@ -249,9 +250,9 @@ Map.prototype = {
 
         t = t << 4;
 
-        var pix = getPixel( this.obsImgData, px&15, t + py&15);
+        var pix = getPixel( this.obsImgData, px&15, t + (py&15) );
 
-        return pix;
+        return pix[0] | pix[1] | pix[2] | pix[3];
     },
 
 /*

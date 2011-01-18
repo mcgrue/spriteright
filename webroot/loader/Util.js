@@ -187,6 +187,7 @@ function getImageData(img) {
 }
 
 function getPixel( imageData, x, y ) {
+
     index = (x + y * imageData.width) * 4;
     return [
         imageData.data[index+0],
