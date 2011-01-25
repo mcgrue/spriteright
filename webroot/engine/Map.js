@@ -32,7 +32,7 @@ Map.prototype = {
     SPRITE_FACING_SOUTH : 2,
     SPRITE_FACING_EAST : 3,
     SPRITE_FACING_WEST : 4,
-    
+
     draw_rect: function( tx, ty, color ) {
         $$.context.fillStyle = color;
 
@@ -154,6 +154,25 @@ Map.prototype = {
                 x, y,
                 ($$.hero.hotspot.w*$$.scale), ($$.hero.hotspot.h*$$.scale)
             );
+
+            $$.context.fillStyle = '#00FFFF';
+
+            var cnt = this.map.entities.length;
+            for( var i=0; i<cnt; i++ ) {
+                ent = this.map.entities[i];
+
+                if( $$.isOnScreen(ent.x + ent.hotx, ent.y + ent.hoty, ent.hotw, ent.hoth) ) {
+
+                    x = (ent.x + ent.hotx - $$.camera.x)*$$.scale;
+                    y = (ent.y + ent.hoty - $$.camera.y)*$$.scale;
+        
+                    $$.context.fillRect(
+                        x, y,
+                        (ent.hotw*$$.scale), (ent.hoth*$$.scale)
+                    );
+                }
+            }
+
 
             // $$.context.globalCompositeOperation = 'source-over';
         }
@@ -281,8 +300,18 @@ Map.prototype = {
 */
 
     obstructEntity : function( px, py ) {
-        // currently unimplemented
 
+        var cnt = this.map.entities.length;
+        for( var i=0; i<cnt; i++ ) {
+            var ent = this.map.entities[i];
+
+            if( overlap(px, py, 1, 1, ent.x + ent.hotx, ent.y + ent.hoty, ent.hotw, ent.hoth) ) {
+                debugger;   
+                // oh man, it was entity i.  I never trusted that guy.
+                return true;
+            }
+        }
+        
         return false;
     }
 }

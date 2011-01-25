@@ -320,6 +320,9 @@ while( !done ) {
     
     i++;
 }
+$$.map.map.entities.length = i;
+//// end of entity loading.
+
 
 //$$.hero = new MapEntity(160, 896, hero_data, 1);
 
