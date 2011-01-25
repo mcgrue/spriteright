@@ -306,8 +306,8 @@ Map.prototype = {
             var ent = this.map.entities[i];
 
             if( overlap(px, py, 1, 1, ent.x + ent.hotx, ent.y + ent.hoty, ent.hotw, ent.hoth) ) {
-                debugger;   
                 // oh man, it was entity i.  I never trusted that guy.
+                // we should activate an on-collide event or something i dont know
                 return true;
             }
         }
