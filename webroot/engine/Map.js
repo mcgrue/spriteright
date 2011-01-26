@@ -299,16 +299,20 @@ Map.prototype = {
 	}
 */
 
-    obstructEntity : function( px, py ) {
+    obstructEntity : function( px, py, active_ent ) {
 
         var cnt = this.map.entities.length;
         for( var i=0; i<cnt; i++ ) {
             var ent = this.map.entities[i];
 
+            if( active_ent && active_ent == ent ) {
+                continue;
+            }
+
             if( overlap(px, py, 1, 1, ent.x + ent.hotx, ent.y + ent.hoty, ent.hotw, ent.hoth) ) {
                 // oh man, it was entity i.  I never trusted that guy.
                 // we should activate an on-collide event or something i dont know
-                return true;
+                return ent;
             }
         }
         

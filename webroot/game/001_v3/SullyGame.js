@@ -517,36 +517,24 @@ var NW = 6;
 var SE = 7;
 var SW = 8;
 
-function ObstructAt( px, py ) {
+function ObstructAt( px, py, ent ) {
 
 	if( $$.map.obstructPixel(px,py) ) {
-/*
-		if( isEntityCollisionCapturing() ) {
-			event_tx = x/16;
-			event_ty = y/16;
-			event_entity = __grue_actor_index;
-			event_zone = current_map->zone(x/16, y/16);
-			event_entity_hit = -1;
-			onEntityCollision();
-		}
-*/
+        
+        if( ent && ent.onObstruct ) { ent.onObstruct(px, py); }
+
 		return true;
 	}
 
-	var ent_idx = $$.map.obstructEntity(px,py);
+	var ent_hit = $$.map.obstructEntity(px,py,ent);
 
-	if( ent_idx !== false ) {
-
-/*
-		if( isEntityCollisionCapturing() ) {
-			event_tx = x/16;
-			event_ty = y/16;
-			event_entity = __grue_actor_index;
-			event_zone = -1;
-			event_entity_hit = ent_idx;
-			onEntityCollision();
-		}
-*/
+	if( ent_hit !== false ) {
+        
+        if( ent ) {
+            if( ent_hit.onCollide ) { ent_hit.onCollide(ent); }
+            if( ent.onCollide ) { ent.onCollide(ent_hit); }
+        }
+        
 		return true;
 	}
 
@@ -667,7 +655,7 @@ function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints, ent) {
             for( var xx=startx; xx<=endx; xx++ ) {
                 for( var yy=starty; yy<=endy; yy++ ) {
                     for( var j=0; j<len; j++ ) {
-                        if( ObstructAt(arBasePoints[j][0]+xx, arBasePoints[j][1]+yy) ) {
+                        if( ObstructAt(arBasePoints[j][0]+xx, arBasePoints[j][1]+yy, ent) ) {
                             
                             ent.lastHitPixel = [arBasePoints[j][0]+xx, arBasePoints[j][1]+yy];
 
@@ -678,7 +666,7 @@ function _attempt_to_move_inner(ticks, tick_x, tick_y, arBasePoints, ent) {
             }
         } else {
             for( var j=0; j<len; j++ ) {
-                if( ObstructAt(arBasePoints[j][0]+x, arBasePoints[j][1]+y) ) {
+                if( ObstructAt(arBasePoints[j][0]+x, arBasePoints[j][1]+y, ent) ) {
 
                     ent.lastHitPixel = [arBasePoints[j][0]+x, arBasePoints[j][1]+y];
 
