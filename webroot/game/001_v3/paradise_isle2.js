@@ -2,8 +2,6 @@
 $$.map_scripts['paradise_isle2'] = {
 
     initmap : function() {
-//setObs(11, 54, 3);
-//setObs(9, 54, 4);
         $$.map.setObstructionTile(11, 55, 3);
         $$.map.setObstructionTile(9, 55, 4);
 
@@ -11,6 +9,15 @@ $$.map_scripts['paradise_isle2'] = {
         $$.map.setObstructionTile(100,13, 4);
 
         $$.log( 'paradise isle maps autoexec was called.' );
+    },
+
+    crystal_event : function() {
+            $$.textBox.talk([
+                [1,'Hey Crystal.', ''],
+                [4,'Hey Darin.', ''],
+                [1,'Wanna make out?',''],
+                [4,'Lol, no.'],
+            ]);
     },
 
     sully : function() {

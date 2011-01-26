@@ -59,7 +59,9 @@ Game.prototype = {
                 $$._last_hero_move = false;
                 moverate = 0;
             } else {
-                $$.map.activateAdjancentZone($$.hero);
+                if( !$$.map.activateAdjancentZone($$.hero) ) {
+                    $$.map.activateAdjancentEntity($$.hero);
+                }
             }
         }
     
@@ -309,6 +311,11 @@ while( !done ) {
         continue;
     } else {
         var e = $$.map.map.entities[i];
+
+        /// maybe this should go in the v3->sw converter?
+        if( $$.map.map.entities[i].script ) {
+            $$.map.map.entities[i].onAdjacentActivate = $$.map.map.entities[i].script;
+        }
     }
 
     var entity_data = $$.assets.get( e.chr ); // like 'crystal.json.chr', which was loaded in the asset loader.

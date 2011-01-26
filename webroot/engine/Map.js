@@ -229,12 +229,39 @@ Map.prototype = {
         //var z = this.getZone(tx, ty);
     },
 
-    callScript : function(scriptName) {
-        if( $$.map_scripts[this.map.name][scriptName] ) {
-            $$.map_scripts[this.map.name][scriptName]();
+    callScript : function( script ) {
+        
+        if( typeof script == 'string' ) {
+            if( $$.map_scripts[this.map.name][script] ) {
+                $$.map_scripts[this.map.name][script]();
+            } else {
+                $$.log( 'attempted to call a script named "'+script+'", but that wasnt in the maps scripts.' );
+            }
+        } else if( typeof script == 'function' ) {
+            script();
+            //debugger;
         } else {
-            $$.log( 'attempted to call a script named "'+scriptName+'", but that wasnt in the maps scripts.' );
+            var msg = 'Unknown callScript type attempted: ('+(typeof script)+')';
+            debugger;
+            $$.log( msg );
         }
+    },
+
+    activateAdjancentEntity: function(ent) {
+        var faceTile = this.getFacedTile(ent);
+
+        var adjEnt = this.obstructEntity( faceTile.tx * this.vsp.tile.w, faceTile.ty * this.vsp.tile.h, ent );
+
+        if( adjEnt ) {
+            if( adjEnt.onAdjacentActivate ) {
+                this.callScript(adjEnt.onAdjacentActivate);
+                return true;
+            } else {
+                $$.log('That entity wasnt actually adjacent-activation.');
+            }            
+        }
+
+        return false;
     },
 
     activateAdjancentZone: function(ent) {
@@ -246,6 +273,7 @@ Map.prototype = {
 
             if( this.map.zones[faceZone] && this.map.zones[faceZone].method ) {
                 this.callScript(this.map.zones[faceZone].event);
+                return true;
             } else {
                 $$.log('That event wasnt actually adjacent-activation.');
             }
@@ -253,6 +281,8 @@ Map.prototype = {
         } else {
             $$.log("Nothing there.");
         }
+    
+        return false;
     },
 
     obstructPixelGeneric : function( px, py ) {
