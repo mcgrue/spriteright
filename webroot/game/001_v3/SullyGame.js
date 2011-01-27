@@ -174,7 +174,29 @@ Game.prototype = {
         else if( $$.camera.y > ($$.map.height -$$.screen.height) ) $$.camera.y = ($$.map.height -$$.screen.height);
     },
 
-    
+    fade : function(onOrOff, color) {
+        
+        if( color ) {
+            $$.clearbox_color = color;
+        }
+        
+        //$$.lucent_percent = perc;
+
+        for( var i=0; i<$$.mapLayers.length; i++ ) {
+            $$.renderstack[0].layers[$$.mapLayers[i]].visible = onOrOff;
+        }
+    },
+
+    drawImage : function( img, x, y ) {
+        var renderImg = new RenderImage( x, y, img );
+
+        $$.renderstack[0].add($$.topLayer, renderImg);
+    },
+
+    clearAllImages : function() {
+        $$.renderstack[0].layers[$$.topLayer] = [];
+    },
+
     /// this function called after all the engine
     /// resources have been loaded.
     startup : function() {
@@ -200,20 +222,29 @@ Game.prototype = {
         };
         
         $$.map = new Map(mapdata, vsp);
+
+        var layer_bottomclear = $$.renderstack[0].addLayer('solid_color', true);
         var layer_bg  = $$.renderstack[0].addLayer('map_bg', true);
         var layer_ent  = $$.renderstack[0].addLayer('entities', true);
         var layer_fg = $$.renderstack[0].addLayer('map_fg', true);
         var layer_ui  = $$.renderstack[0].addLayer('ui_elements', true);
+        var layer_top  = $$.renderstack[0].addLayer('top_layer', true);
+
+        $$.mapLayers = [layer_bg, layer_ent, layer_fg];
+
+        $$.topLayer = layer_top;
+
 try {
+        $$.clearbox_color = '#000000';
         var clearbox = new RenderThing(
             0, 0,
             320, 240, 
             function() {
-                fill_rect( 0,0,320,240, '#000000' );
+                fill_rect( 0,0,320,240, $$.clearbox_color );
             }
         );
         
-        $$.renderstack[0].add(layer_bg, clearbox);
+        $$.renderstack[0].add(layer_bottomclear, clearbox);
         
         var bg = [];
         var fg = [];

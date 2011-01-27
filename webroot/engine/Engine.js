@@ -24,7 +24,7 @@ function Engine( canvas_node, width, height, scale, loadGameAssetsFunc ) {
         function() { $$.finishInit(); }
     );
     this.assets.init();
-        
+
     this.map_scripts = {};
 
     //this._debug_showthings = false;

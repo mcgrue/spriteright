@@ -28,17 +28,33 @@ McGrender.prototype = {
         return this.layers.length - 1;
     },
     
-    add : function( layer, obj ) {
+    assertLayer : function( layer ) {
         layer = parseInt(layer);
         if( layer < 0 || layer >= this.layers.length ) {
             throw "invalid layer index: " + layer;
         }
+        return layer;
+    },
+
+    add : function( layer, obj ) {
+        layer = this.assertLayer(layer);
 
         if( !obj.render ) {
             throw "tried to add an object that doesn't know how to render itself to the McGrender stack.";
         }
 
         this.layers[layer].contents.push(obj);
+    },
+
+    remove : function( layer, obj ) {
+        layer = this.assertLayer(layer);
+
+        for( var o in this.layers[layer].contents ) {
+            if( o == obj ) {
+// let's kick that bitch out of bed!
+debugger;
+            }
+        }
     },
 
     render : function() {

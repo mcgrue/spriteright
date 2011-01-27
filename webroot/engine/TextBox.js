@@ -19,6 +19,7 @@ function TextBox() {
 
     this.conversation_index = 0;
     this.visible = false;
+    this.onComplete = false;
 }
 
 TextBox.prototype = {
@@ -28,6 +29,16 @@ TextBox.prototype = {
             this.conversation_index ++;
         } else {
             this.visible = false;
+            
+            if( this.onComplete ) {
+                var prev = this.onComplete;
+                
+                this.onComplete();
+                
+                if( this.onComplete == prev ) {
+                    this.onComplete = false;
+                }
+            }
         }
     },
 

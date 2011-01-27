@@ -81,3 +81,24 @@ RenderThing.prototype = {
         this.draw();
     },
 }
+
+function RenderImage( x, y, img ) {
+    
+    this.img = img;    
+
+    this.x = x;
+    this.y = y;
+    this.w = img.width;
+    this.h = img.height;
+
+    this.visible = true;
+
+    this.think = function(){};
+    this.draw = function(){
+        $$.context.drawImage(
+            img, x, y
+        );
+    };
+}
+
+RenderImage.prototype = RenderThing.prototype;
