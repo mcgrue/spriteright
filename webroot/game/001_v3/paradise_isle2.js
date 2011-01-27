@@ -151,10 +151,17 @@ $$.map_scripts['paradise_isle2'] = {
     },
     
     girlfriend_check : function()  {
-        $$.textBox.talk([
-            [1,'Hrm... Crystal might get suspicious', 'if I sneak off the island without her...'],
-            [1,'...again.']
-        ]);
+
+        if( !$$.flags['F_CRYS_JOIN'] ) {
+            $$.textBox.talk([
+                [1,'Hrm... Crystal might get suspicious', 'if I sneak off the island without her...'],
+                [1,'...again.']
+            ]);
+        } else {
+            $$.textBox.talk([
+                [1,'If we could load another map, ', 'we would now...'],
+            ]);
+        }
     },
     
     normal_tree : function()  {
