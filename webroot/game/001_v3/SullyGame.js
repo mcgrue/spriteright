@@ -357,6 +357,7 @@ while( !done ) {
     entity_sprite.setState( 'down_idle' );
     $$.renderstack[0].add( layer_ent, entity_sprite );
 
+    // ping
     $$.map.map.entities[i].sprite = entity_sprite;
     
     i++;
