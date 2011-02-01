@@ -45,7 +45,8 @@ $$.map_scripts['paradise_isle2'] = {
             $$.textBox.onComplete = function() {
                 $$.map.map.entities[0].x = -100;
                 $$.map.map.entities[0].y = -100;
-                $$.map.map.entities[0].visible = false;
+                $$.map.map.entities[0].sprite.x = -100;
+                $$.map.map.entities[0].sprite.y = -100;
                 $$.flags['F_CRYS_JOIN'] = 1;
             }
         }
@@ -151,7 +152,6 @@ $$.map_scripts['paradise_isle2'] = {
     },
     
     girlfriend_check : function()  {
-
         if( !$$.flags['F_CRYS_JOIN'] ) {
             $$.textBox.talk([
                 [1,'Hrm... Crystal might get suspicious', 'if I sneak off the island without her...'],

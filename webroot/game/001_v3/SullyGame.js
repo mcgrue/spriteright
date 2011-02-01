@@ -326,6 +326,7 @@ try {
                 }
             }
         );
+         
         $$.renderstack[0].add(layer_ui, txt);
         
         var hero_data = $$.assets.get( 'darin.json.chr' );
@@ -355,6 +356,8 @@ while( !done ) {
     var entity_sprite = new MapAnimation( e.x, e.y, entity_img, entity_data );
     entity_sprite.setState( 'down_idle' );
     $$.renderstack[0].add( layer_ent, entity_sprite );
+
+    $$.map.map.entities[i].sprite = entity_sprite;
     
     i++;
 }

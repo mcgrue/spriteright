@@ -1,6 +1,8 @@
 
 function MapAnimation(x, y, img, animation_def) {
 
+    this.className = 'MapAnimation';
+    
     this.x = x;
     this.y = y;
     this.img = img;
@@ -114,6 +116,7 @@ MapAnimation.prototype = {
     },
 
     render: function() {
+
         if( !$$.isOnScreen(this.x, this.y, this.w, this.h) ) {
             return;
         }
