@@ -174,17 +174,34 @@ Game.prototype = {
         else if( $$.camera.y > ($$.map.height -$$.screen.height) ) $$.camera.y = ($$.map.height -$$.screen.height);
     },
 
-    fade : function(onOrOff, color) {
+    fade : function( timeFade, lucentFade, color, onComplete ) {
         
+        if( timeFade < 0 ) {
+            throw "fade(), timeFade cannot be < 0, was " + timeFade;
+        }
+
+        if( lucentFade < 0 || lucentFade > 100 ) {
+            throw "fade(), lucentFade has a valid range of [0,100], got " + lucentFade;
+        }
+
         if( color ) {
             $$.clearbox_color = color;
         }
         
-        //$$.lucent_percent = perc;
-
-        for( var i=0; i<$$.mapLayers.length; i++ ) {
-            $$.renderstack[0].layers[$$.mapLayers[i]].visible = onOrOff;
+        if( timeFade == 0 && (lucentFade == 0 || lucentFade == 100) ) {
+            onOrOff = (lucentFade == 100);
+            for( var i=0; i<$$.mapLayers.length; i++ ) {
+                $$.renderstack[0].layers[$$.mapLayers[i]].visible = onOrOff;
+            }
+            return;
         }
+
+        $$.fadebox.move({
+           x : lucentFade,
+           y : lucentFade,
+           time : timeFade,
+           onStopMoving : onComplete
+        });
     },
 
     drawImage : function( img, x, y ) {
@@ -223,28 +240,30 @@ Game.prototype = {
         
         $$.map = new Map(mapdata, vsp);
 
-        var layer_bottomclear = $$.renderstack[0].addLayer('solid_color', true);
-        var layer_bg  = $$.renderstack[0].addLayer('map_bg', true);
-        var layer_ent  = $$.renderstack[0].addLayer('entities', true);
-        var layer_fg = $$.renderstack[0].addLayer('map_fg', true);
-        var layer_ui  = $$.renderstack[0].addLayer('ui_elements', true);
-        var layer_top  = $$.renderstack[0].addLayer('top_layer', true);
+        var layer_bottomclear = $$.renderstack[0].addLayer({name: 'solid_color', visible: true, can_lucent: false});
+        var layer_bg  = $$.renderstack[0].addLayer({name: 'map_bg', visible: true});
+        var layer_ent  = $$.renderstack[0].addLayer({name: 'entities', visible: true});
+        var layer_fg = $$.renderstack[0].addLayer({name: 'map_fg', visible: true});
+        var layer_ui  = $$.renderstack[0].addLayer({name: 'ui_elements', visible: true, can_lucent: false});
+        var layer_top  = $$.renderstack[0].addLayer({name: 'top_layer', visible: true});
 
         $$.mapLayers = [layer_bg, layer_ent, layer_fg];
 
         $$.topLayer = layer_top;
 
 try {
-        $$.clearbox_color = '#000000';
-        var clearbox = new RenderThing(
-            0, 0,
+        $$.fadebox_color = '#000000';
+        var fadebox = new RenderThing(
+            100, 100,
             320, 240, 
             function() {
-                fill_rect( 0,0,320,240, $$.clearbox_color );
+                fill_rect( 0,0,320,240, $$.fadebox_color );
+                $$.lucent_percent = this.x;
             }
         );
-        
-        $$.renderstack[0].add(layer_bottomclear, clearbox);
+
+        $$.fadebox = fadebox;
+        $$.renderstack[0].add(layer_bottomclear, fadebox);
         
         var bg = [];
         var fg = [];
@@ -321,7 +340,7 @@ try {
                     if( $$._debug_showthings ) {
                         obj.text = '[debug mode, obs showing]';
                     } else {
-                        obj.text = '';
+                        obj.text = '$$.lucent_percent: ' + $$.lucent_percent;
                     }   
                 }
             }
@@ -411,7 +430,6 @@ $$.map.map.entities.length = i;
 }
     }
 }
-
 
 function calc_new_tiles(ent) {
     var tmp = {}

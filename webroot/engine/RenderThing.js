@@ -18,6 +18,8 @@ function RenderThing( x, y, w, h, draw, think ) {
     } else {
         this.draw = draw;
     }
+
+    this.onStopMoving = null;
 }
 
 RenderThing.prototype = {
@@ -37,6 +39,10 @@ RenderThing.prototype = {
                 time_done : $$.tickTime + data.time,
                 time_start : $$.tickTime
             };
+
+            if( data.onComplete ) {
+                this.onStopMoving = data.onComplete;
+            }
             
         } else {
             this.x = data.x;
@@ -45,10 +51,16 @@ RenderThing.prototype = {
     },
 
     doMove : function() {
-        if( $$.tickTime >= this.slice.time_done ) {
+        if( $$.tickTime >= this.slice.time_done && this.slice != false ) {
             this.x = this.slice.final_x;
             this.y = this.slice.final_y;
             this.slice = false;
+             
+            if( this.onStopMoving ) {
+                this.onStopMoving();
+                this.onStopMoving = null;
+            }
+             
             return;
         }
 
