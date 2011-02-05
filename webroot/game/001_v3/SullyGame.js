@@ -234,9 +234,18 @@ Game.prototype = {
         /// needs to be pulled out of the engine.
         
         var mapdata = $$.assets.get('paradise_isle2.json');
-        
+  
+/*
         vsp = {
             name: 'tropic2.vsp',
+            image: null,
+            tile: {w:16, h:16}
+        };
+*/
+
+        var mapdata = $$.assets.get('underwater.json');
+        vsp = {
+            name: 'sandtnl1.vsp',
             image: null,
             tile: {w:16, h:16}
         };

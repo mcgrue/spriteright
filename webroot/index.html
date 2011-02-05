@@ -92,15 +92,18 @@
         
             loader.Graphic('game/001_v3/tropic2.vsp.png',     'tropic2.vsp');
             loader.Graphic('game/001_v3/speech.png',          'speech.png');
-        
             loader.Script( 'game/001_v3/SullyGame.js',        'SullyGame.js' );
 
             loader.Json( 'game/001_v3/crystal.json.chr',      'crystal.chr.json' );
             loader.Graphic('game/001_v3/crystal.png',         'crystal.png');
 
             loader.Graphic('game/001_v3/standard_obs.png',    'standard_obs.png');
-
             loader.Graphic('game/001_v3/cryssand.gif',        'cryssand.gif');
+
+            loader.Json( 'game/001_v3/underwater.json',       'underwater.json' );
+            loader.Graphic('game/001_v3/sandtnl1.vsp.png',    'sandtnl1.vsp');
+            loader.Script( 'game/001_v3/underwater.js',   'underwater.js' );
+            //loader.Script( 'game/001_v3/paradise_isle2.js',   'paradise_isle2.js' );
         }
 
         new Engine( canvas_node, 320, 240, 1, load_game_assets );
