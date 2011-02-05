@@ -74,10 +74,9 @@ debugger;
             }
 
             if( !this.layers[i].can_lucent && $$.lucent_percent < 100 ) {
-                $$.lucent_percent;
-                // rendermode at opacity X
+                $$.context.globalAlpha = (100-$$.lucent_percent) / 100; // rendermode at opacity X
             } else {
-                // rendermode normal
+                $$.context.globalAlpha = 1; // rendermode normal
             }
             
             for( var j=0; j<this.layers[i].contents.length; j++ ) {
