@@ -10,21 +10,20 @@ function McGrender(name) {
 
 McGrender.prototype = {
     addLayer : function( kwargs ) {
-
+         
         if( !kwargs.name ) {
             throw "Layers must be named.";
         }
-        
+         
         var contents = [];
         if( kwargs.contents ) {
             contents = kwargs.contents;
         }
-
+         
         var visible = !!(kwargs.visible);
-
-        
+         
         var can_lucent = true;
-        if( kwargs.canLucent === false ) {
+        if( kwargs.can_lucent === false ) {
             can_lucent = false;
         }
 
@@ -72,8 +71,7 @@ debugger;
             if( !this.layers[i].visible ) {
                 continue;
             }
-
-
+                
             if( this.layers[i].can_lucent && $$.lucent_percent < 100 ) {
                 $$.context.globalAlpha = 1 - ((100-$$.lucent_percent) / 100); // rendermode at opacity X
             } else {
