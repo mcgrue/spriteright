@@ -248,7 +248,7 @@ Game.prototype = {
         var layer_ent  = $$.renderstack[0].addLayer({name: 'entities', visible: true});
         var layer_fg = $$.renderstack[0].addLayer({name: 'map_fg', visible: true});
         var layer_ui  = $$.renderstack[0].addLayer({name: 'ui_elements', visible: true, can_lucent: false});
-        var layer_top  = $$.renderstack[0].addLayer({name: 'top_layer', visible: true});
+        var layer_top  = $$.renderstack[0].addLayer({name: 'top_layer', visible: true, can_lucent: false});
 
         $$.mapLayers = [layer_bg, layer_ent, layer_fg];
 

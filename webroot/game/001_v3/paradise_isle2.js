@@ -18,38 +18,42 @@ $$.map_scripts['paradise_isle2'] = {
 
     crystal_event : function() {
 
-        $$.game.fade(1000, 0, '#000000', function() { debugger; } );
-
-        var img = $$.assets.get( 'cryssand.gif' );
-        $$.game.drawImage( img, 158,20 );
-
-        $$.textBox.talk([
-            [4, 'Darin.... Hello. How are you today? I', 'needed to talk to you about'],
-            [4, 'something...', ''],
-            [4, "I... I've been thinking and I've decided", "we need to leave Paradise Island."],
-            [1, "But Crystal!", "What's wrong?"],
-            [1, "I kinda like this blue lagoon","thing we have going on."],
-            [4, "No... it has to be this way. We'll go", "insane if we don't have some"],
-            [4, "adventure soon!"],
-            [1, "I suppose you're right. I'd like to go", "exploring some caves and stuff."],
-        ]);    
-
-        $$.textBox.onComplete = function() {
-            $$.game.fade(1);
-            $$.game.clearAllImages();
+        $$.game.fade(1000, 0, '#000000', function() {
+             
+            var img = $$.assets.get( 'cryssand.gif' );
+            $$.game.drawImage( img, 158,20 );
+             
             $$.textBox.talk([
-                [4, "I'm glad you understand. I suppose","we can use the undersea passage."],
-                [4, "Let's go!", ""],
-            ]);
-
+                [4, 'Darin.... Hello. How are you today? I', 'needed to talk to you about'],
+                [4, 'something...', ''],
+                [4, "I... I've been thinking and I've decided", "we need to leave Paradise Island."],
+                [1, "But Crystal!", "What's wrong?"],
+                [1, "I kinda like this blue lagoon","thing we have going on."],
+                [4, "No... it has to be this way. We'll go", "insane if we don't have some"],
+                [4, "adventure soon!"],
+                [1, "I suppose you're right. I'd like to go", "exploring some caves and stuff."],
+            ]);    
+    
             $$.textBox.onComplete = function() {
-                $$.map.map.entities[0].x = -100;
-                $$.map.map.entities[0].y = -100;
-                $$.map.map.entities[0].sprite.x = -100;
-                $$.map.map.entities[0].sprite.y = -100;
-                $$.flags['F_CRYS_JOIN'] = 1;
+                $$.game.clearAllImages();
+                
+                $$.game.fade(1000, 100, '#000000', function() {
+                    
+                    $$.textBox.talk([
+                        [4, "I'm glad you understand. I suppose","we can use the undersea passage."],
+                        [4, "Let's go!", ""],
+                    ]);
+        
+                    $$.textBox.onComplete = function() {
+                        $$.map.map.entities[0].x = -100;
+                        $$.map.map.entities[0].y = -100;
+                        $$.map.map.entities[0].sprite.x = -100;
+                        $$.map.map.entities[0].sprite.y = -100;
+                        $$.flags['F_CRYS_JOIN'] = 1;
+                    }
+                });
             }
-        }
+        });
     },
 
     sully : function() {
