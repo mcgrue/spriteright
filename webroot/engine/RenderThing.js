@@ -26,6 +26,7 @@ RenderThing.prototype = {
 
     move : function( data ) {
         if( data.time ) {
+
             var dx = data.x - this.x;
             var dy = data.y - this.y;
             

@@ -177,10 +177,12 @@ Game.prototype = {
     fade : function( timeFade, lucentFade, color, onComplete ) {
         
         if( timeFade < 0 ) {
+            debugger;
             throw "fade(), timeFade cannot be < 0, was " + timeFade;
         }
 
         if( lucentFade < 0 || lucentFade > 100 ) {
+            debugger;
             throw "fade(), lucentFade has a valid range of [0,100], got " + lucentFade;
         }
 
@@ -189,6 +191,7 @@ Game.prototype = {
         }
         
         if( timeFade == 0 && (lucentFade == 0 || lucentFade == 100) ) {
+            debugger;
             onOrOff = (lucentFade == 100);
             for( var i=0; i<$$.mapLayers.length; i++ ) {
                 $$.renderstack[0].layers[$$.mapLayers[i]].visible = onOrOff;
@@ -259,6 +262,9 @@ try {
             function() {
                 fill_rect( 0,0,320,240, $$.fadebox_color );
                 $$.lucent_percent = this.x;
+            },
+            function() {
+                //$$.log( $$.lucent_percent + 'fadebox is thinking!' + $$.tickTime );
             }
         );
 

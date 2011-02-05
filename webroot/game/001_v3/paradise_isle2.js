@@ -18,7 +18,9 @@ $$.map_scripts['paradise_isle2'] = {
 
     crystal_event : function() {
 
-        $$.game.fade(0, '#000000');
+        $$.game.fade(1000, 0, '#000000', function() { debugger; } );
+
+return;
 
         var img = $$.assets.get( 'cryssand.gif' );
         $$.game.drawImage( img, 158,20 );

@@ -73,8 +73,9 @@ debugger;
                 continue;
             }
 
-            if( !this.layers[i].can_lucent && $$.lucent_percent < 100 ) {
-                $$.context.globalAlpha = (100-$$.lucent_percent) / 100; // rendermode at opacity X
+
+            if( this.layers[i].can_lucent && $$.lucent_percent < 100 ) {
+                $$.context.globalAlpha = 1 - ((100-$$.lucent_percent) / 100); // rendermode at opacity X
             } else {
                 $$.context.globalAlpha = 1; // rendermode normal
             }
