@@ -41,8 +41,8 @@ RenderThing.prototype = {
                 time_start : $$.tickTime
             };
 
-            if( data.onComplete ) {
-                this.onStopMoving = data.onComplete;
+            if( data.onStopMoving ) {
+                this.onStopMoving = data.onStopMoving;
             }
             
         } else {
