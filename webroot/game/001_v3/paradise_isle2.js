@@ -130,8 +130,10 @@ $$.map_scripts['paradise_isle2'] = {
     },
     
     enter_house : function() {
-        Warp(99,12, Transition.NONE);
-        $$.log('move hero to inside house here.');
+        $$.game.loadMap('underwater.json', 30, 11);
+
+//        Warp(99,12, Transition.NONE);
+//        $$.log('move hero to inside house here.');
     },
 
     exit_house : function() {

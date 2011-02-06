@@ -217,14 +217,19 @@ Game.prototype = {
         $$.renderstack[0].layers[$$.topLayer] = [];
     },
 
-    loadMap : function () {
+    loadMap : function ( map_assetname, tx, ty ) {
 
-        var mapdata = $$.assets.get('paradise_isle2.json');
+        var mapdata = $$.assets.get(map_assetname);
         var vsp = {
             name: mapdata.savevsp,
             image: null,
             tile: {w:16, h:16}
         };
+
+        if( $$.hero && tx && ty ) {
+            $$.hero.x = tx*vsp.tile.w;
+            $$.hero.y = ty*vsp.tile.h;
+        }
 
         $$.map = new Map(mapdata, vsp);
 
@@ -317,10 +322,10 @@ Game.prototype = {
             new McGrender('main')
         );
          
+        
         $$.keys = new Keys();
         $$.hero = false;
         $$.tickTime = get_time(); //starting time.
-
 
         var layer_bottomclear = $$.renderstack[0].addLayer({name: 'solid_color', visible: true, can_lucent: false});
         var layer_bg  = $$.renderstack[0].addLayer({name: 'map_bg', visible: true});
@@ -342,7 +347,7 @@ Game.prototype = {
         };
 */
 
-        $$.game.loadMap();
+        $$.game.loadMap('paradise_isle2.json');
 
 try {
         $$.fadebox_color = '#000000';
