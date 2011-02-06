@@ -55,6 +55,10 @@ McGrender.prototype = {
         this.layers[layer].contents.push(obj);
     },
 
+    clear : function( layer ) {
+        this.layers[layer].contents = [];
+    },
+
     remove : function( layer, obj ) {
         layer = this.assertLayer(layer);
 

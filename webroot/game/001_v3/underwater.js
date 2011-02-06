@@ -2,6 +2,6 @@
 $$.map_scripts['underwater'] = {
 
     initmap : function() {
-        debugger;
+        $$.log('underwater map.... engaged.');
     },
 };

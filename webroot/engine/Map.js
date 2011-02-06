@@ -76,7 +76,6 @@ Map.prototype = {
     },
 
     render: function( arLayers ) {
-
         if( !arLayers || !arLayers.length ) {
             throw "Cannot render a map without layer rendering data.";
         }

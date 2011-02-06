@@ -206,83 +206,36 @@ Game.prototype = {
            onStopMoving : onComplete
         });
     },
-
+     
     drawImage : function( img, x, y ) {
         var renderImg = new RenderImage( x, y, img );
-
+     
         $$.renderstack[0].add($$.topLayer, renderImg);
     },
-
+     
     clearAllImages : function() {
         $$.renderstack[0].layers[$$.topLayer] = [];
     },
 
-    /// this function called after all the engine
-    /// resources have been loaded.
-    startup : function() {
-        $$.renderstack.push(
-            new McGrender('main')
-        );
-        
-        $$.keys = new Keys();
-        
-        $$.hero = false;
-        
-        $$.tickTime = get_time(); //starting time.
-        
-        /// This is sorta game-specific code
-        /// needs to be pulled out of the engine.
-        
-        var mapdata = $$.assets.get('paradise_isle2.json');
-  
-/*
-        vsp = {
-            name: 'tropic2.vsp',
-            image: null,
-            tile: {w:16, h:16}
-        };
-*/
+    loadMap : function () {
 
-        var mapdata = $$.assets.get('underwater.json');
-        vsp = {
-            name: 'sandtnl1.vsp',
+        var mapdata = $$.assets.get('paradise_isle2.json');
+        var vsp = {
+            name: mapdata.savevsp,
             image: null,
             tile: {w:16, h:16}
         };
-        
+
         $$.map = new Map(mapdata, vsp);
 
-        var layer_bottomclear = $$.renderstack[0].addLayer({name: 'solid_color', visible: true, can_lucent: false});
-        var layer_bg  = $$.renderstack[0].addLayer({name: 'map_bg', visible: true});
-        var layer_ent  = $$.renderstack[0].addLayer({name: 'entities', visible: true});
-        var layer_fg = $$.renderstack[0].addLayer({name: 'map_fg', visible: true});
-        var layer_ui  = $$.renderstack[0].addLayer({name: 'ui_elements', visible: true, can_lucent: false});
-        var layer_top  = $$.renderstack[0].addLayer({name: 'top_layer', visible: true, can_lucent: false});
-
-        $$.mapLayers = [layer_bg, layer_ent, layer_fg];
-
-        $$.topLayer = layer_top;
-
-try {
-        $$.fadebox_color = '#000000';
-        var fadebox = new RenderThing(
-            100, 100,
-            320, 240, 
-            function() {
-                fill_rect( 0,0,320,240, $$.fadebox_color );
-                $$.lucent_percent = this.x;
-            },
-            function() {
-                //$$.log( $$.lucent_percent + 'fadebox is thinking!' + $$.tickTime );
-            }
-        );
-
-        $$.fadebox = fadebox;
-        $$.renderstack[0].add(layer_bottomclear, fadebox);
-        
+        /// now set up the renderstack.
         var bg = [];
         var fg = [];
         var eLayer = false;
+
+        $$.renderstack[0].clear( $$.mapLayers.fg );
+        $$.renderstack[0].clear( $$.mapLayers.bg );
+        $$.renderstack[0].clear( $$.mapLayers.ent );
 
         for( var i = 0; i<mapdata.layer_render_order.length; i++ ) {
             var n = mapdata.layer_render_order[i];
@@ -308,23 +261,105 @@ try {
 
         if( bg.length ) {
             $$.renderstack[0].add(
-                layer_bg, {
+                $$.mapLayers.bg, {
                     render: function() {
                         $$.map.render(bg);
                     }
                 }
             );
         }
-
+         
         if( fg.length ) {
             $$.renderstack[0].add(
-                layer_fg, {
+                $$.mapLayers.fg, {
                     render: function() {
                         $$.map.render(fg);
                     }
                 }
             );
         }
+         
+        /// now oad the entities
+        var done = false;
+        var i = 0;
+        while( !done ) {
+            if( !$$.map.map.entities[i] ) {
+                done = true;
+                continue;
+            } else {
+                var e = $$.map.map.entities[i];
+        
+                /// maybe this should go in the v3->sw converter?
+                if( $$.map.map.entities[i].script ) {
+                    $$.map.map.entities[i].onAdjacentActivate = $$.map.map.entities[i].script;
+                }
+            }
+        
+            var entity_data = $$.assets.get( e.chr ); // like 'crystal.json.chr', which was loaded in the asset loader.
+            var entity_img = $$.assets.get( entity_data.image ); // like 'crystal.png', which was loaded in the asset loader.
+        
+            var entity_sprite = new MapAnimation( e.x, e.y, entity_img, entity_data );
+            entity_sprite.setState( 'down_idle' );
+            $$.renderstack[0].add( $$.mapLayers.ent, entity_sprite );
+        
+            // ping
+            $$.map.map.entities[i].sprite = entity_sprite;
+            
+            i++;
+        }
+        $$.map.map.entities.length = i;
+    },
+
+    /// this function called after all the engine
+    /// resources have been loaded.
+    startup : function() {
+        $$.renderstack.push(
+            new McGrender('main')
+        );
+         
+        $$.keys = new Keys();
+        $$.hero = false;
+        $$.tickTime = get_time(); //starting time.
+
+
+        var layer_bottomclear = $$.renderstack[0].addLayer({name: 'solid_color', visible: true, can_lucent: false});
+        var layer_bg  = $$.renderstack[0].addLayer({name: 'map_bg', visible: true});
+        var layer_ent  = $$.renderstack[0].addLayer({name: 'entities', visible: true});
+        var layer_fg = $$.renderstack[0].addLayer({name: 'map_fg', visible: true});
+        var layer_ui  = $$.renderstack[0].addLayer({name: 'ui_elements', visible: true, can_lucent: false});
+        var layer_top  = $$.renderstack[0].addLayer({name: 'top_layer', visible: true, can_lucent: false});
+
+        $$.mapLayers = {bg: layer_bg, ent: layer_ent, fg: layer_fg};
+
+        $$.topLayer = layer_top;
+
+/*
+        var mapdata = $$.assets.get('underwater.json');
+        vsp = {
+            name: 'sandtnl1.vsp',
+            image: null,
+            tile: {w:16, h:16}
+        };
+*/
+
+        $$.game.loadMap();
+
+try {
+        $$.fadebox_color = '#000000';
+        var fadebox = new RenderThing(
+            100, 100,
+            320, 240, 
+            function() {
+                fill_rect( 0,0,320,240, $$.fadebox_color );
+                $$.lucent_percent = this.x;
+            },
+            function() {
+                //$$.log( $$.lucent_percent + 'fadebox is thinking!' + $$.tickTime );
+            }
+        );
+
+        $$.fadebox = fadebox;
+        $$.renderstack[0].add(layer_bottomclear, fadebox);
         
         txt = new Text(
             10, 10,
@@ -366,38 +401,8 @@ try {
         var hero_data = $$.assets.get( 'darin.json.chr' );
         var hero_img = $$.assets.get( 'darin.png' );
 
-        //var hero_data = $$.assets.get( 'crystal.json.chr' );
-        //var hero_img = $$.assets.get( 'crystal.png' );
-
-var done = false;
-var i = 0;
-while( !done ) {
-    if( !$$.map.map.entities[i] ) {
-        done = true;
-        continue;
-    } else {
-        var e = $$.map.map.entities[i];
-
-        /// maybe this should go in the v3->sw converter?
-        if( $$.map.map.entities[i].script ) {
-            $$.map.map.entities[i].onAdjacentActivate = $$.map.map.entities[i].script;
-        }
-    }
-
-    var entity_data = $$.assets.get( e.chr ); // like 'crystal.json.chr', which was loaded in the asset loader.
-    var entity_img = $$.assets.get( entity_data.image ); // like 'crystal.png', which was loaded in the asset loader.
-
-    var entity_sprite = new MapAnimation( e.x, e.y, entity_img, entity_data );
-    entity_sprite.setState( 'down_idle' );
-    $$.renderstack[0].add( layer_ent, entity_sprite );
-
-    // ping
-    $$.map.map.entities[i].sprite = entity_sprite;
-    
-    i++;
-}
-$$.map.map.entities.length = i;
-//// end of entity loading.
+//var hero_data = $$.assets.get( 'crystal.json.chr' );
+//var hero_img = $$.assets.get( 'crystal.png' );
 
 
 //$$.hero = new MapEntity(160, 896, hero_data, 1);
