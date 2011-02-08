@@ -226,11 +226,6 @@ Game.prototype = {
             tile: {w:16, h:16}
         };
 
-        if( $$.hero && tx && ty ) {
-            $$.hero.x = tx*vsp.tile.w;
-            $$.hero.y = ty*vsp.tile.h;
-        }
-
         $$.map = new Map(mapdata, vsp);
 
         /// now set up the renderstack.
@@ -284,6 +279,16 @@ Game.prototype = {
             );
         }
          
+        if( $$.hero ) {
+            $$.renderstack[0].add( $$.mapLayers.ent, $$.hero );
+            $$.hero.setState( 'down_walk' );
+
+            if( tx && ty ) {
+                $$.hero.x = tx*vsp.tile.w;
+                $$.hero.y = ty*vsp.tile.h;
+            }
+        }
+
         /// now oad the entities
         var done = false;
         var i = 0;
