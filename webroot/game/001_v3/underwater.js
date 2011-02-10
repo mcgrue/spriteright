@@ -5,7 +5,13 @@ $$.map_scripts['underwater'] = {
         $$.log('underwater map.... engaged.');
     },
 
-    warp_paradise : function () {}, 
+    warp_paradise : function () {
+        $$.log('To paradise isle.');
+        //V1_MapSwitch("paradise_isle2.map", 63, 60);
+        
+        //$$.game.loadMap('paradise_isle2.json', 30, 11);
+        //$$.game.loadMap('paradise_isle2.json', 63, 60);
+    }, 
     warp_world : function () {}, 
     warp_switch : function () {}, 
     warp_lever : function () {}, 

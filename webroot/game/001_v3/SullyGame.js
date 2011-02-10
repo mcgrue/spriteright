@@ -284,8 +284,9 @@ Game.prototype = {
             $$.hero.setState( 'down_walk' );
 
             if( tx && ty ) {
-                $$.hero.x = tx*vsp.tile.w;
-                $$.hero.y = ty*vsp.tile.h;
+                Warp(tx, ty, false);
+                //$$.hero.x = tx*vsp.tile.w;
+                //$$.hero.y = ty*vsp.tile.h;
             }
         }
 
@@ -530,6 +531,7 @@ function find_new_and_old_tiles( current, previous ) {
 var Transition = {
     NONE: 0,
 }
+
 
 function Warp(tx, ty, trans) {
 

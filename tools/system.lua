@@ -22,7 +22,7 @@ function split(str, pat)
 end
 
 function autoexec()
-    v3.map("maps/paradise_isle2.map")
+    v3.map("maps/underwater.map")
     --v3.map("maps/simpletype_overworld.map")
 end
 
