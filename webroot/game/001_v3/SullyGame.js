@@ -137,18 +137,22 @@ Game.prototype = {
 
             var changed = find_new_and_old_tiles( $$.hero.current_tiles, $$.hero.previous_tiles );
             
-            if( changed ) {
-                var len = changed['new'].length;
-                for( var i = 0; i<len; i++ ) {
-                    $$.map.enterZone($$.hero, changed['new'][i][0], changed['new'][i][1]);
-                }
+            if( changed ) { 
+
+                if( $$.moves_ignore_once ) {
+                    $$.moves_ignore_once = false;
+                } else {
+                    var len = changed['new'].length;
+                    for( var i = 0; i<len; i++ ) {
+                        $$.map.enterZone($$.hero, changed['new'][i][0], changed['new'][i][1]);
+                    }
 /// when we implement leaveZone...
 ///                var len = changed['old'].length;
 ///                for( var i = 0; i<len; i++ ) {
 ///                    $$.map.leaveZone($$.hero, changed['new'][i][0], changed['new'][i][1]);
 ///                }
+                }
             }
-
         } else {
             $$.hero.setState( facename+'_idle' );
         }
@@ -219,6 +223,8 @@ Game.prototype = {
 
     loadMap : function ( map_assetname, tx, ty ) {
 
+        $$.moves_ignore_once = true;
+
         var mapdata = $$.assets.get(map_assetname);
         var vsp = {
             name: mapdata.savevsp,
@@ -285,8 +291,6 @@ Game.prototype = {
 
             if( tx && ty ) {
                 Warp(tx, ty, false);
-                //$$.hero.x = tx*vsp.tile.w;
-                //$$.hero.y = ty*vsp.tile.h;
             }
         }
 
@@ -343,15 +347,6 @@ Game.prototype = {
         $$.mapLayers = {bg: layer_bg, ent: layer_ent, fg: layer_fg};
 
         $$.topLayer = layer_top;
-
-/*
-        var mapdata = $$.assets.get('underwater.json');
-        vsp = {
-            name: 'sandtnl1.vsp',
-            image: null,
-            tile: {w:16, h:16}
-        };
-*/
 
         $$.game.loadMap('paradise_isle2.json');
 
@@ -412,20 +407,11 @@ try {
         var hero_data = $$.assets.get( 'darin.json.chr' );
         var hero_img = $$.assets.get( 'darin.png' );
 
-//var hero_data = $$.assets.get( 'crystal.json.chr' );
-//var hero_img = $$.assets.get( 'crystal.png' );
-
-
-//$$.hero = new MapEntity(160, 896, hero_data, 1);
-
         var sprite = new MapAnimation( 200, 896, hero_img, hero_data );
 
         $$.hero = sprite;
         $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
-
-        //$$.hero.movecode = 0;
-        //$$.hero.active = true;
 
         var menu = new RenderThing(
             0, 10,
@@ -545,59 +531,9 @@ function Warp(tx, ty, trans) {
     $$.camera.y = $$.hero.y + y;
 }
 
-/*
-int obstructpixel(int x, int y) {
-    if ( x<0 || y<0 || (x>>4)>=mapwidth || (y>>4)>=mapheight ) return 1;
-    int t=obslayer[((y>>4)*mapwidth)+(x>>4)];
-    return tileset->GetObs(t, x&15, y&15);
-}
-*/
-
 function is_obstructed_at( px, py ) {
     return false;
 }
-
-/// an entity has coordinates, dimensions, and a bounding box.
-/// return true if you can make that move.
-/// return false if you'd go bump in the night.
-/*
-function is_obstructed_at( px, py ) {
-     
-	if( $$.map.obstructPixel(px, py) ) {
-debugger;
-
-
-		if( isEntityCollisionCapturing(a) ) {
-			event_tx = x/16;
-			event_ty = y/16;
-			event_entity = __grue_actor_index;
-			event_zone = current_map->zone(x/16, y/16);
-			event_entity_hit = -1;
-			onEntityCollision();
-		}
-   
-		return true;
-	}
-
-	int ent_idx = EntityObsAt(x, y);
-
-	if( ent_idx > -1 ) {
-
-		if( isEntityCollisionCapturing() ) {
-			event_tx = x/16;
-			event_ty = y/16;
-			event_entity = __grue_actor_index;
-			event_zone = -1;
-			event_entity_hit = ent_idx;
-			onEntityCollision();
-		}
-
-		return true;
-	}
-
-	return false;
-}
-*/
 
 /// ah sick of this transliteration.  GLOABLTIME.
 var NORTH = 1;

@@ -11,8 +11,11 @@ $$.map_scripts['paradise_isle2'] = {
         $$.log( 'paradise isle maps autoexec was called.' );
 
         if( $$.flags['F_CRYS_JOIN'] ) {
-            debugger;
             //move the map-crystal off the map
+            $$.map.map.entities[0].x = -100;
+            $$.map.map.entities[0].y = -100;
+            $$.map.map.entities[0].sprite.x = -100;
+            $$.map.map.entities[0].sprite.y = -100;
         }
     },
 
@@ -127,13 +130,12 @@ $$.map_scripts['paradise_isle2'] = {
     // passage to the undersea cavern
     undersea : function() {
         $$.log('changemap to undersea cavern here.');
+        $$.game.loadMap('underwater.json', 30, 10);
     },
     
     enter_house : function() {
-        $$.game.loadMap('underwater.json', 30, 11);
-
-//        Warp(99,12, Transition.NONE);
-//        $$.log('move hero to inside house here.');
+        Warp(99,12, Transition.NONE);
+        $$.log('move hero to inside house here.');
     },
 
     exit_house : function() {
@@ -144,8 +146,8 @@ $$.map_scripts['paradise_isle2'] = {
     pearl_cave : function() {
         $$.log('Pearl Cave entrance.');
 
-        //AlterFTile(59,17,663,0);    
-        //AlterFTile(60,17,664,0);    
+        //AlterFTile(59,17,663,0);
+        //AlterFTile(60,17,664,0);
         //SetTile(59,16,2,643);
         //SetTile(60,16,2,644);
     },
@@ -162,10 +164,6 @@ $$.map_scripts['paradise_isle2'] = {
             $$.textBox.talk([
                 [1,'Hrm... Crystal might get suspicious', 'if I sneak off the island without her...'],
                 [1,'...again.']
-            ]);
-        } else {
-            $$.textBox.talk([
-                [1,'If we could load another map, ', 'we would now...'],
             ]);
         }
     },

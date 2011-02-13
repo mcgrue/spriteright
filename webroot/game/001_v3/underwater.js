@@ -6,12 +6,9 @@ $$.map_scripts['underwater'] = {
     },
 
     warp_paradise : function () {
-        $$.log('To paradise isle.');
-        //V1_MapSwitch("paradise_isle2.map", 63, 60);
-        
-        //$$.game.loadMap('paradise_isle2.json', 30, 11);
-        //$$.game.loadMap('paradise_isle2.json', 63, 60);
-    }, 
+        $$.game.loadMap('paradise_isle2.json', 63, 60);
+    },
+
     warp_world : function () {}, 
     warp_switch : function () {}, 
     warp_lever : function () {}, 
@@ -41,5 +38,4 @@ $$.map_scripts['underwater'] = {
     Lucent_80 : function () {}, 
     Lucent_90 : function () {}, 
     Lucent_100 : function () {}, 
-
 };
