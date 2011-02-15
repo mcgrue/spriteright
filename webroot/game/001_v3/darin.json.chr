@@ -1,11 +1,11 @@
 {
     image: 'darin.png',
-
+     
     dimensions: {
         w: 16,
         h: 32
     },
-
+     
     sheet: {
         cols: 5,
         rows: 6,
@@ -13,24 +13,17 @@
         top_padding: 1,
         left_padding: 1
     },
-
-/// shrinking the hotspot so we can get through places without rewriting the obs system atm.
+     
+    /// shrinking the hotspot so we can get through places without rewriting the obs system atm.
     hotspot: {
         x: 3,
         y: 19,
         w: 10,
         h: 10,
     },
-/*
-    hotspot: {
-        x: 0,
-        y: 16,
-        w: 16,
-        h: 16,
-    },
-*/
+     
     default_wait : 33,
-
+     
     animations : {
         down_idle   : [0],
         up_idle     : [5],
