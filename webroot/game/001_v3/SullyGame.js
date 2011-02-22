@@ -67,6 +67,7 @@ Game.prototype = {
     
         if( k.held[k.M] ) {
             k.held[k.M] = false;
+
             $$._menu_direction = !$$._menu_direction;
     
             $$.menubox.move({
@@ -181,12 +182,10 @@ Game.prototype = {
     fade : function( timeFade, lucentFade, color, onComplete ) {
         
         if( timeFade < 0 ) {
-            debugger;
             throw "fade(), timeFade cannot be < 0, was " + timeFade;
         }
 
         if( lucentFade < 0 || lucentFade > 100 ) {
-            debugger;
             throw "fade(), lucentFade has a valid range of [0,100], got " + lucentFade;
         }
 
@@ -195,7 +194,6 @@ Game.prototype = {
         }
         
         if( timeFade == 0 && (lucentFade == 0 || lucentFade == 100) ) {
-            debugger;
             onOrOff = (lucentFade == 100);
             for( var i=0; i<$$.mapLayers.length; i++ ) {
                 $$.renderstack[0].layers[$$.mapLayers[i]].visible = onOrOff;
@@ -294,6 +292,23 @@ Game.prototype = {
             }
         }
 
+        /* TODO: Unfix the point in this parallaxing.
+
+        var preLayers = $$.map.map.layers;
+        var postLayers = [];
+        for( var i=0; i<preLayers.length; i++ ) {
+            var curLay = preLayers[i];
+            curLay.parallax.x1 = curLay.parallax.x >> 16;
+            curLay.parallax.x2 = curLay.parallax.x << 16 >> 16;
+            curLay.parallax.y1 = curLay.parallax.y >> 16;
+            curLay.parallax.y2 = curLay.parallax.y << 16 >> 16;
+            postLayers[i] = curLay;
+        }
+        
+        $$.map.map.layers = postLayers;
+
+        */
+
         /// now oad the entities
         var done = false;
         var i = 0;
@@ -332,7 +347,6 @@ Game.prototype = {
             new McGrender('main')
         );
          
-        
         $$.keys = new Keys();
         $$.hero = false;
         $$.tickTime = get_time(); //starting time.
@@ -413,27 +427,7 @@ try {
         $$.renderstack[0].add( layer_ent, $$.hero );
         $$.hero.setState( 'down_walk' );
 
-        var menu = new RenderThing(
-            0, 10,
-            50, 50,
-            function() {
-                draw_menu_box(this);
-                $$.context.fillStyle    = 'white';
-                $$.context.font         = '10px Arial';
-                $$.context.textBaseline = 'top';
-                $$.context.fillText( 'MENU', this.x+5, this.y+5);
-                $$.context.fillText( 'ITEM', this.x+5, this.y+15);
-                $$.context.fillText( 'LOL', this.x+5, this.y+25);
-                $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
-            }
-        );
-        
-        menu.color = '#000099';
-        menu.move({
-            x : -50,
-            y : 10,
-            time : 50
-        });
+        var menu = new SullyMenu();
         
         var textBox = new TextBox();
 
@@ -444,6 +438,7 @@ try {
         $$.renderstack[0].add(layer_ui, textBox);
 } catch(e) {
     alert('ERR: ' + e);
+    $$.log('ERR: ' + e);
 }
     }
 }
@@ -736,8 +731,6 @@ function attempt_to_move( dx, dy, ent ) {
     ent.y += res[1];
     
     if( res[2] ) { /// ie, movus interruptus
-        //debugger;
-
         var tc = $$.map.getTileCoordinates(ent.lastHitPixel[0], ent.lastHitPixel[1]);
         var t = $$.map.getObstructionTile(tc.tx,tc.ty);
 

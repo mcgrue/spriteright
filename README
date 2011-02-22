@@ -6,7 +6,18 @@
 PLAN
 ---------
 Currently working on getting a pleasant entity obstuction system in.
+    - need to generalize the diagonal-pushing case so it happens non-hack and can't be exploited to escape your obstructiony prison.
 
+Menus
+    - Party
+        - Status
+        - Equip
+        - Inventory
+    - Options
+    - Data (Load/Save)
+
+Battle system
+    - effects like http://pixie.strd6.com/developer/apps/69/fullscreen
 
 ent.onObstruct
 ent.onCollide
