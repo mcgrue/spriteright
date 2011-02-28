@@ -38,14 +38,10 @@ Game.prototype = {
 
         //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
         //$$.log('moverate: ' + moverate);
+
     
         if( k.held[k.M] && $$.soundManager ) {
             $$.soundManager.stopAll();
-        }
-    
-        if( k.held[k.O] ) {
-            k.held[k.O] = false;
-            $$._debug_showthings = !$$._debug_showthings;
         }
     
     
@@ -53,8 +49,6 @@ Game.prototype = {
             this.doTextboxControl();
         } else if( $$.menubox.inMenu() ) {
             $$.menubox.doControl();
-        } else if( 0 /** battle */ ) {
-            
         } else {
             this.doPlayerMapControl();
         } 
@@ -78,6 +72,16 @@ Game.prototype = {
             return;
         }
 
+        var k = $$.keys;
+        var moved = false;
+
+        var time = get_time();
+        var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
+
+    
+        var dx = 0;
+        var dy = 0;
+
         if( k.isActionButtonPressed() ) {
             k.releaseActionButton();
             
@@ -99,15 +103,10 @@ Game.prototype = {
             });
         }
 
-        var k = $$.keys;
-        var moved = false;
-
-        var time = get_time();
-        var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
-
-    
-        var dx = 0;
-        var dy = 0;
+        if( k.held[k.O] ) {
+            k.held[k.O] = false;
+            $$._debug_showthings = !$$._debug_showthings;
+        }
 
         if( k.isUpPressed() ) {
             dy -= moverate;
