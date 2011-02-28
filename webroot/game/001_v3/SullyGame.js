@@ -86,7 +86,7 @@ Game.prototype = {
             $$._menu_direction = !$$._menu_direction;
     
             $$.menubox.move({
-                x : ($$._menu_direction? -50 : 260),
+                x : (!$$._menu_direction? -60 : 250),
                 y : 10,
                 time : 200
             });
@@ -165,7 +165,6 @@ Game.prototype = {
         }
     
         $$._last_hero_move = get_time();
- 
     },
     
     /// abstract this from hero-following.

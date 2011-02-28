@@ -59,33 +59,31 @@ function control_top_level_menu(m) {
 }
 
 var SullyMenu = function() {
-
-this.menuStack = [];
-
-this.menuStack.push( spawn_top_level_menu() );
+    this.menuStack = [];
+    this.menuStack.push( spawn_top_level_menu() );
 }
 
 SullyMenu.prototype = {
 
-/** From RendertThing **/
-move : function(data) {
-    for( var m in this.menuStack ) { this.menuStack[m].move(data); }
-}, 
-doMove : function() { 
-    for( var m in this.menuStack ) { this.menuStack[m].doMove(); }
-},
-shouldBeDrawn : function() { 
-    for( var m in this.menuStack ) { this.menuStack[m].shouldBeDrawn(); }
-},
-render : function() { 
-    for( var m in this.menuStack ) { this.menuStack[m].render(); }
-},
+    /** From RendertThing **/
+    move : function(data) {
+        for( var m in this.menuStack ) { this.menuStack[m].move(data); }
+    }, 
+    doMove : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].doMove(); }
+    },
+    shouldBeDrawn : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].shouldBeDrawn(); }
+    },
+    render : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].render(); }
+    },
 
-/** Menu stuff **/
-inMenu : function() {
-    return this.menuStack.length > 1 || $$._menu_direction
-},
-doControl : function() { 
-    this.menuStack[this.menuStack.length-1].doControl();            
-}
+    /** Menu stuff **/
+    inMenu : function() {
+        return this.menuStack.length > 1 || $$._menu_direction
+    },
+    doControl : function() { 
+        this.menuStack[this.menuStack.length-1].doControl();            
+    }
 }
