@@ -30,20 +30,10 @@ Game.prototype = {
             $$._last_hero_move = time;
             $$.hero.facing = $$.map.SPRITE_FACING_SOUTH;
         }
-/*
-        else if( time - $$._last_hero_move < 34 ) { // clamp to 30 fps for move update?
-            return;
-        }
-*/
-
-        //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
-        //$$.log('moverate: ' + moverate);
-
     
         if( k.held[k.M] && $$.soundManager ) {
             $$.soundManager.stopAll();
         }
-    
     
         if( $$.textBox.visible ) {
             this.doTextboxControl();
@@ -77,7 +67,6 @@ Game.prototype = {
 
         var time = get_time();
         var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
-
     
         var dx = 0;
         var dy = 0;
