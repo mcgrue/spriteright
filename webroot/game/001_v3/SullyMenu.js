@@ -1,3 +1,6 @@
+
+
+
 var SullyMenu = function() {
     
     this._renderThing = 
@@ -9,15 +12,16 @@ var SullyMenu = function() {
                 $$.context.fillStyle    = 'white';
                 $$.context.font         = '10px Arial';
                 $$.context.textBaseline = 'top';
-                $$.context.fillText( 'MENU', this.x+5, this.y+5);
-                $$.context.fillText( 'ITEM', this.x+5, this.y+15);
-                $$.context.fillText( 'LOL', this.x+5, this.y+25);
-                $$.context.fillText( 'BUTTS', this.x+5, this.y+35);
+                $$.context.fillText( 'ITEMS', this.x+15, this.y+5);
+                $$.context.fillText( 'EQUIP', this.x+15, this.y+15);
+                $$.context.fillText( 'STATUS', this.x+15, this.y+25);
+                $$.context.fillText( 'DATA', this.x+15, this.y+35);
+                $$.context.fillText( 'ABOUT', this.x+15, this.y+45);
             }
         );
         
-    this.color = '#000099';
-    this.move({
+    this._renderThing.color = '#000099';
+    this._renderThing.move({
         x : -50,
         y : 10,
         time : 50
