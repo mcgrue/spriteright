@@ -37,7 +37,7 @@ Game.prototype = {
 */
 
         //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
-//$$.log('moverate: ' + moverate);
+        //$$.log('moverate: ' + moverate);
     
         if( k.held[k.M] && $$.soundManager ) {
             $$.soundManager.stopAll();
@@ -48,21 +48,6 @@ Game.prototype = {
             $$._debug_showthings = !$$._debug_showthings;
         }
     
-        if( k.isActionButtonPressed() ) {
-            k.releaseActionButton();
-            
-            if( $$.textBox.visible ) {
-                $$.textBox.advanceConversation();
-
-                /// a hack to stop you from flying off as soon as you leave a textbox.  needs beter solution.
-                $$._last_hero_move = false;
-                moverate = 0;
-            } else {
-                if( !$$.map.activateAdjancentZone($$.hero) ) {
-                    $$.map.activateAdjancentEntity($$.hero);
-                }
-            }
-        }
     
         if( k.held[k.M] ) {
             k.held[k.M] = false;
@@ -76,17 +61,42 @@ Game.prototype = {
             });
         }
     
+        if( $$.textBox.visible ) {
+            this.doTextboxControl();
+        } else if( 0 /** menu */ ) {
+            
+        } else if( 0 /** battle */ ) {
+            
+        } else {
+            this.doPlayerMapControl();
+        } 
+    },
+
+    doTextboxControl : function() {
+        var k = $$.keys;
+        if( k.isActionButtonPressed() ) {
+            k.releaseActionButton();
+            
+            $$.textBox.advanceConversation();
+
+            /// a hack to stop you from flying off as soon as you leave a textbox.  needs beter solution.
+            $$._last_hero_move = false;
+        }
+    },
+
+    doPlayerMapControl : function() {
+
         if( !$$.hero ) {
             return;
         }
 
-        this.doPlayerMapControl();
-    },
-
-    doPlayerMapControl : function() {
-        /// let's turn of walking while you're talking.
-        if( $$.textBox.visible ) { 
-            return;
+        if( k.isActionButtonPressed() ) {
+            k.releaseActionButton();
+            
+            if( !$$.map.activateAdjancentZone($$.hero) ) {
+                $$.map.activateAdjancentEntity($$.hero);
+                return;
+            }
         }
 
         var k = $$.keys;
