@@ -49,22 +49,10 @@ Game.prototype = {
         }
     
     
-        if( k.held[k.M] ) {
-            k.held[k.M] = false;
-
-            $$._menu_direction = !$$._menu_direction;
-    
-            $$.menubox.move({
-                x : ($$._menu_direction? -50 : 260),
-                y : 10,
-                time : 200
-            });
-        }
-    
         if( $$.textBox.visible ) {
             this.doTextboxControl();
-        } else if( 0 /** menu */ ) {
-            
+        } else if( $$.menubox.inMenu() ) {
+            $$.menubox.doControl();
         } else if( 0 /** battle */ ) {
             
         } else {
@@ -97,6 +85,18 @@ Game.prototype = {
                 $$.map.activateAdjancentEntity($$.hero);
                 return;
             }
+        }
+
+        if( k.held[k.M] ) {
+            k.held[k.M] = false;
+
+            $$._menu_direction = !$$._menu_direction;
+    
+            $$.menubox.move({
+                x : ($$._menu_direction? -50 : 260),
+                y : 10,
+                time : 200
+            });
         }
 
         var k = $$.keys;
