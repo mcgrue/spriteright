@@ -54,4 +54,7 @@ SullyMenu.prototype = {
     },
 
     /** Menu stuff **/
+    doControl : function() { 
+        this.menuStack[this.menuStack.length-1].doControl();            
+    }
 }
