@@ -1,12 +1,11 @@
 
 
+function spawn_top_level_menu() {
 
-var SullyMenu = function() {
-    
-    this._renderThing = 
+    var m = 
         new RenderThing(
             0, 10,
-            50, 50,
+            60, 60,
             function() {
                 draw_menu_box(this);
                 $$.context.fillStyle    = 'white';
@@ -20,21 +19,39 @@ var SullyMenu = function() {
             }
         );
         
-    this._renderThing.color = '#000099';
-    this._renderThing.move({
-        x : -50,
+
+    m.color = '#000099';
+    m.move({
+        x : -60,
         y : 10,
         time : 50
     });
+
+    return m;
+}
+
+var SullyMenu = function() {
+   
+    this.menuStack = [];
+
+    this.menuStack.push( spawn_top_level_menu() );
 }
 
 SullyMenu.prototype = {
 
     /** From RendertThing **/
-    move : function(data) { return this._renderThing.move(data); },
-    doMove : function() { return this._renderThing.doMove(); },    
-    shouldBeDrawn : function() { return this._renderThing.shouldBeDrawn(); },
-    render : function() { return this._renderThing.render(); }
+    move : function(data) {
+        for( var m in this.menuStack ) { this.menuStack[m].move(data); }
+    }, 
+    doMove : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].doMove(); }
+    },
+    shouldBeDrawn : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].shouldBeDrawn(); }
+    },
+    render : function() { 
+        for( var m in this.menuStack ) { this.menuStack[m].render(); }
+    },
 
     /** Menu stuff **/
 }
