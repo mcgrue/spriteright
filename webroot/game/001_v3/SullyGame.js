@@ -35,7 +35,6 @@ Game.prototype = {
             return;
         }
 */
-        var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
 
         //var moverate = (time - $$._last_hero_move) * .10; // 100 px/sec
 //$$.log('moverate: ' + moverate);
@@ -80,13 +79,22 @@ Game.prototype = {
         if( !$$.hero ) {
             return;
         }
-    
+
+        this.doPlayerMapControl();
+    },
+
+    doPlayerMapControl : function() {
         /// let's turn of walking while you're talking.
         if( $$.textBox.visible ) { 
             return;
         }
-     
+
+        var k = $$.keys;
         var moved = false;
+
+        var time = get_time();
+        var moverate = (time - $$._last_hero_move) * .15; // 100 px/sec
+
     
         var dx = 0;
         var dy = 0;
@@ -159,8 +167,8 @@ Game.prototype = {
         }
     
         $$._last_hero_move = get_time();
+ 
     },
-
     
     /// abstract this from hero-following.
     /// it should be able to follow anything with a (x,y,w,h)
