@@ -61,14 +61,18 @@ TextBox.prototype = {
 
         draw_menu_box(this.rt);
         $$.context.fillStyle    = 'white';
-        $$.context.font         = 'bold 16px Arial';
+        //$$.context.font         = 'bold 10px "04b08Regular"';
+        $$.context.font         = '10px "04b08Regular"';
         $$.context.textBaseline = 'top';
 
         var cIdx = this.conversation_index;
 
         $$.context.fillText( this.conversation[cIdx][1] , this.rt.x+8, this.rt.y+8);
         if( this.conversation[cIdx][2] ) {
-            $$.context.fillText( this.conversation[cIdx][2], this.rt.x+8, this.rt.y+26);
+            $$.context.fillText( this.conversation[cIdx][2], this.rt.x+8, this.rt.y+20);
+        }
+        if( this.conversation[cIdx][3] ) {
+            $$.context.fillText( this.conversation[cIdx][3], this.rt.x+8, this.rt.y+32);
         }
 
         var speech_idx = this.conversation[cIdx][0];    

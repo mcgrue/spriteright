@@ -114,7 +114,7 @@ Game.prototype = {
         }
     
         //!is_obstructed_at( $$.hero.x + dx, $$.hero.y + dy ) 
-        if( (dx ||dy) ) {
+        if( (dx || dy) ) {
             moved = attempt_to_move( dx, dy, $$.hero );
         }
     

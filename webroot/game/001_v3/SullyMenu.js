@@ -1,4 +1,48 @@
 
+var menu_stub = function() {}
+
+var my_menu = [
+    ['ITEMS', menu_stub, menu_stub],
+    ['EQUIP', menu_stub, menu_stub],
+    ['STATUS', menu_stub, menu_stub],
+    ['DATA', menu_stub, menu_stub],
+    ['ABOUT', menu_stub, menu_stub],
+];
+
+function spawn_big_menu( draw_function, control_function ) {
+
+    var m = 
+        new RenderThing(
+            0, 10,
+            60, 60,
+            data[1]
+        );
+        
+    m.name = data[0];
+
+    m.color = '#000099';
+    m.move({
+        x : -60,
+        y : 10,
+        time : 50
+    });
+
+    m.doControl = data[2];
+
+    return m;
+
+}
+
+function summon_top_level_menu() {
+
+    $$._menu_direction = !$$._menu_direction;
+
+    $$.menubox.move({
+        x : (!$$._menu_direction? -60 : 250),
+        y : 10,
+        time : 200
+    });
+}
 
 function spawn_top_level_menu() {
 
@@ -29,13 +73,13 @@ function draw_top_level_menu() {
     draw_menu_box(this);
 
     $$.context.fillStyle    = 'white';
-    $$.context.font         = '10px Arial';
+    $$.context.font         = '8px "04b08Regular"';
     $$.context.textBaseline = 'top';
-    $$.context.fillText( 'ITEMS', this.x+15, this.y+5);
-    $$.context.fillText( 'EQUIP', this.x+15, this.y+15);
-    $$.context.fillText( 'STATUS', this.x+15, this.y+25);
-    $$.context.fillText( 'DATA', this.x+15, this.y+35);
-    $$.context.fillText( 'ABOUT', this.x+15, this.y+45);
+
+    for( var i=0; i<my_menu.length; i++ ) {
+        var name = my_menu[i][0];
+        $$.context.fillText( name, this.x+15, this.y+5+i*10);
+    }
 
     $$.context.fillText( '>', this.x+5, this.y+5+(10*this.cursor) );
 }
@@ -55,6 +99,14 @@ function control_top_level_menu(m) {
         if( this.cursor >= this.itemCount ) {
             this.cursor = 0;
         }
+    }
+
+    if( k.isActionButtonPressed() ) {
+        k.releaseActionButton();
+
+    } else if( k.isCancelButtonPressed() ) {
+        k.releaseCancelButton();
+    
     }
 }
 

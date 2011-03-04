@@ -87,6 +87,22 @@ releaseActionButton : function() {
     $$.keys.held[$$.keys.SPACE] = false;
 },
 
+isMenuButtonPressed : function() {
+    return $$.keys.held[$$.keys.M];
+},
+
+releaseMenuButton : function() {
+    $$.keys.held[$$.keys.M] = false;
+},
+
+isCancelButtonPressed : function() {
+    return $$.keys.held[$$.keys.Q];
+},
+
+releaseCancelButton : function() {
+    $$.keys.held[$$.keys.Q] = false;
+},
+
 	/// http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/Javascript-Char-Codes-Key-Codes.aspx
     
     ENTER: 13,
@@ -101,6 +117,7 @@ releaseActionButton : function() {
     K: 75,
     M: 77,
     O: 79,
+    Q: 81,
 
     LEFT : 37,
     RIGHT: 39,
