@@ -21,7 +21,8 @@
         h: 0,
     },
 
-    default_wait : 15,
+    //complex animations can't have a default_wait defined.
+    //default_wait : 15,
 
     animations : {
         idle_normal : [[0,15,'F'],[1,15,'F'],[0,0,'GOTO']],
